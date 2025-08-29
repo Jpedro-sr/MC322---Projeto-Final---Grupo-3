@@ -24,7 +24,6 @@ public abstract class Personagem {
 
     // Esté é o método que faz um personagem receber dano.
     public void receberDano(int dano) {
-    
         this.pontosDeVida = pontosDeVida - dano;
 
         // Verificação se o personagem morreu
