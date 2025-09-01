@@ -23,7 +23,6 @@ public abstract class Heroi extends Personagem {
         System.out.println("Seu heroi " + nome + "ganhou " + XPrecebido + "pontos de XP!" );
     }
 
-    // Sobreescrita do método exibirStatus() da classe Personagem para incluir os atributos adicionais:
     @Override
     public void exibirStatus() {
         System.out.println("------------------------");
