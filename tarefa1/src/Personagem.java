@@ -22,14 +22,16 @@ public abstract class Personagem {
         System.out.println("------------------------");
     }
 
-    // Esté é o método que faz um personagem receber dano.
+    // Método que faz um personagem receber dano.
     public void receberDano(int dano) {
-        this.pontosDeVida = pontosDeVida - dano;
+        int vidaAntes = this.pontosDeVida;
+        this.pontosDeVida -= dano; 
 
-        // Verificação se o personagem morreu
         if(this.pontosDeVida < 0) {
             this.pontosDeVida = 0;
         }
+        // Exibe o status atualizado do alvo do ataque após receber dano
+        System.out.println("\t>> Dano sofrido! HP de " + this.nome + ": " + vidaAntes + " -> " + this.pontosDeVida);
     }
 
     // Aqui iremos forçar a implementação do método atacar em todas as classes filhas.

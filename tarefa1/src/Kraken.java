@@ -6,9 +6,8 @@ public class Kraken extends Monstro {
 
     // Construtor da classe Kraken
     public Kraken() {
-        super("Kraken", 120, 8, 100);
-
-        this.danoDoAfogamentoRelampago = 50;
+        super("Kraken", 130, 10, 100);
+        this.danoDoAfogamentoRelampago = 30;
         this.heroiAgarrado = false;
     }
 
@@ -21,29 +20,27 @@ public class Kraken extends Monstro {
     public void atacar(Personagem alvo) {
 
         if (this.heroiAgarrado){
-
             // --- ATAQUE ESPECIAL: AFOGAMENTO RELÂMPAGO ---
-            System.out.println("O " + this.nome + " te puxa para as profundezas da água, te afogando!");
+            System.out.println("\t*** O " + this.nome + " te puxa para as profundezas da água, te afogando! ***");
             int danoTotal = this.danoDoAfogamentoRelampago;
-            System.out.println("O afogamento relâmpago causa " + danoTotal + " pontos de dano em " + alvo.getNome() + "!");
+            System.out.println("\t> O afogamento causa " + danoTotal + " de dano massivo em " + alvo.getNome() + "!");
             alvo.receberDano(danoTotal);
-
-            System.out.println("Após receber o dano, o " + alvo.nome + "consegue se libertar do Kraken!");
+            System.out.println("\t> Após receber o dano, o " + alvo.getNome() + " consegue se libertar do Kraken!");
             this.heroiAgarrado = false;
         } else {
-
             // --- ATAQUE NORMAL ---
-            System.out.println("O " + this.nome + " ataca com seus tentáculos!");
+            System.out.println("\t> O " + this.nome + " ataca com seus tentáculos chicoteantes!");
             int danoTotal = this.forca;
-            System.out.println("O golpe causa " + danoTotal + " pontos de dano.");
+            System.out.println("\t> O golpe causa " + danoTotal + " de dano.");
             alvo.receberDano(danoTotal);
 
-            // Sorteia se o Kraken conseguiu agarrar o alvo ou não (50% de chance)
-            this.heroiAgarrado = Math.random() < 0.2;
-            if (this.heroiAgarrado) {
-                System.out.println("O " + this.nome + " conseguiu agarrar " + alvo.getNome() + "!");
+            // Sorteia se o Kraken conseguiu agarrar o alvo ou não (20% de chance)
+            boolean agarrou = Math.random() < 0.2;
+            if (agarrou) {
+                System.out.println("\t> (Sucesso) Um dos tentáculos se enrola em você e te agarra firmemente!");
+                this.heroiAgarrado = true;
             } else {
-                System.out.println("O " + this.nome + " não conseguiu agarrar " + alvo.getNome() + ".");
+                System.out.println("\t> (Falha) Você consegue se esquivar dos tentáculos!");
             }
         }
     }

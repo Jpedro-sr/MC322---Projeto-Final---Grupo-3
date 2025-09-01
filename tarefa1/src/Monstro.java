@@ -27,5 +27,4 @@ public abstract class Monstro extends Personagem{
     public void setXpConcedido(int xpConcedido) {
         this.xpConcedido = xpConcedido;
     }
-
 }
