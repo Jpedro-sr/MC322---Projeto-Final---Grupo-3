@@ -1,6 +1,7 @@
 public class CapitaoCabecudo extends Heroi {
     
-    private int coragemLiquida; // Quantidade de Rum que o Capitão bebeu
+    // Atributo específico do Capitão Cabeçudo: Coragem Líquida (Rum)
+    private int coragemLiquida; // Quantidade de Rum que o Capitão bebeu (quanto mais melhor!)
 
     // Construtor da classe CapitaoCabecudo
     public CapitaoCabecudo() {
@@ -8,7 +9,7 @@ public class CapitaoCabecudo extends Heroi {
         // Chamamos o construtor da superclasse Heroi com os valores específicos do Capitão Cabeçudo
         super("Capitão Cabeçudo", 100, 1, 1, 0);
 
-        // Atributo específico do Capitão Cabeçudo: Coragem Líquida (Rum):
+        
         this.coragemLiquida = 2; // O capitão começa com 2 doses de Rum (garantindo pelo menos 2 de dano no ataque normal, quando acerta)
 
     }
