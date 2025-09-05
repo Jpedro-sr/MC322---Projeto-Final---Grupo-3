@@ -8,15 +8,12 @@ public class CapitaoCabecudo extends Heroi {
         // Chamamos o construtor da superclasse Heroi com os valores ESPECÍFICOS E BALANCEADOS do Capitão Cabeçudo
         super("Capitão Cabeçudo", 120, 6, 1, 0);
         this.coragemLiquida = 4;
+        this.sorte = 0.25; // Sorte inicial do Capitão Cabeçudo é 25%
     }
 
     // Lógica do ataque do CapitaoCabecudo:
-    // 1) Jogamos um d6 e, caso caia em 6, usaremos a habilidade especial (ataque critico)
-    // 2) Caso contrário, o ataque normal será a força do personagem * multiplicador
-    // O multiplicador é um valor de 0 a 3 sorteado aleatoriamente por outro dado lançado.
-    // Só faremos o ataque criítico se o d6 cair em 6.
     @Override
-    public void atacar(Personagem alvo){
+    public void atacar(Personagem alvo) {
         
         // Para variar a narração, sorteamos uma frase de ataque
         String[] frasesDeAtaque = {
@@ -29,25 +26,40 @@ public class CapitaoCabecudo extends Heroi {
         String fraseDoTurno = frasesDeAtaque[(int)(Math.random() * frasesDeAtaque.length)];
         System.out.println(fraseDoTurno);
 
-        // Rolamos um dado que vai de 1 a 6
-        int d6 = (int) (Math.random() * 6) + 1;
-        System.out.println("\t> Ele lança um d6 e tira: " + d6 + "!");
+        // --- LÓGICA DE COMBATE: ATAQUE BASEADO EM SORTE ---
 
-        if (d6 == 6){
-            System.out.println("\t*** Sorte de pirata! Ele usará sua habilidade especial: Tiro Caolho! ***");
-            // Aqui devemos fazer a lógica do ataque critico
+        // ETAPA 1: O TESTE DE SORTE PARA O ACERTO CRÍTICO
+        // Geramos um número aleatório entre 0.0 e 1.0. Se for menor que a 'sorte' do herói,
+        // ele desfere um ataque crítico usando sua habilidade especial.
+        if (Math.random() < this.sorte) {
+            System.out.println("\t*** Sorte de pirata! Um golpe de mestre! ***");
             usarHabilidadeEspecial(alvo);
+
         } else {
+            // ETAPA 2: O ATAQUE NORMAL (CASO NÃO TENHA SORTE)
             System.out.println("\t> Ele tentará um ataque normal!");
+            
+            // 2.1: Sorteamos um multiplicador de dano (de 0 a 3) para simular a variação de um golpe comum.
             int multiplicador = (int) (Math.random() * 4);
             int danoBase  = this.forca * multiplicador;
             
+            // 2.2: Verificamos se o ataque errou (se o multiplicador sorteado foi 0).
             if (danoBase == 0) {
                 System.out.println("\t(Fracasso) O capitão tropeça numa garrafa de Rum e erra o ataque!!!");
             } else {
+                // 2.3: Se acertou, calculamos o dano total somando todos os bônus.
                 System.out.println("\t> Pelas barbas de Netuno! O multiplicador de dano foi: " + multiplicador);
+                
+                // O dano total começa com o dano base (força * multiplicador) + o bônus da coragem líquida.
                 int danoTotal = danoBase + this.coragemLiquida; 
                 System.out.println("\t> Com a ajuda de sua coragem líquida (Rum), seu ataque ganha " + this.coragemLiquida + " pontos de dano extra.");
+
+                // Verificamos se há uma arma equipada e somamos seu dano.
+                if (this.arma != null) {
+                    danoTotal += this.arma.getDano();
+                    System.out.println("\t> Sua arma, " + this.arma.getClass().getSimpleName() + ", adiciona +" + this.arma.getDano() + " de dano!");
+                }
+
                 System.out.println("\t> Ele atira seu mosquete causando " + danoTotal + " pontos de dano em " + alvo.getNome() + "!");
                 alvo.receberDano(danoTotal);
             }
@@ -57,11 +69,22 @@ public class CapitaoCabecudo extends Heroi {
     @Override
     public void usarHabilidadeEspecial(Personagem alvo) {
         // Mensagem lúdica de uso da habilidade especial
-        System.out.println("\t> O capitão mira com seu único olho e dispara um tiro que acerta em cheio!");
-        // Cálculo do dano da habilidade especial
-        int danoTotal = this.forca * 6;
+        System.out.println("\t> O capitão usa sua habilidade: Tiro Caolho!");
+        
+        // --- LÓGICA DE DANO DA HABILIDADE ESPECIAL ---
+        // 1. O dano base da habilidade é a força do herói multiplicada por 6 (dano crítico).
+        int danoHabilidade = this.forca * 6;
+        int danoTotal = danoHabilidade;
+
+        // 2. Somamos o dano da arma equipada, se houver.
+        if (this.arma != null) {
+            danoTotal += this.arma.getDano();
+            System.out.println("\t> Sua arma, " + this.arma.getClass().getSimpleName() + ", adiciona +" + this.arma.getDano() + " ao tiro!");
+        }
+
         // Mensagem de ataque crítico
         System.out.println("\t> Dano CRÍTICO de " + danoTotal + " pontos!");
+        
         // De fato, aplicamos o dano ao alvo
         alvo.receberDano(danoTotal);
     }

@@ -1,7 +1,6 @@
 // Classe concreta que representa o herói "Corsário Sedentário".
-
 public class CorsarioSedentario extends Heroi {
-    
+
     // Atributo específico do Corsário Sedentário.
     private int pontosDeEstudo; // Representa o quanto ele já analisou os pontos fracos do inimigo.
 
@@ -12,44 +11,64 @@ public class CorsarioSedentario extends Heroi {
 
         // Começa a luta sem nenhum conhecimento, afinal, acabou de acordar.
         this.pontosDeEstudo = 0;
+        this.sorte = 0.3; // Ele tem 30% de sorte de ter uma ideia brilhante.
     }
 
     // Lógica do ataque do CorsarioSedentario:
-    // Ele odeia atacar. Seu "ataque" é, na verdade, um turno de observação.
-    // Ele causa um dano mínimo apenas para fingir que está participando.
-    // Sua verdadeira força está em sua habilidade especial (Golpe do mínimo esforço), que depende de quantos pontos de estudo ele acumulou.
+    // Este método simula um turno de "estudo" e preparação.
     @Override
-    public void atacar(Personagem alvo){
+    public void atacar(Personagem alvo) {
         
         System.out.println("O " + nome + " se recusa a levantar. Do chão mesmo, ele observa " + alvo.getNome() + "...");
 
-        // Causa um dano irrisório, só para dizer que fez alguma coisa.
-        int danoMinimo = this.forca;
+        // --- LÓGICA DE COMBATE: PREPARAÇÃO E DANO MÍNIMO ---
+
+        // ETAPA 1: ATAQUE MÍNIMO E DISTRATIVO
+        // Para não ficar totalmente parado, ele causa um dano irrisório que também
+        // se beneficia da arma equipada.
+        int danoMinimo = this.forca + (this.arma != null ? this.arma.getDano() : 0);
         System.out.println("\t> Ele atira uma concha que estava ao seu alcance. Um esforço tremendo.");
         alvo.receberDano(danoMinimo);
 
-        // A cada "ataque", ele acumula conhecimento sobre como terminar a luta mais rápido.
-        this.pontosDeEstudo++;
+        // ETAPA 2: ACUMULANDO CONHECIMENTO (PONTOS DE ESTUDO)
+        // A cada turno, ele acumula pontos para sua habilidade especial.
+        // Usamos a sorte para decidir se o estudo foi mais produtivo.
+        if (Math.random() < this.sorte) {
+            System.out.println("\t> Por um golpe de sorte, ele nota um grande ponto fraco!");
+            this.pontosDeEstudo += 2; // Ganha 2 pontos de estudo
+        } else {
+            this.pontosDeEstudo++; // Ganha 1 ponto de estudo
+        }
         System.out.println("\t> (Pontos de Estudo acumulados: " + this.pontosDeEstudo + ")");
     }
 
-    // A Habilidade Especial é o momento em que ele se irrita por ter seu descanso interrompido.
+    // A Habilidade Especial é o momento em que ele usa todo o conhecimento acumulado.
     @Override
     public void usarHabilidadeEspecial(Personagem alvo) {
         
-        // Ele só pode usar a habilidade se tiver prestado o mínimo de atenção.
+        // --- LÓGICA DA HABILIDADE ESPECIAL: GOLPE DE MESTRE ---
+
+        // ETAPA 1: VERIFICAÇÃO DE RECURSO
+        // Ele só pode usar a habilidade se tiver prestado o mínimo de atenção (ter pontos de estudo).
         if (this.pontosDeEstudo > 0) {
             
             System.out.println("'Argh, já chega! Isso está atrapalhando minha soneca!', resmunga o " + nome + ".");
             
-            // O dano da habilidade é baseado em quão bem ele estudou o alvo para não errar.
+            // ETAPA 2: CÁLCULO DO DANO MASSIVO
+            // O dano é a soma de 3 partes: sua força base, um grande bônus pelos pontos de estudo
+            // e o dano da arma equipada.
             int bonusDeDano = this.pontosDeEstudo * 15;
-            int danoTotal = this.forca + bonusDeDano;
+            int danoArma = (this.arma != null ? this.arma.getDano() : 0);
+            int danoTotal = this.forca + bonusDeDano + danoArma;
 
             System.out.println("\t*** Com um movimento rápido e surpreendentemente preciso, ele executa o GOLPE DO MÍNIMO ESFORÇO! ***");
+            if(this.arma != null){
+                System.out.println("\t> Sua arma, " + this.arma.getClass().getSimpleName() + ", adiciona +" + danoArma + " de dano!");
+            }
             System.out.println("\t> Explorando um ponto fraco, ele causa " + danoTotal + " de dano preciso!");
             alvo.receberDano(danoTotal);
 
+            // ETAPA 3: RESET DO CONTADOR
             // Após o golpe, ele pode voltar a relaxar. O conhecimento já foi usado.
             System.out.println("\t> (Pontos de Estudo zerados)");
             this.pontosDeEstudo = 0;
