@@ -1,95 +1,107 @@
+import java.util.ArrayList;
+
 public class Main {
     public static void main(String[] args){
 
-        // (1) CRIAÇÃO DOS PERSONAGENS
-        // 1.1) Criando o Heroi
+        // (1) SETUP INICIAL DO JOGO
+        // 1.1) Usando o ConstrutorDeCenario para gerar 3 fases com dificuldade crescente.
+        ArrayList<Fase> fases = ConstrutorDeCenario.gerarFases(3);
+
+        // 1.2) Criando uma instância do Herói.
+        // Para testar o outro herói, basta trocar a linha abaixo por: Heroi heroi = new CorsarioSedentario();
         Heroi heroi = new CapitaoCabecudo();
 
-        // 1.2) Criando um array de Monstros
-        Monstro[] monstros = {
-        new SereiaEncantadora(),
-        new HomemPeixe(),
-        new Kraken()
-        };
-
-        // (2) APRESENTAÇÃO DO DESAFIO
-        // 2.1) Apresentação inicial
+        // 1.3) Apresentação inicial do Jogo
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         System.out.println("~               A LENDA DA ILHA PERDIDA                ~");
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        System.out.println("Após semanas no mar, seu navio ancora na costa da lendária Ilha Perdida.");
-        System.out.println("O mapa em suas mãos mostra o caminho para o tesouro escondido,");
-        System.out.println("mas presságios sombrios indicam que a ilha não está desabitada…");
+        System.out.println("O " + heroi.getNome() + " retorna à ilha, agora mais experiente, em busca da verdade por trás do tesouro amaldiçoado...");
         System.out.println();
-        System.out.println("Seu herói, o destemido " + heroi.getNome() + ", prepara-se para o desafio!");
 
-        // 2.2) Exibindo o status inicial do herói
-        System.out.println("\n--- STATUS INICIAL DO HERÓI ---");
-        heroi.exibirStatus();
+        // Variável para controlar o estado do jogo
+        boolean heroiFoiDerrotado = false;
 
-        // (3) SIMULAÇÃO DOS TURNOS EM LOOP
-        // Cria um laço de repetição para os 3 turnos/monstros 
-        for (int i = 0; i < monstros.length; i++) {
-            Monstro monstroAtual = monstros[i];
-
-            System.out.println("\n+--------------------------------------------------------+");
-            System.out.println("|                      TURNO " + (i + 1) + "                         |");
-            System.out.println("+--------------------------------------------------------+");
+        // (2) LOOP PRINCIPAL DAS FASES
+        // Este loop percorre cada fase que foi gerada.
+        for (Fase faseAtual : fases) {
             
-            // Anuncia a chegada do monstro 
-            System.out.println("\nUm(a) " + monstroAtual.getNome() + " selvagem emerge das sombras!");
-            monstroAtual.exibirStatus();
-
-            // Loop de batalha para o turno atual (Herói e Monstro se atacam até um morrer)
-            while (heroi.getPontosDeVida() > 0 && monstroAtual.getPontosDeVida() > 0) {
-                
-                System.out.println("\n~~~~~~~~~~~~~~~~~~~~~ Ação do Herói ~~~~~~~~~~~~~~~~~~~~~");
-                heroi.atacar(monstroAtual);
-
-                // Verifica se o monstro foi derrotado
-                if (monstroAtual.getPontosDeVida() <= 0) {
-                    System.out.println("\n*** VITÓRIA! O(A) " + monstroAtual.getNome() + " foi derrotado(a)! ***");
-                    heroi.ganharExperiencia(monstroAtual.getXpConcedido());
-
-                    int vidaRecuperada = 35;
-                    heroi.setPontosDeVida(heroi.getPontosDeVida() + vidaRecuperada);
-                    System.out.println("[+] O herói encontra uma garrafa de rum e recupera " + vidaRecuperada + " de HP!");
-                    System.out.println();
-                    break;
-                }
-
-                System.out.println("\n~~~~~~~~~~~~~~~~~~~ Ação do Monstro ~~~~~~~~~~~~~~~~~~~");
-                monstroAtual.atacar(heroi);
-
-                if (heroi.getPontosDeVida() <= 0) {
-                    break; 
-                }
-            }
-
-            System.out.println("\n\n--- FIM DO TURNO " + (i + 1) + ": BALANÇO ---");
-            System.out.println("Status do Herói:");
+            System.out.println("\n+--------------------------------------------------------+");
+            System.out.println("|        INICIANDO FASE " + faseAtual.getNivel() + ": " + faseAtual.getAmbiente().toUpperCase() + "       |");
+            System.out.println("+--------------------------------------------------------+");
+            System.out.println("Seu herói avalia seus equipamentos antes de prosseguir...");
             heroi.exibirStatus();
-            System.out.println("Status do Monstro:");
-            monstroAtual.exibirStatus();
 
-            if (heroi.getPontosDeVida() <= 0) {
-                break;
+            // (3) LOOP DOS MONSTROS DA FASE
+            // Este loop percorre cada monstro dentro da fase atual.
+            for (Monstro monstroAtual : faseAtual.getMonstros()) {
+                System.out.println("\nUm(a) " + monstroAtual.getNome() + " (Nível " + faseAtual.getNivel() + ") surge das sombras!");
+                monstroAtual.exibirStatus();
+
+                // (4) LOOP DE COMBATE
+                // A batalha continua enquanto ambos estiverem vivos.
+                while (heroi.getPontosDeVida() > 0 && monstroAtual.getPontosDeVida() > 0) {
+                    
+                    System.out.println("\n~~~~~~~~~~~~~~~~~~~~~ Ação do Herói ~~~~~~~~~~~~~~~~~~~~~");
+                    heroi.atacar(monstroAtual);
+
+                    // Verifica se o monstro foi derrotado
+                    if (monstroAtual.getPontosDeVida() <= 0) {
+                        System.out.println("\n*** VITÓRIA! O(A) " + monstroAtual.getNome() + " foi derrotado(a)! ***");
+                        heroi.ganharExperiencia(monstroAtual.getXpConcedido());
+
+                        // Lógica de Drop de Arma baseada na Sorte
+                        if (Math.random() < heroi.sorte) {
+                            Arma armaDropada = monstroAtual.largaArma();
+                            if (armaDropada != null) {
+                                System.out.println("[!] Sorte de pirata! O monstro largou um item: " + armaDropada.getClass().getSimpleName() + " (Dano: +" + armaDropada.getDano() + ")");
+                                
+                                // Lógica para Equipar a nova arma
+                                Arma armaAtual = heroi.getArma();
+                                if (armaAtual == null || armaDropada.getDano() > armaAtual.getDano()) {
+                                    heroi.equiparArma(armaDropada);
+                                } else {
+                                    System.out.println("[!] A arma encontrada não é melhor que a atual.");
+                                }
+                            }
+                        }
+                        break; // Sai do loop de combate
+                    }
+
+                    System.out.println("\n~~~~~~~~~~~~~~~~~~~ Ação do Monstro ~~~~~~~~~~~~~~~~~~~");
+                    monstroAtual.atacar(heroi);
+
+                    if (heroi.getPontosDeVida() <= 0) {
+                        heroiFoiDerrotado = true;
+                        break; 
+                    }
+                } // Fim do loop de combate
+
+                if (heroiFoiDerrotado) {
+                    break; // Sai do loop de monstros se o herói foi derrotado
+                }
+            } // Fim do loop de monstros
+
+            if (heroiFoiDerrotado) {
+                break; // Sai do loop de fases se o herói foi derrotado
             }
-        }
 
+            System.out.println("\n--- FASE " + faseAtual.getNivel() + " CONCLUÍDA! ---");
+
+        } // Fim do loop de fases
+
+        // (5) CONCLUSÃO DO JOGO
         System.out.println("\n+--------------------------------------------------------+");
         System.out.println("|                      FIM DE JOGO                     |");
         System.out.println("+--------------------------------------------------------+");
         
-        if (heroi.getPontosDeVida() > 0) {
+        if (!heroiFoiDerrotado) {
             // Mensagem de vitória 
-            System.out.println("\nCom o último guardião derrotado, o caminho está livre!");
-            System.out.println("Você abre o baú e uma cascata de ouro e jóias amaldiçoadas reflete em seus olhos.");
-            System.out.println("A lenda era real! Você é o pirata mais rico e temido dos sete mares!");
+            System.out.println("\nCom todos os guardiões derrotados, você finalmente purifica o tesouro de sua maldição.");
+            System.out.println("A lenda era real! Você se torna o protetor da ilha e o pirata mais respeitado dos sete mares!");
             System.out.println("\n                  *** VOCÊ VENCEU! ***");
         } else {
             // Mensagem de GAME OVER
-            System.out.println("\nFerido e exausto, você cai de joelhos na areia.");
+            System.out.println("\nSeu corpo tomba nas rochas frias da ilha.");
             System.out.println("A Ilha Perdida cobra seu preço, e você se torna apenas mais uma história de fantasma contada nas tavernas...");
             System.out.println("\n                  --- GAME OVER ---");
         }
