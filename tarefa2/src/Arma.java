@@ -5,7 +5,7 @@ public abstract class Arma {
     protected int minNivel;
 
     // Construtor de Arma
-    public Arma(String nome, int dano, int minNivel) {
+    public Arma(int dano, int minNivel) {
         this.dano = dano;
         this.minNivel = minNivel;
     }

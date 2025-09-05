@@ -9,6 +9,9 @@ public class Kraken extends Monstro {
         super("Kraken", 130, 10, 100);
         this.danoDoAfogamentoRelampago = 30;
         this.heroiAgarrado = false;
+
+        // Define a arma que o Kraken pode dropar
+        listaDeArmasParaLargar.add(new PistolaDoKraken());
     }
 
     // O Kraken ataca com uma lógica condicional

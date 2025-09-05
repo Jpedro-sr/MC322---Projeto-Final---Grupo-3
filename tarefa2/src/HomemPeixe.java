@@ -12,6 +12,9 @@ public class HomemPeixe extends Monstro {
         super("Homem-Peixe", 85, 8, 40);
         this.danoDoJatoDeAmonia = 25;
         this.contadorDeRaiva = 0; // Ele sempre começa com o contador em 0
+
+        // Define a arma que o Homem-Peixe pode dropar
+        listaDeArmasParaLargar.add(new MosqueteEnferrujado());
     }
 
     // Implementação do método abstrato atacar com a nova lógica de contador de raiva
