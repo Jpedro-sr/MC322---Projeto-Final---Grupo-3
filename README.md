@@ -1,76 +1,69 @@
-# Projeto de RPG: A Lenda da Ilha Perdida
+# Projeto de RPG: A Lenda da Ilha Perdida (Tarefa 2)
 
-**Tarefa 1 da disciplina MC322 - Programação Orientada a Objetos**
+**Tarefa 2 da disciplina MC322 - Programação Orientada a Objetos**
 **Universidade Estadual de Campinas (UNICAMP)**
 
-## 1. Descrição do Projeto
+## 1. Visão Geral do Projeto
 
-Este projeto implementa um jogo de RPG narrativo em Java, desenvolvido para a Tarefa 1 de MC322. O objetivo foi aplicar e solidificar conceitos de Programação Orientada a Objetos (POO), como Herança, Classes Abstratas e Polimorfismo, para criar um cenário de batalha dinâmico e imersivo.
+Este projeto implementa um jogo de RPG narrativo em Java, focado na aplicação de conceitos avançados de Programação Orientada a Objetos. A aplicação simula a jornada de um herói pirata em uma ilha amaldiçoada, onde ele deve enfrentar hordas de monstros em diferentes fases para alcançar um tesouro lendário.
 
-A narrativa do jogo segue a aventura de um herói pirata que desembarca na amaldiçoada Ilha Perdida em busca de um tesouro lendário. Para alcançá-lo, ele deve sobreviver a um desafio de resistência, enfrentando três guardiões místicos em sequência.
+O sistema foi projetado para ser dinâmico e expansível, utilizando uma arquitetura de classes que permite a fácil adição de novos heróis, monstros, itens e cenários.
 
-## 2. Decisões de Design e Implementações Bônus
+## 2. Evolução do Projeto: Da Tarefa 1 para a Tarefa 2
 
-Além dos requisitos mínimos, foram tomadas decisões de design para enriquecer a experiência do jogo e aprofundar a aplicação dos conceitos de POO.
+A Tarefa 2 expandiu significativamente a base da Tarefa 1, transformando uma simulação linear em um sistema de RPG mais robusto e dinâmico. As principais evoluções foram:
 
-* [cite_start]**Mecânicas de Combate Únicas:** Em vez de ataques genéricos, cada personagem concreto possui um sistema de combate exclusivo, o que torna cada confronto uma experiência diferente[cite: 121, 122]. Isso inclui sistemas de sorte com dados, ataques probabilísticos, contadores de fúria, gerenciamento de estado e mecânicas de "carregamento" de poder.
+* [cite_start]**Geração Dinâmica de Mundo:** O roteiro fixo da Tarefa 1 foi substituído por um sistema de `Fase` e um `ConstrutorDeCenario`. [cite_start]O `ConstrutorDeCenario` agora gera uma aventura com um número configurável de fases, cada uma com ambientes e monstros sorteados aleatoriamente e com **dificuldade crescente**[cite: 46], garantindo alta rejogabilidade.
 
-* **Balanceamento e Dinâmica de Jogo:** Os atributos de todos os personagens (vida, força, etc.) foram cuidadosamente balanceados para criar uma curva de dificuldade desafiadora, mas justa. [cite_start]Foi implementada uma mecânica de **recuperação de vida** entre as batalhas (a "Garrafa de Rum"), essencial para a viabilidade do cenário de sobrevivência proposto[cite: 98].
+* [cite_start]**Sistema de Progressão do Herói:** O herói agora possui um sistema de progressão completo[cite: 13]. [cite_start]Ele ganha experiência (XP) ao derrotar inimigos e pode **subir de nível** (`subirDeNivel`), o que aumenta seus atributos e o cura completamente, criando um ciclo de recompensa e fortalecimento.
 
-* **Apresentação e Imersão no Console:** Um grande foco foi dado à experiência narrativa. [cite_start]A saída do console foi aprimorada com formatação especial, separadores visuais, indentação e **frases de ação randomizadas** para o herói, tornando o log de combate menos repetitivo e muito mais imersivo[cite: 133, 134].
+* [cite_start]**Sistema de Itens (Armas):** Foi introduzido um sistema de itens através da classe abstrata `Arma` e suas implementações concretas[cite: 48, 54]. [cite_start]Os monstros agora podem carregar e **largar armas** (`largaArma`) [cite: 105][cite_start], e o herói pode **equipá-las** (`equiparArma`)  para aumentar seu poder de ataque, adicionando uma camada estratégica de customização.
+
+* [cite_start]**Atributo `sorte`:** A sorte deixou de ser um conceito abstrato e se tornou um atributo central do herói. [cite_start]Ela agora influencia diretamente a chance de usar **habilidades especiais**  [cite_start]e de obter **recompensas valiosas** dos monstros.
 
 ## 3. Estrutura das Classes
 
-O projeto utiliza uma hierarquia de herança para modelar os personagens:
+O projeto utiliza uma hierarquia de herança para modelar o universo do jogo:
 
-* [cite_start]`Personagem` **(Abstrata):** A classe base para todas as entidades vivas, definindo atributos essenciais e o contrato para o método `atacar()`[cite: 58, 68].
-* [cite_start]`Heroi` **(Abstrata):** Herda de `Personagem` e serve como molde para os heróis jogáveis, adicionando atributos de progressão e o contrato para `usarHabilidadeEspecial()`[cite: 70, 79].
-* [cite_start]`Monstro` **(Abstrata):** Herda de `Personagem` e serve como molde para os inimigos, adicionando o atributo `xpConcedido`[cite: 87, 89].
+* [cite_start]`Personagem` (Abstrata): A base para todas as entidades vivas, definindo atributos essenciais (`nome`, `pontosDeVida`, `forca`) e a capacidade de segurar uma `arma`[cite: 63].
+* [cite_start]`Heroi` (Abstrata): Herda de `Personagem` e adiciona atributos de progressão (`nivel`, `XP`, `sorte`) [cite: 74, 75, 76, 78] [cite_start]e métodos para `subirDeNivel`  [cite_start]e `equiparArma`.
+* [cite_start]`Monstro` (Abstrata): Herda de `Personagem` e adiciona atributos de recompensa, como `xpConcedido` [cite: 100] [cite_start]e uma lista de armas que pode largar (`listaDeArmasParaLargar`)[cite: 101].
+* [cite_start]`Arma` (Abstrata): A base para todos os itens equipáveis, definindo `dano` e `minNivel`[cite: 49, 50, 51].
+* [cite_start]`Fase`: Um objeto que representa um "capítulo" da aventura, contendo um `ambiente` e uma lista de `monstros`[cite: 36, 37, 38, 39].
 
-### Os Personagens
+### Personagens e Mecânicas Únicas
 
-Foram implementadas **duas classes concretas de herói** e três de monstros, cada uma com personalidade e mecânicas distintas.
+[cite_start]Foram implementadas duas classes de herói e três de monstros, cada uma com um comportamento único em combate, um dos focos do critério de **Diferenciação e Criatividade**[cite: 143].
 
 #### Heróis
-
-1.  **Capitão Cabeçudo:** Um pirata teimoso que confia na sorte. Seu ataque é definido por uma **rolagem de dados** que pode resultar em um acerto crítico, um acerto normal (com dano variável) ou um erro cômico.
-2.  **Corsário Sedentário:** Um gênio tático e preguiçoso. Ele **estuda** o inimigo por vários turnos (causando dano mínimo) para acumular `pontosDeEstudo`, que são então consumidos em um único e devastador **"Golpe do Mínimo Esforço"**.
+1.  **Capitão Cabeçudo:** Um pirata que confia na sorte. Sua chance de usar a habilidade especial "Tiro Caolho" é determinada diretamente por seu atributo `sorte`.
+2.  **Corsário Sedentário:** Um gênio tático e preguiçoso. Sua `sorte` influencia a velocidade com que ele acumula "Pontos de Estudo", o recurso para seu devastador "Golpe do Mínimo Esforço".
 
 #### Monstros
-
-1.  **Sereia Encantadora:** Uma criatura mística cujo ataque é **probabilístico**, com 30% de chance de usar seu poderoso Canto Divino e 70% de desferir um golpe físico mais fraco.
-2.  **Homem-Peixe:** Um guerreiro bruto que acumula fúria. Ele utiliza um **contador de raiva**, desferindo 3 ataques normais antes de liberar um ataque especial devastador no quarto turno.
-3.  **Kraken:** O chefe final, com uma mecânica de **dois estágios**. Primeiro, ele ataca com seus tentáculos com uma chance de agarrar o herói. Se conseguir, no turno seguinte ele executa um ataque de afogamento de dano massivo.
+1.  **Sereia Encantadora:** Possui um ataque probabilístico, com chance de usar um canto mágico poderoso ou um golpe físico mais fraco.
+2.  **Homem-Peixe:** Utiliza um contador de raiva, tornando-se mais perigoso a cada turno e liberando um ataque especial após um número fixo de ações.
+3.  **Kraken:** Um chefe com uma mecânica de dois estágios, que primeiro tenta agarrar o herói para depois executar um ataque de afogamento devastador.
 
 ## 4. Como Compilar e Executar
 
 **Pré-requisitos:**
 * Java JDK 21 instalado.
-* [cite_start]Estrutura de pastas conforme especificado[cite: 125, 126]:
-    ```
-    tarefa1/
-    ├── src/  (contendo todos os 9 arquivos .java)
-    └── bin/  (inicialmente vazia)
-    ```
+* Estrutura de pastas `tarefa2/src` e `tarefa2/bin`.
 
 **Comandos (executados via terminal):**
 
-1.  Navegue até a pasta `tarefa1`:
+1.  Navegue até a pasta `tarefa2`:
     ```bash
-    cd tarefa1
+    cd tarefa2
     ```
-
 2.  Compile todos os arquivos-fonte:
     ```bash
     javac -d bin $(find src -name "*.java")
     ```
-    [cite_start][cite: 151]
-
 3.  Execute o programa:
     ```bash
     java -cp bin Main
     ```
-    [cite_start][cite: 151]
 
 ## 5. Autores
 
