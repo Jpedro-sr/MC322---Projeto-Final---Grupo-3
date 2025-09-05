@@ -1,32 +1,37 @@
-import java.util.Random;
 import java.util.ArrayList;
+import java.util.Random;
 
 public abstract class Monstro extends Personagem{
 
-    // Atributos adicionais de Monstro:
+    // Atributo adicional de Monstro:
     protected int xpConcedido;
-    protected ArrayList<Arma> listaDeArmasParaLargar; // Lista de armas que o monstro pode largar
+    // Novo atributo da Tarefa 2: Lista de armas que o monstro pode dropar
+    protected ArrayList<Arma> listaDeArmasParaLargar;
 
     // Construtor da classe Monstro
     public Monstro(String nome, int pontosDeVida, int forca, int xpConcedido) {
         super(nome, pontosDeVida, forca);
         this.xpConcedido = xpConcedido;
-
-        // Vamos inicializar a lista de armas que o monstro pode largar como uma lista vazia
+        // Inicializa a lista de drops como uma lista vazia.
+        // As classes concretas de monstros serão responsáveis por adicionar armas a esta lista.
         this.listaDeArmasParaLargar = new ArrayList<>();
     }
 
-    // Método que sorteia uma arma da lista de armas que o monstro vai largar
+    /**
+     * Sorteia e retorna uma arma da lista de drops do monstro.
+     * @return um objeto Arma aleatório da lista, ou null se a lista estiver vazia.
+     */
     public Arma largaArma() {
-        if (listaDeArmasParaLargar.isEmpty()){
+        // Verifica se o monstro tem armas para dropar
+        if (listaDeArmasParaLargar.isEmpty()) {
             return null;
         }
-        
+
         // Sorteia um índice aleatório da lista
         Random random = new Random();
         int index = random.nextInt(listaDeArmasParaLargar.size());
 
-        // Retorna a arma sorteada no index sorteado
+        // Retorna a arma no índice sorteado
         return listaDeArmasParaLargar.get(index);
     }
 

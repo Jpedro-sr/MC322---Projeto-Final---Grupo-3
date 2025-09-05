@@ -6,58 +6,54 @@ public abstract class Heroi extends Personagem {
     protected int maxPontosDeVida;
     protected int nivel;
     protected int XP;
-    protected int xpProximoNivel; // Atributo xpProximoNivel adicionado
-    protected double sorte; // Atributo sorte adicionado
-
+    protected int expProximoNivel;
+    protected double sorte;
 
     // Construtor da classe Heroi
     public Heroi(String nome, int pontosDeVida, int forca, int nivel, int XP) {
-        // Veja que aqui usamos o super para chamar apenas o construtor da classe Personagem
         super(nome, pontosDeVida, forca);
-        // Inicializamos os atributos adicionais de Heroi
         this.maxPontosDeVida = pontosDeVida;
         this.nivel = nivel;
         this.XP = XP;
-        this.xpProximoNivel = 100; // O primeiro nível requer 100 XP
-        this.sorte = 0.5; // Inicialmente, a sorte é 50%
+        this.expProximoNivel = 80; // BALANCEAMENTO: Reduzido para 80 para acelerar o primeiro level up
+        this.sorte = 0.2; // Sorte base de 20%
     }
 
-    // Método para subir o herói de nível
-    // Veja que mantemos ele private, pois só deve ser chamado dentro da classe Heroi
+    // Método privado para o herói subir de nível
     private void subirDeNivel() {
         this.nivel++;
-        this.XP = this.XP - this.xpProximoNivel; // Reduz o XP o suficiente para o próximo nível
-        this.xpProximoNivel += 50; // Incrementa o 50 de XP necessário para o próximo nível
+        this.XP -= this.expProximoNivel;
+        this.expProximoNivel *= 1.5; // A meta de XP aumenta em 50% a cada nível
 
-        // Aumenta os atributos do herói ao subir de nível
-        this.maxPontosDeVida += 20; // Aumenta a vida
-        this.forca += 5; // Aumenta a força
-        this.pontosDeVida = this.maxPontosDeVida; // Restaura a vida ao máximo
+        // Fortalece os atributos do herói
+        this.maxPontosDeVida += 25;
+        this.forca += 5;
+        this.sorte += 0.05; // A sorte aumenta em 5% a cada nível!
+        this.pontosDeVida = this.maxPontosDeVida; // Vida totalmente restaurada
 
-        // Mensagem de nível alcançado
         System.out.println("\t*** LEVEL UP! " + this.nome + " subiu para o nível " + this.nivel + "! ***");
-        System.out.println("\t> Vida máxima e Força aumentadas! Vida totalmente recuperada!");
+        System.out.println("\t> Vida máxima, Força e Sorte aumentadas! Vida totalmente recuperada!");
     }
 
-    // Método para equipar uma arma
+    // Método que adiciona XP ao herói e verifica se ele pode subir de nível
+    public void ganharExperiencia(int XPrecebido) {
+        this.XP += XPrecebido;
+        System.out.println("[+] Seu heroi " + nome + " ganhou " + XPrecebido + " pontos de XP!" );
+        
+        // Laço while para o caso de o herói ganhar XP suficiente para subir vários níveis de uma vez
+        while (this.XP >= this.expProximoNivel) {
+            subirDeNivel();
+        }
+    }
+    
+    // Método para equipar uma nova arma
     public void equiparArma(Arma novaArma) {
         // Verifica se o herói tem o nível mínimo necessário
         if (this.nivel >= novaArma.getMinNivel()) {
             this.arma = novaArma; // Equipa a nova arma
-            System.out.println("[+] " + this.nome + " equipou a arma: " + novaArma.getClass().getSimpleName() + " (Dano: +" + novaArma.getDano() + ")");
+            System.out.println("\t> " + this.nome + " equipou a arma: " + novaArma.getClass().getSimpleName() + " (Dano: +" + novaArma.getDano() + ")");
         } else {
-            System.out.println("[!] Nível insuficiente para equipar esta arma. O herói precisa ser nível " + novaArma.getMinNivel() + ".");
-        }
-    }
-
-    // Método que adiciona XP ao herói:
-    public void ganharExperiencia(int XPrecebido) {
-        this.XP += XPrecebido;
-        System.out.println("[+] Seu heroi " + nome + " ganhou " + XPrecebido + " pontos de XP!" );
-
-        // Verifica se o herói tem XP suficiente para subir de nível mais de uma vez
-        while (this.XP >= this.xpProximoNivel) {
-            subirDeNivel();
+            System.out.println("\t> [!] Nível insuficiente para equipar esta arma. O herói precisa ser nível " + novaArma.getMinNivel() + ".");
         }
     }
 
@@ -68,7 +64,15 @@ public abstract class Heroi extends Personagem {
         System.out.println(" HP: " + pontosDeVida + "/" + maxPontosDeVida);
         System.out.println(" Pontos de Força: " + forca);
         System.out.println(" Nível: " + nivel);
-        System.out.println(" XP: " + XP);
+        System.out.println(" XP: " + XP + "/" + expProximoNivel);
+        System.out.println(" Sorte: " + (int)(sorte * 100) + "%");
+        
+        // Adiciona a informação da arma equipada
+        if (this.arma != null) {
+            System.out.println(" Arma: " + this.arma.getClass().getSimpleName() + " (+" + this.arma.getDano() + " Dano)");
+        } else {
+            System.out.println(" Arma: Desarmado");
+        }
         System.out.println("------------------------");
     }
 
@@ -97,6 +101,10 @@ public abstract class Heroi extends Personagem {
 
     public void setXP(int XP) {
         this.XP = XP;
+    }
+    
+    public double getSorte(){
+        return this.sorte;
     }
 
     // Vamos obrigar a implementação do método abstrato usarHabilidadeEspecial

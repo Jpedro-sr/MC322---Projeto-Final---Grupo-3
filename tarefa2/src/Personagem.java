@@ -5,14 +5,14 @@ public abstract class Personagem {
     protected String nome;
     protected int pontosDeVida;
     protected int forca;
-    protected Arma arma; // Adicionei o atributo arma
+    protected Arma arma; // Novo atributo da Tarefa 2 para a arma equipada
 
     // Construtor
     public Personagem(String nome, int pontosDeVida, int forca) {
         this.nome = nome;
         this.pontosDeVida = pontosDeVida;
         this.forca = forca;
-        this.arma = null; // Inicialmente, todo personagem está desarmado.
+        this.arma = null; // Todo personagem começa desarmado por padrão
     }
 
     // Esse é o método que exibe o status do Personagem.
@@ -64,7 +64,7 @@ public abstract class Personagem {
         this.forca = forca;
     }
 
-    // Getters e Setters para Arma
+    // Getters e Setters para a nova arma
     public Arma getArma() {
         return arma;
     }

@@ -7,7 +7,8 @@ public class CorsarioSedentario extends Heroi {
     // Construtor da classe CorsarioSedentario
     public CorsarioSedentario() {
         // Ele não é forte, mas precisa ser resistente para aguentar o combate enquanto descansa.
-        super("Corsário Sedentário", 110, 2, 1, 0);
+        // BALANCEAMENTO: HP aumentado para 120
+        super("Corsário Sedentário", 120, 2, 1, 0);
 
         // Começa a luta sem nenhum conhecimento, afinal, acabou de acordar.
         this.pontosDeEstudo = 0;
@@ -21,18 +22,12 @@ public class CorsarioSedentario extends Heroi {
         
         System.out.println("O " + nome + " se recusa a levantar. Do chão mesmo, ele observa " + alvo.getNome() + "...");
 
-        // --- LÓGICA DE COMBATE: PREPARAÇÃO E DANO MÍNIMO ---
-
         // ETAPA 1: ATAQUE MÍNIMO E DISTRATIVO
-        // Para não ficar totalmente parado, ele causa um dano irrisório que também
-        // se beneficia da arma equipada.
         int danoMinimo = this.forca + (this.arma != null ? this.arma.getDano() : 0);
         System.out.println("\t> Ele atira uma concha que estava ao seu alcance. Um esforço tremendo.");
         alvo.receberDano(danoMinimo);
 
         // ETAPA 2: ACUMULANDO CONHECIMENTO (PONTOS DE ESTUDO)
-        // A cada turno, ele acumula pontos para sua habilidade especial.
-        // Usamos a sorte para decidir se o estudo foi mais produtivo.
         if (Math.random() < this.sorte) {
             System.out.println("\t> Por um golpe de sorte, ele nota um grande ponto fraco!");
             this.pontosDeEstudo += 2; // Ganha 2 pontos de estudo
@@ -46,17 +41,12 @@ public class CorsarioSedentario extends Heroi {
     @Override
     public void usarHabilidadeEspecial(Personagem alvo) {
         
-        // --- LÓGICA DA HABILIDADE ESPECIAL: GOLPE DE MESTRE ---
-
         // ETAPA 1: VERIFICAÇÃO DE RECURSO
-        // Ele só pode usar a habilidade se tiver prestado o mínimo de atenção (ter pontos de estudo).
         if (this.pontosDeEstudo > 0) {
             
             System.out.println("'Argh, já chega! Isso está atrapalhando minha soneca!', resmunga o " + nome + ".");
             
             // ETAPA 2: CÁLCULO DO DANO MASSIVO
-            // O dano é a soma de 3 partes: sua força base, um grande bônus pelos pontos de estudo
-            // e o dano da arma equipada.
             int bonusDeDano = this.pontosDeEstudo * 15;
             int danoArma = (this.arma != null ? this.arma.getDano() : 0);
             int danoTotal = this.forca + bonusDeDano + danoArma;
@@ -69,7 +59,6 @@ public class CorsarioSedentario extends Heroi {
             alvo.receberDano(danoTotal);
 
             // ETAPA 3: RESET DO CONTADOR
-            // Após o golpe, ele pode voltar a relaxar. O conhecimento já foi usado.
             System.out.println("\t> (Pontos de Estudo zerados)");
             this.pontosDeEstudo = 0;
 
