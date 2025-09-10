@@ -20,7 +20,8 @@ public class Main {
         for (Fase faseAtual : fases) {
             
             System.out.println("\n+--------------------------------------------------------+");
-            System.out.println("|        INICIANDO FASE " + faseAtual.getNivel() + ": " + faseAtual.getAmbiente().toUpperCase() + "       |");
+            System.out.println("|        INICIANDO FASE " + faseAtual.getNivel() + ": " + faseAtual.getAmbiente().toUpperCase() + "           |");
+            System.out.println("|        Monstros nesta fase: " + faseAtual.getMonstros().size() + "                          |");
             System.out.println("+--------------------------------------------------------+");
             heroi.exibirStatus();
 
