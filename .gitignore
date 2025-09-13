@@ -1,0 +1,29 @@
+# Comentários no .gitignore começam com #
+
+# Arquivos de IDE e Configurações Locais
+# Ignora a pasta de configurações do VSCode
+.vscode/
+
+# Pastas de Build (Java Manual e Gradle)
+# Ignora a pasta de compilação manual que usávamos na Tarefa 1
+bin/
+
+# Ignora as pastas de build e cache geradas pelo Gradle
+build/
+.gradle/
+
+# Arquivos compilados do Java
+# Ignora todos os arquivos .class, não importa em que pasta estejam
+*.class
+
+# Arquivos de pacote Java
+*.jar
+*.war
+*.ear
+
+# Arquivos de Log
+*.log
+
+# Arquivos do sistema operacional (boa prática incluir)
+.DS_Store
+Thumbs.db
