@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 // Nesse código criamos a classe abstrata Heroi que herda de Personagem. :)
 
 public abstract class Heroi extends Personagem {
@@ -110,4 +111,6 @@ public abstract class Heroi extends Personagem {
     // Vamos obrigar a implementação do método abstrato usarHabilidadeEspecial
     // em todas as classes filhas de Heroi.
     public abstract void usarHabilidadeEspecial(Personagem alvo);
+
+    ArrayList<String> acoes = new ArrayList<String>();
 }
