@@ -67,4 +67,17 @@ public class CorsarioSedentario extends Heroi {
             System.out.println("O " + nome + " tenta lembrar de um ponto fraco, mas a preguiça é grande demais. Nada acontece.");
         }
     }
+
+    @Override
+    public boolean estaVivo() {
+        return pontosDeVida > 0;
+    }
+
+    @Override
+    public void receberCura(int cura) {
+        pontosDeVida += cura;
+        if (pontosDeVida > maxPontosDeVida) {
+            pontosDeVida = maxPontosDeVida;
+        }
+    }
 }

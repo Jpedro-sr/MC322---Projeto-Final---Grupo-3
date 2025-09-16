@@ -1,4 +1,3 @@
-
 public abstract class Arma {
 
     // Atributos que toda arma terá.

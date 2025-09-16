@@ -32,4 +32,14 @@ public class HomemPeixe extends Monstro {
             System.out.println("\t> ... sua raiva aumenta! (" + this.contadorDeRaiva + "/" + ATAQUES_PARA_ENFURECER + ")");
         }
     }
+
+    @Override
+    public boolean estaVivo() {
+        return pontosDeVida > 0;
+    }
+
+    @Override
+    public void receberCura(int cura) {
+        pontosDeVida += cura;
+    }
 }

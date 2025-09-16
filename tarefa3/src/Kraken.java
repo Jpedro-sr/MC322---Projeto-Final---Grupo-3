@@ -38,4 +38,14 @@ public class Kraken extends Monstro {
             }
         }
     }
+    
+    @Override
+    public boolean estaVivo() {
+        return pontosDeVida > 0;
+    }
+
+    @Override
+    public void receberCura(int cura) {
+        pontosDeVida += cura;
+    }
 }

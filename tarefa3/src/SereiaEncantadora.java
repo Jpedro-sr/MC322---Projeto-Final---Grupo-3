@@ -28,4 +28,14 @@ public class SereiaEncantadora extends Monstro {
             alvo.receberDano(dano);
         }
     }
+
+    @Override
+    public boolean estaVivo() {
+        return pontosDeVida > 0;
+    }
+
+    @Override
+    public void receberCura(int cura) {
+        pontosDeVida += cura;
+    }
 }

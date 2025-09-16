@@ -80,4 +80,16 @@ public class CapitaoCabecudo extends Heroi {
         // De fato, aplicamos o dano ao alvo
         alvo.receberDano(danoTotal);
     }
+    @Override
+    public boolean estaVivo() {
+        return pontosDeVida > 0;
+    }
+
+    @Override
+    public void receberCura(int cura) {
+        pontosDeVida += cura;
+        if (pontosDeVida > maxPontosDeVida) {
+            pontosDeVida = maxPontosDeVida;
+        }
+    }
 }

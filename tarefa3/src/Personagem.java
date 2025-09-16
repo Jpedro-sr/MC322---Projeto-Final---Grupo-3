@@ -1,5 +1,5 @@
 // Essa é a classe abstrata Personagem que servirá como base para os seres vivos do jogo.
-public abstract class Personagem {
+public abstract class Personagem implements Combatente {
     // Atributos:
     // Tornaremos protected para que herói e monstro possam acessar diretamente.
     protected String nome;

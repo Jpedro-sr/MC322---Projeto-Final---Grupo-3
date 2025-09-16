@@ -9,7 +9,7 @@ public class Main {
 
         // (2) APRESENTAÇÃO DO DESAFIO
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        System.out.println("~               A LENDA DA ILHA PERDIDA                ~");
+        System.out.println("~                A LENDA DA ILHA PERDIDA                 ~");
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         System.out.println("O " + heroi.getNome() + " retorna à ilha, agora mais experiente, em busca da verdade por trás do tesouro amaldiçoado...");
         System.out.println();
