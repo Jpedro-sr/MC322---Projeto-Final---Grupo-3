@@ -37,7 +37,10 @@ public abstract class Personagem implements Combatente {
     }
 
     // Aqui iremos forçar a implementação do método atacar em todas as classes filhas.
-    public abstract void atacar(Personagem alvo);
+    public abstract void atacarFisico(Combatente alvo);
+
+    // Novo método abstrato para ataques à distância
+    public abstract void atacarDistancia(Combatente alvo);
 
     // Fazendo os getters e setters
     public String getNome() {
