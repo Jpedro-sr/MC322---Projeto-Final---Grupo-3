@@ -21,6 +21,7 @@ public class CorsarioSedentario extends Heroi {
     //O ataque físico causa menos dano que o ataque a distância.
     @Override
     public void atacarFisico(Combatente alvo) {
+        // Se ele tiver 5 ou mais pontos de estudo, ele usa a habilidade especial.
         if (pontosDeEstudo >= 5) {
             System.out.println("O " + nome + " se levanta com um bocejo e, inspirado por suas observações, decide atacar " + alvo.getNome() + "!");
             usarHabilidadeEspecial(alvo);
@@ -43,7 +44,12 @@ public class CorsarioSedentario extends Heroi {
 
     @Override
     public void atacarDistancia(Combatente alvo) {
-        
+        // Se ele tiver 5 ou mais pontos de estudo, ele usa a habilidade especial.
+        if (pontosDeEstudo >= 5) {
+            System.out.println("O " + nome + " se levanta com um bocejo e, inspirado por suas observações, decide atacar " + alvo.getNome() + "!");
+            usarHabilidadeEspecial(alvo);
+            return;
+        }
         System.out.println("O " + nome + " se recusa a levantar. Do chão mesmo, ele observa " + alvo.getNome() + "...");
 
         // ETAPA 1: ATAQUE A DISTÂNCIA
@@ -61,9 +67,7 @@ public class CorsarioSedentario extends Heroi {
     // A Habilidade Especial é o momento em que ele usa todo o conhecimento acumulado.
     @Override
     public void usarHabilidadeEspecial(Combatente alvo) {
-        
         // ETAPA 1: VERIFICAÇÃO DE RECURSO
-        if (this.pontosDeEstudo > 0) {
             
             System.out.println("'Argh, já chega! Isso está atrapalhando minha soneca!', resmunga o " + nome + ".");
             
