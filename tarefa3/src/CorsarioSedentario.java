@@ -15,31 +15,52 @@ public class CorsarioSedentario extends Heroi {
         this.sorte = 0.3; // Ele tem 30% de sorte de ter uma ideia brilhante.
     }
 
-    // Lógica do ataque do CorsarioSedentario:
+    // Lógica do ataque físico do CorsarioSedentario:
     // Este método simula um turno de "estudo" e preparação.
+    // O ataque físico proporciona 2 pontos de estudo, o a distância somente 1
+    //O ataque físico causa menos dano que o ataque a distância.
     @Override
-    public void atacar(Personagem alvo) {
+    public void atacarFisico(Combatente alvo) {
+        if (pontosDeEstudo >= 5) {
+            System.out.println("O " + nome + " se levanta com um bocejo e, inspirado por suas observações, decide atacar " + alvo.getNome() + "!");
+            usarHabilidadeEspecial(alvo);
+            return;
+        }
         
         System.out.println("O " + nome + " se recusa a levantar. Do chão mesmo, ele observa " + alvo.getNome() + "...");
 
-        // ETAPA 1: ATAQUE MÍNIMO E DISTRATIVO
-        int danoMinimo = this.forca + (this.arma != null ? this.arma.getDano() : 0);
-        System.out.println("\t> Ele atira uma concha que estava ao seu alcance. Um esforço tremendo.");
-        alvo.receberDano(danoMinimo);
+        // ETAPA 1: ATAQUE FÍSICO
+        int danoFisico = this.forca + (this.arma != null ? this.arma.getDano() : 0);
+        System.out.println("\t> Ele se arrasta e dá um tapa em " + alvo.getNome() + ". Um esforço tremendo.");
+        alvo.receberDano(danoFisico);
 
         // ETAPA 2: ACUMULANDO CONHECIMENTO (PONTOS DE ESTUDO)
-        if (Math.random() < this.sorte) {
             System.out.println("\t> Por um golpe de sorte, ele nota um grande ponto fraco!");
             this.pontosDeEstudo += 2; // Ganha 2 pontos de estudo
-        } else {
-            this.pontosDeEstudo++; // Ganha 1 ponto de estudo
-        }
+        
+        System.out.println("\t> (Pontos de Estudo acumulados: " + this.pontosDeEstudo + ")");
+    }
+
+    @Override
+    public void atacarDistancia(Combatente alvo) {
+        
+        System.out.println("O " + nome + " se recusa a levantar. Do chão mesmo, ele observa " + alvo.getNome() + "...");
+
+        // ETAPA 1: ATAQUE A DISTÂNCIA
+        int danoDistancia = this.forca + (this.arma != null ? this.arma.getDano() : 0);
+        System.out.println("\t> Ele pega uma concha e mira em " + alvo.getNome() + ". Bem no olho!");
+        alvo.receberDano((int) (1.5 *danoDistancia)); // O ataque a distância é mais eficaz
+
+        // ETAPA 2: ACUMULANDO CONHECIMENTO (PONTOS DE ESTUDO)
+            System.out.println("\t> Por um golpe de sorte, ele nota um pequeno ponto fraco!");
+            this.pontosDeEstudo ++; // Ganha 1 ponto de estudo
+        
         System.out.println("\t> (Pontos de Estudo acumulados: " + this.pontosDeEstudo + ")");
     }
 
     // A Habilidade Especial é o momento em que ele usa todo o conhecimento acumulado.
     @Override
-    public void usarHabilidadeEspecial(Personagem alvo) {
+    public void usarHabilidadeEspecial(Combatente alvo) {
         
         // ETAPA 1: VERIFICAÇÃO DE RECURSO
         if (this.pontosDeEstudo > 0) {

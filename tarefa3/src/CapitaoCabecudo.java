@@ -19,7 +19,7 @@ public class CapitaoCabecudo extends Heroi {
     // Dividir o método atacar em dois métodos: atacarFisico e atacarDistancia
     // O ataque físico usa um d5 e o ataque à distância usa um d3, mas no ataque físico o Capitão pode tropeçar e se machucar.
     @Override
-    public void atacarFisico(Personagem alvo) {
+    public void atacarFisico(Combatente alvo) {
         // Para variar a narração, sorteamos uma frase de ataque
         String[] frasesDeAtaque = {
             "O temido " + nome + " saca sua cimitarra enferrujada!",
@@ -41,6 +41,7 @@ public class CapitaoCabecudo extends Heroi {
             int multiplicador = (int) (Math.random() * 5);
             int danoBase  = this.forca * multiplicador;
             
+            // Se o dano base for 0, o Capitão tropeça e erra o ataque
             if (danoBase == 0) {
                 System.out.println("\t(Fracasso) O capitão tropeça numa garrafa de Rum e erra o ataque!!!");
             } else {
@@ -59,15 +60,17 @@ public class CapitaoCabecudo extends Heroi {
                 alvo.receberDano(danoTotal);
             }
         }
+        // O Capitão pode tropeçar e se machucar ao atacar fisicamente
         int danoTropeco = (int)(pontosDeVida * 0.05); // Capitão perde 5% de sua vida ao tropeçar
         if (Math.random() < 1 - this.sorte) { // Chance de tropeçar é inversamente proporcional à sorte
         pontosDeVida -= danoTropeco;
         System.out.println("\t> O capitão tropeça e se machuca, perdendo " + danoTropeco + " pontos de vida no processo.");
         }
     }
-
+    
     @Override
-    public void atacarDistancia(Personagem alvo) {
+    // Método de ataque à distância do Capitão Cabeçudo
+    public void atacarDistancia(Combatente alvo) {
         
         // Para variar a narração, sorteamos uma frase de ataque
         String[] frasesDeAtaque = {
@@ -109,9 +112,8 @@ public class CapitaoCabecudo extends Heroi {
             }
         }
     }
-
     @Override
-    public void usarHabilidadeEspecial(Personagem alvo) {
+    public void usarHabilidadeEspecial(Combatente alvo) {
         // Mensagem lúdica de uso da habilidade especial
         System.out.println("\t> O capitão usa sua habilidade: Tiro Caolho!");
         
@@ -131,6 +133,7 @@ public class CapitaoCabecudo extends Heroi {
         // De fato, aplicamos o dano ao alvo
         alvo.receberDano(danoTotal);
     }
+    // Método para verificar se o Capitão Cabeçudo está vivo
     @Override
     public boolean estaVivo() {
         return pontosDeVida > 0;
