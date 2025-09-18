@@ -1,23 +1,32 @@
 public class CapitaoCabecudo extends Heroi {
     
     // Atributo específico do Capitão Cabeçudo: Coragem Líquida (Rum)
-    private int coragemLiquida; // Quantidade de Rum que o Capitão bebeu (quanto mais melhor!)   :)
+    private int coragemLiquida;
+    
+    // ADICIONADO: Sistema de raiva para o AtaqueTridenteAcao
+    private int contadorDeRaiva;
+    private int ataquesParaEnfurecer;
 
     // Construtor da classe CapitaoCabecudo
     public CapitaoCabecudo() {
         // Chamamos o construtor da superclasse Heroi com os valores ESPECÍFICOS E BALANCEADOS do Capitão Cabeçudo
-        super("Capitão Cabeçudo", 120, 6, 1, 0);
+        super("Capitão Cabeçudo", 330, 6, 1, 0);
         this.coragemLiquida = 4;
         this.sorte = 0.25; // Sorte inicial do Capitão Cabeçudo é 25%
+        
+        // ADICIONADO: Inicialização do sistema de raiva
+        this.contadorDeRaiva = 0;
+        this.ataquesParaEnfurecer = 3;
+
+        // No construtor, definimos as ações que ele pode fazer, passando a própria instância.
+        this.acoes.add(new AtaqueDoCapitao(this));
+        this.acoes.add(new TiroCaolhoAcao(this));
     }
 
-    // Lógica do ataque do CapitaoCabecudo:
-    // 1) A chance de usar a habilidade especial (ataque crítico) agora é baseada na SORTE do herói.
-    // 2) Caso contrário, o ataque normal será a força do personagem * multiplicador (d4).
-    // 3) O dano da ARMA equipada é somado a todos os acertos.
+    // A lógica de escolher a ação agora vive aqui, baseada na sorte.
+    // O antigo método atacar() foi removido.
     @Override
-    public void atacar(Personagem alvo) {
-        
+    public AcaoDeCombate escolherAcao(Combatente alvo) {
         // Para variar a narração, sorteamos uma frase de ataque
         String[] frasesDeAtaque = {
             "O temido " + nome + " saca seu mosquete enferrujado!",
@@ -29,67 +38,34 @@ public class CapitaoCabecudo extends Heroi {
         String fraseDoTurno = frasesDeAtaque[(int)(Math.random() * frasesDeAtaque.length)];
         System.out.println(fraseDoTurno);
 
-        // Tarefa 2: Agora a chance de acerto crítico depende da sorte do herói
+        // A sorte decide se ele usa a ação especial (índice 1) ou o ataque normal (índice 0).
         if (Math.random() < this.sorte) {
             System.out.println("\t*** Sorte de pirata! Um golpe de mestre! ***");
-            usarHabilidadeEspecial(alvo);
-
+            return acoes.get(1); // Retorna a ação "Tiro Caolho"
         } else {
-            System.out.println("\t> Ele tentará um ataque normal!");
-            int multiplicador = (int) (Math.random() * 4);
-            int danoBase  = this.forca * multiplicador;
-            
-            if (danoBase == 0) {
-                System.out.println("\t(Fracasso) O capitão tropeça numa garrafa de Rum e erra o ataque!!!");
-            } else {
-                System.out.println("\t> Pelas barbas de Netuno! O multiplicador de dano foi: " + multiplicador);
-                
-                int danoTotal = danoBase + this.coragemLiquida; 
-                System.out.println("\t> Com a ajuda de sua coragem líquida (Rum), seu ataque ganha " + this.coragemLiquida + " pontos de dano extra.");
-
-                // Adicionamos o dano da arma, se houver uma equipada.
-                if (this.arma != null) {
-                    danoTotal += this.arma.getDano();
-                    System.out.println("\t> Sua arma, " + this.arma.getClass().getSimpleName() + ", adiciona +" + this.arma.getDano() + " de dano!");
-                }
-
-                System.out.println("\t> Ele atira seu mosquete causando " + danoTotal + " pontos de dano em " + alvo.getNome() + "!");
-                alvo.receberDano(danoTotal);
-            }
+            return acoes.get(0); // Retorna a ação "Ataque do Capitão"
         }
     }
-
-    @Override
-    public void usarHabilidadeEspecial(Personagem alvo) {
-        // Mensagem lúdica de uso da habilidade especial
-        System.out.println("\t> O capitão usa sua habilidade: Tiro Caolho!");
-        
-        // Cálculo do dano da habilidade especial
-        int danoHabilidade = this.forca * 6;
-        int danoTotal = danoHabilidade;
-
-        // Adicionamos o dano da arma, se houver uma equipada.
-        if (this.arma != null) {
-            danoTotal += this.arma.getDano();
-            System.out.println("\t> Sua arma, " + this.arma.getClass().getSimpleName() + ", adiciona +" + this.arma.getDano() + " ao tiro!");
-        }
-
-        // Mensagem de ataque crítico
-        System.out.println("\t> Dano CRÍTICO de " + danoTotal + " pontos!");
-        
-        // De fato, aplicamos o dano ao alvo
-        alvo.receberDano(danoTotal);
+    
+    // Getter para o atributo único, para que as classes de Ação possam acessá-lo.
+    public int getCoragemLiquida() {
+        return coragemLiquida;
     }
-    @Override
-    public boolean estaVivo() {
-        return pontosDeVida > 0;
+    
+    // MÉTODOS ADICIONADOS: Sistema de raiva para AtaqueTridenteAcao
+    public void incrementarRaiva() {
+        this.contadorDeRaiva++;
     }
 
-    @Override
-    public void receberCura(int cura) {
-        pontosDeVida += cura;
-        if (pontosDeVida > maxPontosDeVida) {
-            pontosDeVida = maxPontosDeVida;
-        }
+    public int getContadorDeRaiva() {
+        return this.contadorDeRaiva;
+    }
+
+    public int getAtaquesParaEnfurecer() {
+        return this.ataquesParaEnfurecer;
+    }
+    
+    public void zerarRaiva() {
+        this.contadorDeRaiva = 0;
     }
 }

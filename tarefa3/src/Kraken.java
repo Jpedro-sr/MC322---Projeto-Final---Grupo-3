@@ -9,43 +9,40 @@ public class Kraken extends Monstro {
         super("Kraken", 130, 10, 100);
         this.danoDoAfogamentoRelampago = 30;
         this.heroiAgarrado = false;
-        listaDeArmasParaLargar.add(new PistolaDoKraken());
+        
+        // CORRIGIDO: Equipa a arma diretamente
+        this.arma = new PistolaDoKraken("Pistola do Kraken", 22, 3);
+        
+        // OPCIONAL: Mantém na lista para casos especiais
+        this.listaDeArmasParaLargar.add(new PistolaDoKraken("Pistola do Kraken", 22, 3));
+
+        // Define as ações que o Kraken pode fazer.
+        this.acoes.add(new GolpeDeTentaculoAcao(this)); // Ação no índice 0
+        this.acoes.add(new AfogamentoAcao(this));       // Ação no índice 1
     }
 
-    // O Kraken ataca com uma lógica condicional
+    // A IA do Kraken: sua decisão de ataque é baseada no estado 'heroiAgarrado'.
     @Override
-    public void atacar(Personagem alvo) {
-        if (this.heroiAgarrado){
-            System.out.println("\t*** O " + this.nome + " te puxa para as profundezas da água, te afogando! ***");
-            int danoTotal = this.danoDoAfogamentoRelampago;
-            System.out.println("\t> O afogamento causa " + danoTotal + " de dano massivo em " + alvo.getNome() + "!");
-            alvo.receberDano(danoTotal);
-            System.out.println("\t> Após receber o dano, o " + alvo.getNome() + " consegue se libertar do Kraken!");
-            this.heroiAgarrado = false;
+    public AcaoDeCombate escolherAcao(Combatente alvo) {
+        // Se o herói já está agarrado, a única ação possível é o afogamento.
+        if (this.heroiAgarrado) {
+            return acoes.get(1); // Retorna AfogamentoAcao
         } else {
-            System.out.println("\t> O " + this.nome + " ataca com seus tentáculos chicoteantes!");
-            int danoTotal = this.forca;
-            System.out.println("\t> O golpe causa " + danoTotal + " de dano.");
-            alvo.receberDano(danoTotal);
-
-            // Sorteia se o Kraken conseguiu agarrar o alvo ou não (20% de chance)
-            boolean agarrou = Math.random() < 0.2;
-            if (agarrou) {
-                System.out.println("\t> (Sucesso) Um dos tentáculos se enrola em você e te agarra firmemente!");
-                this.heroiAgarrado = true;
-            } else {
-                System.out.println("\t> (Falha) Você consegue se esquivar dos tentáculos!");
-            }
+            // Caso contrário, ele tentará o ataque normal com chance de agarrar.
+            return acoes.get(0); // Retorna GolpeDeTentaculoAcao
         }
     }
-    
-    @Override
-    public boolean estaVivo() {
-        return pontosDeVida > 0;
-    }
 
-    @Override
-    public void receberCura(int cura) {
-        pontosDeVida += cura;
+    // Métodos para que as Ações possam interagir com o estado do Kraken.
+    public int getDanoDoAfogamento() {
+        return this.danoDoAfogamentoRelampago;
+    }
+    
+    public void setHeroiAgarrado(boolean status) {
+        this.heroiAgarrado = status;
+    }
+    
+    public boolean isHeroiAgarrado() {
+        return this.heroiAgarrado;
     }
 }

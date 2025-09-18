@@ -1,8 +1,11 @@
 public class PistolaDoKraken extends Arma {
-
-    // Construtor da PistolaDoKraken
+    // Construtor sem parâmetros (mantém o original)
     public PistolaDoKraken() {
-        // super(dano, minNivel)
-        super(22, 3);
+        super("Pistola do Kraken", 22, 3);
+    }
+    
+    // Construtor com parâmetros (para compatibilidade)
+    public PistolaDoKraken(String nome, int dano, int minNivel) {
+        super(nome, dano, minNivel);
     }
 }

@@ -1,10 +1,11 @@
-
 public class Cutelo extends Arma {
-
-    // Construtor do Cutelo
+    // Construtor sem parâmetros (mantém o original)
     public Cutelo() {
-        // super(dano, minNivel)
-        // BALANCEAMENTO: Dano aumentado para 10
-        super(10, 1);
+        super("Cutelo", 10, 1);
+    }
+    
+    // Construtor com parâmetros (para compatibilidade)
+    public Cutelo(String nome, int dano, int minNivel) {
+        super(nome, dano, minNivel);
     }
 }

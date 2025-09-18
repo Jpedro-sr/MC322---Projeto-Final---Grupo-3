@@ -1,28 +1,24 @@
-import java.util.ArrayList;
+/**
+ * Interface que representa uma área ou nível do jogo com um objetivo.
+ * (Conforme Tarefa 3, Seção 3.1.2)
+ */
+public interface Fase {
 
-public class Fase {
+    /**
+     * Inicia a lógica principal da fase.
+     * @param heroi O herói que está participando da fase.
+     */
+    void iniciar(Heroi heroi);
 
-    // Atributos da Fase
-    private int nivel;
-    private String ambiente;
-    private ArrayList<Monstro> monstros;
+    /**
+     * Verifica se a fase foi concluída com sucesso.
+     * @return true se o objetivo da fase foi alcançado.
+     */
+    boolean isConcluida();
 
-    public Fase(int nivel, String ambiente, ArrayList<Monstro> monstros) {
-        this.nivel = nivel;
-        this.ambiente = ambiente;
-        this.monstros = monstros;
-    }
-
-    // --- Getters ---
-    public int getNivel() {
-        return nivel;
-    }
-
-    public String getAmbiente() {
-        return ambiente;
-    }
-
-    public ArrayList<Monstro> getMonstros() {
-        return monstros;
-    }
+    /**
+     * Retorna o tipo de cenário da fase.
+     * @return um valor do Enum TipoCenario.
+     */
+    TipoCenario getTipoDeCenario();
 }

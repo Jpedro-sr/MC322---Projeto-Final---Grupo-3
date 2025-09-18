@@ -1,45 +1,38 @@
 public class HomemPeixe extends Monstro {
 
-    // Atributo específico do Homem-Peixe: Jato de Amônia
     private int danoDoJatoDeAmonia;
     private int contadorDeRaiva;
     private static final int ATAQUES_PARA_ENFURECER = 3;
 
-    // Construtor da classe HomemPeixe
     public HomemPeixe() {
-        super("Homem-Peixe", 85, 8, 40);
+        super("Homem-Peixe", 50, 5, 40);
         this.danoDoJatoDeAmonia = 25;
         this.contadorDeRaiva = 0;
-        listaDeArmasParaLargar.add(new MosqueteEnferrujado());
+        
+        // CORRIGIDO: Equipa a arma diretamente
+        this.arma = new MosqueteEnferrujado("Mosquete Enferrujado", 14, 2);
+        
+        // OPCIONAL: Mantém na lista para casos especiais
+        this.listaDeArmasParaLargar.add(new MosqueteEnferrujado("Mosquete Enferrujado", 14, 2));
+
+        // Define as ações
+        this.acoes.add(new AtaqueTridenteAcao(this)); 
+        this.acoes.add(new JatoDeAmoniaAcao(this));   
     }
 
-    // Implementação do método abstrato atacar com a nova lógica de contador de raiva
     @Override
-    public void atacar(Personagem alvo) {
-        if (this.contadorDeRaiva == ATAQUES_PARA_ENFURECER) {
-            System.out.println("\t*** A raiva do " + this.nome + " chega ao auge! Ele libera um poderoso JATO DE AMÔNIA! ***");
-            int danoTotal = this.danoDoJatoDeAmonia;
-            System.out.println("\t> O jato tóxico causa " + danoTotal + " pontos de dano em " + alvo.getNome() + "!");
-            alvo.receberDano(danoTotal);
-            System.out.println("\t> ... a fúria do Homem-Peixe se dissipa.");
-            this.contadorDeRaiva = 0;
+    public AcaoDeCombate escolherAcao(Combatente alvo) {
+        if (this.contadorDeRaiva >= ATAQUES_PARA_ENFURECER) {
+            return acoes.get(1); // JatoDeAmoniaAcao
         } else {
-            System.out.println("\t> O " + this.nome + " ataca com um golpe de tridente!");
-            int danoTotal = this.forca;
-            System.out.println("\t> O golpe causa " + danoTotal + " pontos de dano.");
-            alvo.receberDano(danoTotal);
-            this.contadorDeRaiva++;
-            System.out.println("\t> ... sua raiva aumenta! (" + this.contadorDeRaiva + "/" + ATAQUES_PARA_ENFURECER + ")");
+            return acoes.get(0); // AtaqueTridenteAcao
         }
     }
-
-    @Override
-    public boolean estaVivo() {
-        return pontosDeVida > 0;
-    }
-
-    @Override
-    public void receberCura(int cura) {
-        pontosDeVida += cura;
-    }
+    
+    // Métodos específicos do HomemPeixe
+    public int getDanoDoJatoDeAmonia() { return this.danoDoJatoDeAmonia; }
+    public int getContadorDeRaiva() { return this.contadorDeRaiva; }
+    public int getAtaquesParaEnfurecer() { return ATAQUES_PARA_ENFURECER; }
+    public void incrementarRaiva() { this.contadorDeRaiva++; }
+    public void zerarRaiva() { this.contadorDeRaiva = 0; }
 }

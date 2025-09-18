@@ -1,15 +1,21 @@
-public abstract class Arma {
-
-    // Atributos que toda arma terá.
+public abstract class Arma implements Item {
+    protected String nome;
     protected int dano;
     protected int minNivel;
 
-    public Arma(int dano, int minNivel) {
+    public Arma(String nome, int dano, int minNivel) {
+        this.nome = nome;
         this.dano = dano;
         this.minNivel = minNivel;
     }
 
-    // --- Getters ---
+    // Implementação da interface Item
+    @Override
+    public String getNome() {
+        return nome;
+    }
+
+    // Getters específicos da arma
     public int getDano() {
         return dano;
     }

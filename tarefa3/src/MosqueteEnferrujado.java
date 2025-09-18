@@ -1,9 +1,11 @@
-
 public class MosqueteEnferrujado extends Arma {
-
-    // Construtor do MosqueteEnferrujado
+    // Construtor sem parâmetros (mantém o original)
     public MosqueteEnferrujado() {
-        // super(dano, minNivel)
-        super(14, 2);
+        super("Mosquete Enferrujado", 14, 2);
+    }
+    
+    // Construtor com parâmetros (para compatibilidade)
+    public MosqueteEnferrujado(String nome, int dano, int minNivel) {
+        super(nome, dano, minNivel);
     }
 }

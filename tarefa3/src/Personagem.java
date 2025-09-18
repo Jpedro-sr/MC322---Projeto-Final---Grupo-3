@@ -1,53 +1,71 @@
-// Essa é a classe abstrata Personagem que servirá como base para os seres vivos do jogo.
+/**
+ * A classe Personagem agora implementa o contrato de um Combatente.
+ * Ela serve como a base para qualquer entidade viva no jogo que pode lutar.
+ * (Refatorado para a Tarefa 3)
+ */
 public abstract class Personagem implements Combatente {
-    // Atributos:
-    // Tornaremos protected para que herói e monstro possam acessar diretamente.
     protected String nome;
     protected int pontosDeVida;
     protected int forca;
-    protected Arma arma; // Novo atributo da Tarefa 2 para a arma equipada
+    protected Arma arma;
 
-    // Construtor
     public Personagem(String nome, int pontosDeVida, int forca) {
         this.nome = nome;
         this.pontosDeVida = pontosDeVida;
         this.forca = forca;
-        this.arma = null; // Todo personagem começa desarmado por padrão
+        this.arma = null;
     }
 
-    // Esse é o método que exibe o status do Personagem.
-    public void exibirStatus() {
-        System.out.println("------------------------");
-        System.out.println("~ " + nome);
-        System.out.println(" HP: " + pontosDeVida);
-        System.out.println(" Pontos de Força: " + forca);
-        System.out.println("------------------------");
+    // --- Implementação dos Métodos de Combatente ---
+    @Override
+    public String getNome() {
+        return this.nome;
     }
 
-    // Método que faz um personagem receber dano.
+    @Override
+    public boolean estaVivo() {
+        return this.pontosDeVida > 0;
+    }
+
+    @Override
     public void receberDano(int dano) {
         int vidaAntes = this.pontosDeVida;
-        this.pontosDeVida -= dano; 
-
-        if(this.pontosDeVida < 0) {
+        this.pontosDeVida -= dano;
+        if (this.pontosDeVida < 0) {
             this.pontosDeVida = 0;
         }
-        // Exibe o status atualizado do alvo do ataque após receber dano
         System.out.println("\t>> Dano sofrido! HP de " + this.nome + ": " + vidaAntes + " -> " + this.pontosDeVida);
     }
 
-    // Aqui iremos forçar a implementação do método atacar em todas as classes filhas.
-    public abstract void atacar(Personagem alvo);
-
-    // Fazendo os getters e setters
-    public String getNome() {
-        return nome;
+    @Override
+    public void receberCura(int cura) {
+        int vidaAntes = this.pontosDeVida;
+        this.pontosDeVida += cura;
+        System.out.println("\t>> Cura recebida! HP de " + this.nome + ": " + vidaAntes + " -> " + this.pontosDeVida);
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    // O antigo método 'atacar' foi substituído por este novo contrato.
+    // Cada personagem concreto definirá como ele escolhe sua ação.
+    @Override
+    public abstract AcaoDeCombate escolherAcao(Combatente alvo);
+    
+    // MÉTODO ADICIONADO: Exibição de status básico para qualquer personagem
+    public void exibirStatus() {
+        System.out.println("┌─────────────────────────────────┐");
+        System.out.println("│ " + String.format("%-31s", nome) + " │");
+        System.out.println("├─────────────────────────────────┤");
+        System.out.println("│ HP: " + String.format("%-27s", pontosDeVida) + " │");
+        System.out.println("│ Força: " + String.format("%-24s", forca) + " │");
+        if (arma != null) {
+            System.out.println("│ Arma: " + String.format("%-25s", arma.getNome()) + " │");
+            System.out.println("│ Dano da Arma: " + String.format("%-17s", "+" + arma.getDano()) + " │");
+        } else {
+            System.out.println("│ Arma: " + String.format("%-25s", "Desarmado") + " │");
+        }
+        System.out.println("└─────────────────────────────────┘");
     }
-
+    
+    // --- Getters e Setters ---
     public int getPontosDeVida() {
         return pontosDeVida;
     }
@@ -63,8 +81,7 @@ public abstract class Personagem implements Combatente {
     public void setForca(int forca) {
         this.forca = forca;
     }
-
-    // Getters e Setters para a nova arma
+    
     public Arma getArma() {
         return arma;
     }
