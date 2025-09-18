@@ -1,4 +1,4 @@
 interface AcaoDeCombate {
-    void atacarFisico(Combatente alvo);
-    void atacarDistancia(Combatente alvo);
+    void atacarFisico(Personagem alvo);
+    void atacarDistancia(Personagem alvo);
 }

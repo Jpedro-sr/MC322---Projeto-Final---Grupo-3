@@ -110,7 +110,7 @@ public abstract class Heroi extends Personagem {
 
     // Vamos obrigar a implementação do método abstrato usarHabilidadeEspecial
     // em todas as classes filhas de Heroi.
-    public abstract void usarHabilidadeEspecial(Combatente alvo);
+    public abstract void usarHabilidadeEspecial(Personagem alvo);
 
     // Lista de ações disponíveis para o herói
     protected ArrayList<String> acoes = new ArrayList<>();
@@ -119,12 +119,17 @@ public abstract class Heroi extends Personagem {
         acoes.add("Ataque à Distância");
     }
     
-    public void escolherAcao(Combatente alvo) {
-        int sorteio = (int) Math.random();
-        if (sorteio == 0) {
-            this.atacarFisico(alvo);
-        } else {
-            this.atacarDistancia(alvo);
-        }
+    // Implementação do método escolherAcao para o herói
+    // Por hora o herói escolhe uma ação aleatoriamente dentro da lista de ações
+@Override
+public void escolherAcao(Personagem alvo) {
+    int indice = (int) (Math.random() * acoes.size());
+    String acaoEscolhida = acoes.get(indice);
+
+    if (acaoEscolhida.equals("Ataque Físico")) {
+        this.atacarFisico(alvo);
+    } else if (acaoEscolhida.equals("Ataque à Distância")) {
+        this.atacarDistancia(alvo);
+    }
 }
 }

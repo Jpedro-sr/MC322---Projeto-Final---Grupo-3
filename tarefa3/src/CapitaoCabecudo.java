@@ -19,7 +19,7 @@ public class CapitaoCabecudo extends Heroi {
     // Dividir o método atacar em dois métodos: atacarFisico e atacarDistancia
     // O ataque físico usa um d5 e o ataque à distância usa um d3, mas no ataque físico o Capitão pode tropeçar e se machucar.
     @Override
-    public void atacarFisico(Combatente alvo) {
+    public void atacarFisico(Personagem alvo) {
         // Para variar a narração, sorteamos uma frase de ataque
         String[] frasesDeAtaque = {
             "O temido " + nome + " saca sua cimitarra enferrujada!",
@@ -70,7 +70,7 @@ public class CapitaoCabecudo extends Heroi {
     
     @Override
     // Método de ataque à distância do Capitão Cabeçudo
-    public void atacarDistancia(Combatente alvo) {
+    public void atacarDistancia(Personagem alvo) {
         
         // Para variar a narração, sorteamos uma frase de ataque
         String[] frasesDeAtaque = {
@@ -113,7 +113,7 @@ public class CapitaoCabecudo extends Heroi {
         }
     }
     @Override
-    public void usarHabilidadeEspecial(Combatente alvo) {
+    public void usarHabilidadeEspecial(Personagem alvo) {
         // Mensagem lúdica de uso da habilidade especial
         System.out.println("\t> O capitão usa sua habilidade: Tiro Caolho!");
         

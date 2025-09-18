@@ -3,5 +3,6 @@ interface Combatente {
     public boolean estaVivo();
     public void receberDano(int dano);
     public void receberCura(int cura);
-    public void escolherAcao(Combatente alvo);
+    public void escolherAcao(Personagem alvo); //Como combatente é uma interface e não 
+                                               //uma classe, utilizamos Personagem aqui
 }

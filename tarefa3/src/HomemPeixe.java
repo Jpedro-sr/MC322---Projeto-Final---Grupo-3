@@ -13,9 +13,9 @@ public class HomemPeixe extends Monstro {
         listaDeArmasParaLargar.add(new MosqueteEnferrujado());
     }
 
-    // Implementação do método abstrato atacar com a nova lógica de contador de raiva
+    // Implementação do método de ataque físico do Homem-Peixe, que acumula raiva a cada ataque.
     @Override
-    public void atacar(Personagem alvo) {
+    public void atacarFisico(Personagem alvo) {
         if (this.contadorDeRaiva == ATAQUES_PARA_ENFURECER) {
             System.out.println("\t*** A raiva do " + this.nome + " chega ao auge! Ele libera um poderoso JATO DE AMÔNIA! ***");
             int danoTotal = this.danoDoJatoDeAmonia;
@@ -31,6 +31,15 @@ public class HomemPeixe extends Monstro {
             this.contadorDeRaiva++;
             System.out.println("\t> ... sua raiva aumenta! (" + this.contadorDeRaiva + "/" + ATAQUES_PARA_ENFURECER + ")");
         }
+    }
+
+    //O ataque a distância é mais forte, mas não faz o contador de raiva aumentar
+    @Override
+    public void atacarDistancia(Personagem alvo) {
+        System.out.println("\t> O " + this.nome + " arremessa uma bola de algas!");
+        int danoTotal = this.forca * 2;
+        alvo.receberDano(danoTotal);
+        System.out.println("\t> Bem na cabeça! A bola de algas causa " + danoTotal + " pontos de dano em " + alvo.getNome() + "!");
     }
 
     @Override

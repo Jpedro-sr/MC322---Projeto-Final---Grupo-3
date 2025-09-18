@@ -10,24 +10,25 @@ public class SereiaEncantadora extends Monstro {
         listaDeArmasParaLargar.add(new Cutelo());
     }
 
-    // Implementação do método abstrato atacar na classe concreta SereiaEncantadora
+    // O ataque a distância da Sereia é seu Canto Divino, que sempre aumenta seu poder
     @Override
-    public void atacar(Personagem alvo) {
+    public void atacarDistancia(Personagem alvo) {
         System.out.println("A " + this.nome + " inicia sua melodia mortal...");
-        int tipoAtaque = (int) (Math.random() * 10) + 1;
-
-        if (tipoAtaque <= 3) {
             System.out.println("\t*** Ela entoa seu Canto Divino! ***");
             int dano = this.forca + this.cantoDivino;
             System.out.println("\t> A magia causa " + dano + " pontos de dano em " + alvo.getNome() + "!");
             alvo.receberDano(dano);
-        } else {
+    }
+    
+    //O ataque físico é um golpe de cauda simples, que aumenta o canto divino
+    @Override
+    public void atacarFisico(Personagem alvo) {
             System.out.println("\t> Ela ataca rapidamente com um Golpe de Cauda!");
             int dano = this.forca;
             System.out.println("\t> O golpe causa " + dano + " pontos de dano em " + alvo.getNome() + "!");
             alvo.receberDano(dano);
+            this.cantoDivino += 2;
         }
-    }
 
     @Override
     public boolean estaVivo() {

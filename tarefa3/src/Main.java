@@ -4,7 +4,7 @@ public class Main {
     public static void main(String[] args){
 
         // (1) SETUP INICIAL DO JOGO
-        ArrayList<Fase> fases = ConstrutorDeCenario.gerarFases(3);
+        ArrayList<FaseDeCombate> fases = ConstrutorDeCenarioFixo.gerarFases(3);
         Heroi heroi = new CapitaoCabecudo();
 
         // (2) APRESENTAÇÃO DO DESAFIO
@@ -17,7 +17,7 @@ public class Main {
         boolean heroiFoiDerrotado = false;
 
         // (3) LOOP PRINCIPAL DAS FASES
-        for (Fase faseAtual : fases) {
+        for (FaseDeCombate faseAtual : fases) {
             
             System.out.println("\n+--------------------------------------------------------+");
             System.out.println("|        INICIANDO FASE " + faseAtual.getNivel() + ": " + faseAtual.getAmbiente().toUpperCase() + "           |");

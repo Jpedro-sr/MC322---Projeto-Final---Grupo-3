@@ -14,7 +14,7 @@ public class Kraken extends Monstro {
 
     // O Kraken ataca com uma lógica condicional
     @Override
-    public void atacar(Personagem alvo) {
+    public void atacarFisico(Personagem alvo) {
         if (this.heroiAgarrado){
             System.out.println("\t*** O " + this.nome + " te puxa para as profundezas da água, te afogando! ***");
             int danoTotal = this.danoDoAfogamentoRelampago;
@@ -37,6 +37,15 @@ public class Kraken extends Monstro {
                 System.out.println("\t> (Falha) Você consegue se esquivar dos tentáculos!");
             }
         }
+    }
+
+    @Override
+    public void atacarDistancia(Personagem alvo) {
+        System.out.println("\t> O " + this.nome + " cospe um jato de tinta escura!");
+        int danoTotal = this.forca;
+        alvo.receberDano(danoTotal);
+        System.out.println("\t> A tinta cega temporariamente, causando " + danoTotal + " pontos de dano em " + alvo.getNome() + "!");
+        
     }
     
     @Override

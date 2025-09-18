@@ -1,3 +1,3 @@
 public interface Item {
-    public void getNome();
+    public String getNome();
 }

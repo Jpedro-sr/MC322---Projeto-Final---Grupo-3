@@ -1,3 +1,3 @@
 public interface Lootavel {
-    public void droparLoot();
+    public Arma droparLoot();
 }

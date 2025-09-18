@@ -13,6 +13,8 @@ public class CorsarioSedentario extends Heroi {
         // Começa a luta sem nenhum conhecimento, afinal, acabou de acordar.
         this.pontosDeEstudo = 0;
         this.sorte = 0.3; // Ele tem 30% de sorte de ter uma ideia brilhante.
+        this.acoes.add("Ataque Físico");
+        this.acoes.add("Ataque à Distância");
     }
 
     // Lógica do ataque físico do CorsarioSedentario:
@@ -20,7 +22,7 @@ public class CorsarioSedentario extends Heroi {
     // O ataque físico proporciona 2 pontos de estudo, o a distância somente 1
     //O ataque físico causa menos dano que o ataque a distância.
     @Override
-    public void atacarFisico(Combatente alvo) {
+    public void atacarFisico(Personagem alvo) {
         // Se ele tiver 5 ou mais pontos de estudo, ele usa a habilidade especial.
         if (pontosDeEstudo >= 5) {
             System.out.println("O " + nome + " se levanta com um bocejo e, inspirado por suas observações, decide atacar " + alvo.getNome() + "!");
@@ -43,7 +45,7 @@ public class CorsarioSedentario extends Heroi {
     }
 
     @Override
-    public void atacarDistancia(Combatente alvo) {
+    public void atacarDistancia(Personagem alvo) {
         // Se ele tiver 5 ou mais pontos de estudo, ele usa a habilidade especial.
         if (pontosDeEstudo >= 5) {
             System.out.println("O " + nome + " se levanta com um bocejo e, inspirado por suas observações, decide atacar " + alvo.getNome() + "!");
@@ -66,7 +68,7 @@ public class CorsarioSedentario extends Heroi {
 
     // A Habilidade Especial é o momento em que ele usa todo o conhecimento acumulado.
     @Override
-    public void usarHabilidadeEspecial(Combatente alvo) {
+    public void usarHabilidadeEspecial(Personagem alvo) {
         // ETAPA 1: VERIFICAÇÃO DE RECURSO
             
             System.out.println("'Argh, já chega! Isso está atrapalhando minha soneca!', resmunga o " + nome + ".");
@@ -86,11 +88,6 @@ public class CorsarioSedentario extends Heroi {
             // ETAPA 3: RESET DO CONTADOR
             System.out.println("\t> (Pontos de Estudo zerados)");
             this.pontosDeEstudo = 0;
-
-        } else {
-            // Mensagem cômica caso ele tente usar a habilidade sem ter feito o esforço de observar.
-            System.out.println("O " + nome + " tenta lembrar de um ponto fraco, mas a preguiça é grande demais. Nada acontece.");
-        }
     }
 
     @Override

@@ -1,6 +1,7 @@
-public abstract class Arma {
+public abstract class Arma implements Item{
 
     // Atributos que toda arma terá.
+    protected String nome;
     protected int dano;
     protected int minNivel;
 
@@ -16,5 +17,10 @@ public abstract class Arma {
 
     public int getMinNivel() {
         return minNivel;
+    }
+
+    @Override
+    public String getNome() {
+        return nome;
     }
 }

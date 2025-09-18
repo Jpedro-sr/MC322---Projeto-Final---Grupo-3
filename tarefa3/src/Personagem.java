@@ -1,5 +1,5 @@
 // Essa é a classe abstrata Personagem que servirá como base para os seres vivos do jogo.
-public abstract class Personagem implements Combatente {
+public abstract class Personagem implements Combatente, AcaoDeCombate {
     // Atributos:
     // Tornaremos protected para que herói e monstro possam acessar diretamente.
     protected String nome;
@@ -25,6 +25,7 @@ public abstract class Personagem implements Combatente {
     }
 
     // Método que faz um personagem receber dano.
+    @Override
     public void receberDano(int dano) {
         int vidaAntes = this.pontosDeVida;
         this.pontosDeVida -= dano; 
@@ -37,12 +38,15 @@ public abstract class Personagem implements Combatente {
     }
 
     // Aqui iremos forçar a implementação do método atacar em todas as classes filhas.
-    public abstract void atacarFisico(Combatente alvo);
+    @Override
+    public abstract void atacarFisico(Personagem alvo);
 
     // Novo método abstrato para ataques à distância
-    public abstract void atacarDistancia(Combatente alvo);
+    @Override
+    public abstract void atacarDistancia(Personagem alvo);
 
     // Fazendo os getters e setters
+    @Override
     public String getNome() {
         return nome;
     }
@@ -75,4 +79,6 @@ public abstract class Personagem implements Combatente {
     public void setArma(Arma arma) {
         this.arma = arma;
     }
+    @Override
+    public abstract void escolherAcao(Personagem alvo);
 }

@@ -1,11 +1,11 @@
 import java.util.ArrayList;
 import java.util.Random;
 
-public class ConstrutorDeCenario {
-
-    public static ArrayList<Fase> gerarFases(int nFases) {
+public class ConstrutorDeCenarioFixo implements GeradorDeFases {
+    @Override
+    public ArrayList<FaseDeCombate> gerar(int quantidadeDeFases) {
         // Lista que vamos preencher e retornar no final
-        ArrayList<Fase> fases = new ArrayList<>();
+        ArrayList<FaseDeCombate> fases = new ArrayList<>();
         Random random = new Random();
 
         // Uma lista de possíveis ambientes para as fases.
@@ -18,7 +18,7 @@ public class ConstrutorDeCenario {
         };
 
         // Loop para criar cada fase, de 1 até nFases.
-        for (int i = 1; i <= nFases; i++) {
+        for (int i = 1; i <= quantidadeDeFases; i++) {
             int nivelDaFase = i;
             TipoCenario ambienteDaFase = catalogoAmbientes[random.nextInt(catalogoAmbientes.length)];
             ArrayList<Monstro> monstrosDaFase = new ArrayList<>();
@@ -44,7 +44,7 @@ public class ConstrutorDeCenario {
                 monstrosDaFase.add(monstroDaFase);
             }
 
-            Fase novaFase = new Fase(nivelDaFase, ambienteDaFase.getDescricao(), monstrosDaFase);
+            FaseDeCombate novaFase = new FaseDeCombate(nivelDaFase, ambienteDaFase.getDescricao(), monstrosDaFase);
             fases.add(novaFase);
         }
         return fases;

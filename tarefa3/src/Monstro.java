@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Random;
 
-public abstract class Monstro extends Personagem{
+public abstract class Monstro extends Personagem implements Lootavel{
 
     // Atributo adicional de Monstro:
     protected int xpConcedido;
@@ -21,7 +21,8 @@ public abstract class Monstro extends Personagem{
      * Sorteia e retorna uma arma da lista de drops do monstro.
      * @return um objeto Arma aleatório da lista, ou null se a lista estiver vazia.
      */
-    public Arma largaArma() {
+    @Override
+     public Arma droparLoot() {
         // Verifica se o monstro tem armas para dropar
         if (listaDeArmasParaLargar.isEmpty()) {
             return null;
@@ -52,5 +53,24 @@ public abstract class Monstro extends Personagem{
 
     public void setXpConcedido(int xpConcedido) {
         this.xpConcedido = xpConcedido;
+    }
+
+    // Lista de ações disponíveis para o herói
+    protected ArrayList<String> acoes = new ArrayList<>();
+    {
+        acoes.add("Ataque Físico");
+        acoes.add("Ataque à Distância");
+    }
+
+    @Override
+    public void escolherAcao(Personagem alvo) {
+        int indice = (int) (Math.random() * acoes.size());
+        String acaoEscolhida = acoes.get(indice);
+
+        if (acaoEscolhida.equals("Ataque Físico")) {
+            this.atacarFisico(alvo);
+        } else if (acaoEscolhida.equals("Ataque à Distância")) {
+            this.atacarDistancia(alvo);
+        }
     }
 }
