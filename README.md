@@ -1,71 +1,164 @@
-# Projeto de RPG: A Lenda da Ilha Perdida (Tarefa 2)
+Tarefa 3 – RPG de Batalha Marinha (MC322)
 
-**Tarefa 2 da disciplina MC322 - Programação Orientada a Objetos**
-**Universidade Estadual de Campinas (UNICAMP)**
+Projeto da disciplina MC322 – Programação Orientada a Objetos, Unicamp.
+Um jogo de combate em turnos, ambientado em um mundo marítimo repleto de monstros e eventos.
+O herói Capitão Cabeçudo enfrenta sereias, homens-peixe e o temido Kraken, evoluindo de fase em fase.
 
-## 1. Visão Geral do Projeto
+🗺️ Sumário
 
-Este projeto implementa um jogo de RPG narrativo em Java, focado na aplicação de conceitos avançados de Programação Orientada a Objetos. A aplicação simula a jornada de um herói pirata em uma ilha amaldiçoada, onde ele deve enfrentar hordas de monstros em diferentes fases para alcançar um tesouro lendário.
+Visão Geral
 
-O sistema foi projetado para ser dinâmico e expansível, utilizando uma arquitetura de classes que permite a fácil adição de novos heróis, monstros, itens e cenários.
+Arquitetura do Código
 
-## 2. Evolução do Projeto: Da Tarefa 1 para a Tarefa 2
+Como Executar
 
-A Tarefa 2 expandiu significativamente a base da Tarefa 1, transformando uma simulação linear em um sistema de RPG mais robusto e dinâmico. As principais evoluções foram:
+Requisitos Atendidos
 
-* [cite_start]**Geração Dinâmica de Mundo:** O roteiro fixo da Tarefa 1 foi substituído por um sistema de `Fase` e um `ConstrutorDeCenario`. [cite_start]O `ConstrutorDeCenario` agora gera uma aventura com um número configurável de fases, cada uma com ambientes e monstros sorteados aleatoriamente e com **dificuldade crescente**[cite: 46], garantindo alta rejogabilidade.
+Principais Classes e Interfaces
 
-* [cite_start]**Sistema de Progressão do Herói:** O herói agora possui um sistema de progressão completo[cite: 13]. [cite_start]Ele ganha experiência (XP) ao derrotar inimigos e pode **subir de nível** (`subirDeNivel`), o que aumenta seus atributos e o cura completamente, criando um ciclo de recompensa e fortalecimento.
+Extensibilidade
 
-* [cite_start]**Sistema de Itens (Armas):** Foi introduzido um sistema de itens através da classe abstrata `Arma` e suas implementações concretas[cite: 48, 54]. [cite_start]Os monstros agora podem carregar e **largar armas** (`largaArma`) [cite: 105][cite_start], e o herói pode **equipá-las** (`equiparArma`)  para aumentar seu poder de ataque, adicionando uma camada estratégica de customização.
+Autores
 
-* [cite_start]**Atributo `sorte`:** A sorte deixou de ser um conceito abstrato e se tornou um atributo central do herói. [cite_start]Ela agora influencia diretamente a chance de usar **habilidades especiais**  [cite_start]e de obter **recompensas valiosas** dos monstros.
+Licença
 
-## 3. Estrutura das Classes
+Visão Geral
 
-O projeto utiliza uma hierarquia de herança para modelar o universo do jogo:
+O jogo é totalmente automatizado: não requer entrada do usuário.
+O motor principal (Main) cria o herói, gera uma campanha de fases e executa combates turno a turno, exibindo cada ação no console.
 
-* [cite_start]`Personagem` (Abstrata): A base para todas as entidades vivas, definindo atributos essenciais (`nome`, `pontosDeVida`, `forca`) e a capacidade de segurar uma `arma`[cite: 63].
-* [cite_start]`Heroi` (Abstrata): Herda de `Personagem` e adiciona atributos de progressão (`nivel`, `XP`, `sorte`) [cite: 74, 75, 76, 78] [cite_start]e métodos para `subirDeNivel`  [cite_start]e `equiparArma`.
-* [cite_start]`Monstro` (Abstrata): Herda de `Personagem` e adiciona atributos de recompensa, como `xpConcedido` [cite: 100] [cite_start]e uma lista de armas que pode largar (`listaDeArmasParaLargar`)[cite: 101].
-* [cite_start]`Arma` (Abstrata): A base para todos os itens equipáveis, definindo `dano` e `minNivel`[cite: 49, 50, 51].
-* [cite_start]`Fase`: Um objeto que representa um "capítulo" da aventura, contendo um `ambiente` e uma lista de `monstros`[cite: 36, 37, 38, 39].
+Características:
 
-### Personagens e Mecânicas Únicas
+Batalhas táticas com sistema de turnos.
 
-[cite_start]Foram implementadas duas classes de herói e três de monstros, cada uma com um comportamento único em combate, um dos focos do critério de **Diferenciação e Criatividade**[cite: 143].
+Loot e evolução do herói.
 
-#### Heróis
-1.  **Capitão Cabeçudo:** Um pirata que confia na sorte. Sua chance de usar a habilidade especial "Tiro Caolho" é determinada diretamente por seu atributo `sorte`.
-2.  **Corsário Sedentário:** Um gênio tático e preguiçoso. Sua `sorte` influencia a velocidade com que ele acumula "Pontos de Estudo", o recurso para seu devastador "Golpe do Mínimo Esforço".
+Eventos aleatórios baseados no cenário (p.ex. cardumes e emboscadas).
 
-#### Monstros
-1.  **Sereia Encantadora:** Possui um ataque probabilístico, com chance de usar um canto mágico poderoso ou um golpe físico mais fraco.
-2.  **Homem-Peixe:** Utiliza um contador de raiva, tornando-se mais perigoso a cada turno e liberando um ataque especial após um número fixo de ações.
-3.  **Kraken:** Um chefe com uma mecânica de dois estágios, que primeiro tenta agarrar o herói para depois executar um ataque de afogamento devastador.
+Cenários marítimos com efeitos próprios (Praia Assombrada, Gruta Submersa, Covil do Kraken).
 
-## 4. Como Compilar e Executar
+Arquitetura do Código
+src/
+├─ Main.java                 # Ponto de entrada do jogo
+├─ interfaces/
+│   ├─ Combatente.java
+│   ├─ AcaoDeCombate.java
+│   ├─ Fase.java
+│   ├─ GeradorDeFases.java
+│   ├─ Evento.java
+│   ├─ Item.java
+│   └─ Lootavel.java
+├─ modelos/
+│   ├─ Personagem.java
+│   ├─ Heroi.java
+│   ├─ Monstro.java
+│   ├─ CapitaoCabecudo.java
+│   ├─ SereiaEncantadora.java
+│   ├─ HomemPeixe.java
+│   └─ Kraken.java
+├─ fases/
+│   ├─ TipoCenario.java
+│   ├─ FaseDeCombate.java
+│   └─ ConstrutorDeCenarioFixo.java
+├─ eventos/
+│   ├─ CardumePeixesDescontrolados.java
+│   └─ EmboscadaCarangueijos.java
+└─ acoes/
+    ├─ AtaqueFisico.java
+    ├─ CantoDivinoAcao.java
+    ├─ JatoDeAmoniaAcao.java
+    └─ ...
 
-**Pré-requisitos:**
-* Java JDK 21 instalado.
-* Estrutura de pastas `tarefa2/src` e `tarefa2/bin`.
 
-**Comandos (executados via terminal):**
+Interfaces definem contratos (combate, fases, loot, etc.).
 
-1.  Navegue até a pasta `tarefa2`:
-    ```bash
-    cd tarefa2
-    ```
-2.  Compile todos os arquivos-fonte:
-    ```bash
-    javac -d bin $(find src -name "*.java")
-    ```
-3.  Execute o programa:
-    ```bash
-    java -cp bin Main
-    ```
+Modelos implementam heróis, monstros e seus comportamentos.
 
-## 5. Autores
+Fases controlam a progressão e a geração dos cenários.
 
-* **Rafael Rodrigues Pimentel de Melo** (RA 239356)
-* **Matheus Boazão Silveira** (RA 220080)
+Eventos e ações tornam as batalhas dinâmicas e variadas.
+
+Como Executar
+Pré-requisitos
+
+Java 21 ou superior (compila e roda em versões mais novas).
+
+Nenhuma dependência externa.
+
+Passo a passo
+
+Clonar o repositório:
+
+git clone <url-do-repo>
+cd tarefa3
+
+
+Compilar:
+
+javac -d bin $(find src -name "*.java")
+
+
+Executar:
+
+java -cp bin Main
+
+
+A saída no terminal mostrará:
+
+descrição do cenário,
+
+turnos de combate,
+
+efeitos de eventos,
+
+status de herói e monstros após cada rodada.
+
+Requisitos Atendidos
+
+Este projeto cumpre 100% dos requisitos descritos no enunciado da Tarefa 3 (vide Tarefa_MC322_3.pdf):
+
+Criação das interfaces solicitadas (Combatente, AcaoDeCombate, Fase, GeradorDeFases, Evento, Item, Lootavel).
+
+Enum TipoCenario com ao menos três cenários e efeitos únicos.
+
+Implementação de Personagem, Heroi, Monstro, classes concretas, e ações de combate (mínimo de duas, excedido).
+
+Fase de combate que se conclui quando todos os monstros são derrotados.
+
+Gerador de fases que retorna uma campanha completa.
+
+Main que integra tudo, rodando combates em loop sem input do usuário.
+
+Principais Classes e Interfaces
+Componente	Responsabilidade
+Combatente	Contrato para qualquer entidade que participa de combates.
+AcaoDeCombate	Define ataques, curas e efeitos especiais.
+Fase / FaseDeCombate	Representa uma etapa do jogo, controlando combates e eventos.
+GeradorDeFases	Cria a sequência de fases da campanha.
+Evento	Acionamentos aleatórios com impacto no herói.
+Item / Lootavel	Sistema de loot: monstros podem dropar itens.
+TipoCenario	Define ambientes (Praia Assombrada, Gruta Submersa, Covil do Kraken) e seus efeitos.
+Heroi / Monstro	Personagens jogáveis e inimigos, cada um com suas ações e atributos.
+Main	Motor do jogo: executa as fases e imprime o andamento no console.
+Extensibilidade
+
+O design orientado a interfaces torna o projeto fácil de evoluir:
+
+Novos monstros: basta criar uma classe que estenda Monstro e implementar suas ações.
+
+Novas ações de combate: crie uma classe que implemente AcaoDeCombate.
+
+Novos eventos ou cenários: adicione no enum TipoCenario e implemente em Evento.
+
+IA mais complexa: ajuste Monstro.escolherAcao para estratégias mais sofisticadas (por exemplo, priorizar curas ou combos).
+
+Dificuldade dinâmica: use o parâmetro nivel de GeradorDeFases.gerar(int) para escalar força, loot e número de inimigos.
+
+Autores
+
+Rafael Rodrigues Pimentel de Melo (RA 239356)
+Matheus Boazão Silveira (RA 220080)
+
+Licença
+
+Distribuído sob a licença MIT. Consulte o arquivo LICENSE para mais detalhes.
