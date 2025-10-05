@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"app"},{"l":"combate"},{"l":"config"},{"l":"exceptions"},{"l":"fases"},{"l":"itens"},{"l":"itens.armas"},{"l":"personagens"},{"l":"personagens.heroi"},{"l":"personagens.monstros"},{"l":"util"}];updateSearchResults();
