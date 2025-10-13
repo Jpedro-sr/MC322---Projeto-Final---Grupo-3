@@ -26,4 +26,4 @@ build/
 
 # Arquivos do sistema operacional (boa prática incluir)
 .DS_Store
-Thumbs.db
+Thumbs.db*.zip
