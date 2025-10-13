@@ -1,34 +1,41 @@
 package itens.armas;
 
 import itens.Item;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
-// Classe abstrata que representa uma arma no jogo.
-// Toda arma tem nome, dano e nível mínimo necessário para ser utilizada.
-
+@XmlRootElement
+@XmlSeeAlso({Cutelo.class, MosqueteEnferrujado.class, PistolaDoKraken.class, ArmaSimples.class})
 public abstract class Arma implements Item {
+    
+    @XmlElement
     protected String nome;
+    
+    @XmlElement
     protected int dano;
+    
+    @XmlElement
     protected int minNivel;
 
-    // Cria uma arma com nome, dano e nível mínimo exigido.
+    // Construtor padrão para JAXB
+    public Arma() {}
+
     public Arma(String nome, int dano, int minNivel) {
         this.nome = nome;
         this.dano = dano;
         this.minNivel = minNivel;
     }
 
-    // Retorna o nome da arma.
     @Override
     public String getNome() {
         return nome;
     }
 
-    // Retorna o dano que a arma causa.
     public int getDano() {
         return dano;
     }
 
-    // Retorna o nível mínimo necessário para equipar a arma.
     public int getMinNivel() {
         return minNivel;
     }

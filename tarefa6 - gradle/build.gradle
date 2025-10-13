@@ -18,6 +18,10 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     implementation 'com.google.guava:guava:33.4.0-jre'
+
+    // ADICIONADO: JAXB para serialização XML (Necessário para Java 21)
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.2'
 }
 
 java {

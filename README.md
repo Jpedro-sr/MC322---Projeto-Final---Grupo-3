@@ -1,160 +1,202 @@
-Tarefa 4 – RPG de Batalha Marinha com Interação e Exceções (MC322)
+# 🎮 Terras Sombrias - RPG Narrativo
+## Tarefa 6 - MC322 (Unicamp)
 
-Projeto da disciplina MC322 – Programação Orientada a Objetos, Unicamp.
-Evolução do jogo da Tarefa 3, com foco em interação com o jogador, dificuldade configurável e tratamento de exceções.
+---
 
-🗺️ Sumário
+## 📋 Sobre o Projeto
 
-Visão Geral
+RPG narrativo desenvolvido em Java 21 com sistema completo de:
+- ✅ **Persistência** (Save/Load com JAXB)
+- ✅ **Agregação e Composição** corretamente implementados
+- ✅ **Sistema de Batalha** coordenado pela classe Batalha
+- ✅ **Sistema de Loot** refatorado com agregação
 
-Principais Novidades em Relação à Tarefa 3
+---
 
-Arquitetura do Código
+## 🏗️ Arquitetura
 
-Como Executar
+### **Composição**
+- `Batalha` → `Heroi`: O herói só existe dentro de uma batalha
+- A classe `Main` não instancia heróis diretamente
 
-Requisitos Atendidos
+### **Agregação**
+- `Monstro` → `List<Class<? extends Arma>>`: Monstros guardam **classes** de armas, não instâncias
+- As armas são instanciadas apenas quando dropadas
 
-Principais Classes e Interfaces
+---
 
-Extensibilidade
+## 🚀 Como Executar
 
-Autores
+### **Compilar**
+```bash
+./gradlew clean build
+```
 
-Licença
+### **Executar**
+```bash
+./gradlew run
+```
 
-*Visão Geral*
+### **Executar Testes**
+```bash
+./gradlew test
+```
 
-O jogo mantém o combate em turnos ambientado no mar, com o herói Capitão Cabeçudo enfrentando Sereia Encantadora, Homem-Peixe e Kraken.
-Agora, porém, o jogador participa ativamente, tomando decisões após cada fase e durante o uso de loot.
+---
 
-Características principais:
+## 💾 Sistema de Persistência
 
--> Batalhas estratégicas com loot real e armas equipáveis.
+### **Salvar Jogo**
+- Menu pós-combate → Opção "Salvar jogo"
+- Saves armazenados em: `saves/*.xml`
 
--> Sistema de dificuldade: Fácil, Normal ou Difícil, que afeta a força dos monstros e as recompensas.
+### **Carregar Jogo**
+- Menu principal → Opção "Carregar Jogo" (aparece se houver saves)
+- Selecione o save desejado
 
--> Menus interativos para coleta de itens, visualização de status e escolha de continuar ou desistir.
+### **Formato**
+- Serialização em XML usando **JAXB**
+- Toda a classe `Batalha` é salva (herói, fases, progresso)
 
-Tratamento de exceções personalizadas (ex.: loot inexistente, nível insuficiente para equipar armas).
+---
 
-*Principais Novidades em Relação à Tarefa 3*
+## 📦 Dependências
 
-Recurso	--- O que mudou
-Interação com o jogador	--- Inclusão de menus no console (menu principal e menu pós-turno) para coletar loot, ver status, continuar ou desistir.
-Sistema de dificuldade --- Novo enum Dificuldade ajusta atributos de monstros e recompensas.
-Gerenciador de entradas	--- Classe InputManager centraliza leitura de números e confirmações (sim/não) com validações.
-Exceções customizadas --- LootIndisponivelException e NivelInsuficienteException tratam situações de jogo inválidas, evitando travamentos.
-Estrutura em pacotes --- Código organizado em pacotes (app, combate, config, exceptions, fases, itens, itens.armas, personagens, personagens.heroi, personagens.monstros, util), facilitando manutenção e evolução.
-Classe Main	--- Reescrita para controlar menus, dificuldade, tratamento de exceções e loop completo da campanha.
+```gradle
+dependencies {
+    // JUnit para testes
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    
+    // JAXB para persistência
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.2'
+}
+```
 
-*Arquitetura do Código*
+---
 
-tarefa4/src/
-├─ app/
-│   └─ Main.java                  # Ponto de entrada do jogo
-├─ util/
-│   └─ InputManager.java          # Leitura segura de entradas do usuário
-├─ config/
-│   └─ Dificuldade.java           # Enum para níveis de dificuldade
-├─ exceptions/
-│   ├─ LootIndisponivelException.java
-│   └─ NivelInsuficienteException.java
-├─ combate/
-│   └─ AcaoDeCombate.java
-├─ itens/
-│   ├─ Item.java
-│   ├─ Lootavel.java
-│   └─ armas/
-│       └─ Arma.java
-├─ personagens/
-│   ├─ Combatente.java
-│   ├─ Personagem.java
-│   ├─ heroi/
-│   │   └─ CapitaoCabecudo.java
-│   └─ monstros/
-│       ├─ Monstro.java
-│       ├─ SereiaEncantadora.java
-│       ├─ HomemPeixe.java
-│       └─ Kraken.java
-└─ fases/
-    ├─ Fase.java
-    ├─ FaseDeCombate.java
-    ├─ TipoCenario.java
-    ├─ GeradorDeFases.java
-    └─ ConstrutorDeCenarioFixo.java
+## 🎯 Funcionalidades Implementadas
 
-*Como Executar*
+### **Tarefa 6**
+- [x] Classe `Batalha` coordenando o jogo
+- [x] Classe `GerenciadorDePersistencia` com save/load
+- [x] Sistema de loot com agregação
+- [x] Composição: herói dentro de Batalha
+- [x] Anotações JAXB em todas as classes relevantes
 
-Pré-requisitos
+### **Tarefas Anteriores**
+- [x] Sistema de combate com interfaces
+- [x] Sistema de dificuldade
+- [x] Menu interativo completo
+- [x] Sistema de eventos (Tarefa 3)
+- [x] Exceções customizadas
+- [x] Testes unitários
 
-Java 21 ou superior (compila em versões mais novas).
+---
 
-Nenhuma dependência externa.
+## 📊 Estrutura de Pacotes
 
-Passo a passo
+```
+src/main/java/
+├── app/
+│   ├── Main.java
+│   ├── Batalha.java
+│   └── GerenciadorDePersistencia.java
+├── combate/
+│   ├── Combatente.java
+│   ├── AcaoDeCombate.java
+│   └── [classes de ação]
+├── config/
+│   └── Dificuldade.java
+├── exceptions/
+│   ├── NivelInsuficienteException.java
+│   └── LootIndisponivelException.java
+├── fases/
+│   ├── Fase.java
+│   ├── FaseDeCombate.java
+│   ├── GeradorDeFases.java
+│   ├── TipoCenario.java
+│   └── [eventos]
+├── itens/
+│   ├── Item.java
+│   └── armas/
+│       ├── Arma.java
+│       └── [armas concretas]
+├── personagens/
+│   ├── Personagem.java
+│   ├── Lootavel.java
+│   ├── heroi/
+│   │   ├── Heroi.java
+│   │   ├── CapitaoCabecudo.java
+│   │   └── CorsarioSedentario.java
+│   └── monstros/
+│       ├── Monstro.java
+│       ├── Kraken.java
+│       ├── HomemPeixe.java
+│       └── SereiaEncantadora.java
+└── util/
+    └── InputManager.java
+```
 
-No diretório raiz do projeto (onde está a pasta tarefa4):
+---
 
-# Compilar
-javac -d bin $(find tarefa4/src -name "*.java")
+## 👥 Autores
 
-# Executar
-java -cp bin app.Main
+- **Disciplina**: MC322 - Programação Orientada a Objetos
+- **Instituição**: Unicamp
+- **Semestre**: 2025
 
+---
 
-(Windows PowerShell)
+## 📝 Notas de Implementação
 
-Get-ChildItem -Recurse -Filter *.java "tarefa4\src" | % { $_.FullName } | javac -d bin @-
-java -cp bin app.Main
+### **Agregação no Sistema de Loot**
+```java
+// ANTES (errado - Composição):
+this.listaDeArmasParaLargar.add(new MosqueteEnferrujado());
 
+// DEPOIS (correto - Agregação):
+this.classesDeArmasParaLargar.add(MosqueteEnferrujado.class);
+```
 
-Durante a execução, o console exibirá:
+### **Composição na Classe Batalha**
+```java
+// Main NÃO cria o herói diretamente
+// A Batalha é responsável pela existência do herói
+public class Batalha {
+    private Heroi heroi; // Composição
+    // ...
+}
+```
 
--> Menu principal (Novo jogo, Ver informações, Sair).
+### **JAXB - Pontos Importantes**
+- Todas as classes serializáveis precisam de construtor padrão
+- Usar `@XmlTransient` para campos que não devem ser salvos
+- Usar `@XmlSeeAlso` para hierarquias de classes
+- Ações de combate são recriadas após deserialização
 
--> Escolha de dificuldade.
+---
 
--> Combates em turnos, drop de loot e menus pós-turno.
+## 🐛 Troubleshooting
 
-*Requisitos Atendidos*
+### **Erro: "No suitable constructor found"**
+- Solução: Adicionar construtor padrão sem parâmetros
 
-O projeto implementa todos os itens solicitados no enunciado da Tarefa 4 (Tarefa_MC322_4.pdf):
+### **Erro: "ClassCastException"**
+- Solução: Adicionar `@XmlSeeAlso` nas classes base
 
--> Interação com o jogador via menus.
+### **Saves não aparecem no menu**
+- Verificar se a pasta `saves/` foi criada
+- Verificar permissões de escrita
 
--> Sistema de dificuldade parametrizável.
+---
 
--> Gerenciador de entradas robusto.
+## 📚 Referências
 
--> Exceções customizadas e tratamento em todos os pontos críticos.
+- [JAXB Documentation](https://jakarta.ee/specifications/xml-binding/)
+- [Gradle User Guide](https://docs.gradle.org/)
+- [JUnit 5 Documentation](https://junit.org/junit5/docs/current/user-guide/)
 
--> Refatoração em pacotes, melhorando organização e modularidade.
+---
 
-*Principais Classes e Interfaces*
-Componente ---	Responsabilidade
-InputManager --- Lê e valida números, confirmações e strings.
-Dificuldade	--- Define níveis e escalas de atributos do jogo.
-LootIndisponivelException / NivelInsuficienteException ---	Exceções para situações específicas do jogo.
-FaseDeCombate --- Controla cada batalha e gerencia loot.
-ConstrutorDeCenarioFixo ---	Gera as fases e inimigos da campanha.
-Heroi / Monstro	--- Personagens jogáveis e inimigos com ações de combate.
-Main --- Integra tudo, exibe menus e controla o fluxo completo do jogo.
-
-*Extensibilidade*
-
-O design orientado a objetos permite:
-
--> Adicionar novos monstros, heróis ou armas.
-
--> Criar novos cenários e eventos.
-
--> Ajustar regras de loot ou adicionar novas exceções para lógicas de jogo mais complexas.
-
--> Implementar IA em monstros.
-
-*Autores*
-
-Rafael Rodrigues Pimentel de Melo (RA 239356)
-
-Matheus Boazão Silveira (RA 220080)
+**Última atualização**: Tarefa 6 - Sistema de Persistência e Agregação

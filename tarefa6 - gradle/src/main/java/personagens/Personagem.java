@@ -3,12 +3,30 @@ package personagens;
 import combate.AcaoDeCombate;
 import combate.Combatente;
 import itens.armas.Arma;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+import personagens.heroi.Heroi;
+import personagens.monstros.Monstro;
 
+@XmlSeeAlso({Heroi.class, Monstro.class})
 public abstract class Personagem implements Combatente {
+    
+    @XmlElement
     protected String nome;
+    
+    @XmlElement
     protected int pontosDeVida;
+    
+    @XmlElement
     protected int forca;
+    
+    @XmlElement
     protected Arma arma;
+
+    // Construtor padrão para JAXB
+    public Personagem() {
+        this.arma = null;
+    }
 
     public Personagem(String nome, int pontosDeVida, int forca) {
         this.nome = nome;
@@ -17,7 +35,6 @@ public abstract class Personagem implements Combatente {
         this.arma = null;
     }
 
-    // --- Implementação dos Métodos de Combatente ---
     @Override
     public String getNome() {
         return this.nome;
@@ -28,12 +45,6 @@ public abstract class Personagem implements Combatente {
         return this.pontosDeVida > 0;
     }
 
-    /**
-     * Aplica dano ao personagem, reduzindo seus pontos de vida.
-     * Se a vida cair abaixo de zero, ela é ajustada para zero.
-     * 
-     * @param dano quantidade de dano a ser aplicada
-     */
     @Override
     public void receberDano(int dano) {
         int vidaAntes = this.pontosDeVida;
@@ -44,11 +55,6 @@ public abstract class Personagem implements Combatente {
         System.out.println("\t>> Dano sofrido! HP de " + this.nome + ": " + vidaAntes + " -> " + this.pontosDeVida);
     }
 
-    /**
-     * Restaura pontos de vida do personagem através de cura.
-     * 
-     * @param cura quantidade de vida a ser restaurada
-     */
     @Override
     public void receberCura(int cura) {
         int vidaAntes = this.pontosDeVida;
@@ -56,12 +62,9 @@ public abstract class Personagem implements Combatente {
         System.out.println("\t>> Cura recebida! HP de " + this.nome + ": " + vidaAntes + " -> " + this.pontosDeVida);
     }
 
-    // O antigo método 'atacar' foi substituído por este novo contrato.
-    // Cada personagem concreto definirá como ele escolhe sua ação.
     @Override
     public abstract AcaoDeCombate escolherAcao(Combatente alvo);
 
-    // MÉTODO ADICIONADO: Exibição de status básico para qualquer personagem
     public void exibirStatus() {
         System.out.println("┌─────────────────────────────────┐");
         System.out.println("│ " + String.format("%-31s", nome) + " │");
@@ -77,28 +80,10 @@ public abstract class Personagem implements Combatente {
         System.out.println("└─────────────────────────────────┘");
     }
 
-    // --- Getters e Setters ---
-    public int getPontosDeVida() {
-        return pontosDeVida;
-    }
-
-    public void setPontosDeVida(int pontosDeVida) {
-        this.pontosDeVida = pontosDeVida;
-    }
-
-    public int getForca() {
-        return forca;
-    }
-
-    public void setForca(int forca) {
-        this.forca = forca;
-    }
-
-    public Arma getArma() {
-        return arma;
-    }
-
-    public void setArma(Arma arma) {
-        this.arma = arma;
-    }
+    public int getPontosDeVida() { return pontosDeVida; }
+    public void setPontosDeVida(int pontosDeVida) { this.pontosDeVida = pontosDeVida; }
+    public int getForca() { return forca; }
+    public void setForca(int forca) { this.forca = forca; }
+    public Arma getArma() { return arma; }
+    public void setArma(Arma arma) { this.arma = arma; }
 }

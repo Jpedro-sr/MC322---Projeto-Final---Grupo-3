@@ -1,10 +1,11 @@
 package personagens.monstros;
+
 import combate.AcaoDeCombate;
 import combate.Combatente;
 import itens.armas.MosqueteEnferrujado;
 import personagens.AtaqueTridenteAcao;
-public class HomemPeixe extends Monstro {
 
+public class HomemPeixe extends Monstro {
     private int danoDoJatoDeAmonia;
     private int contadorDeRaiva;
     private static final int ATAQUES_PARA_ENFURECER = 3;
@@ -13,13 +14,14 @@ public class HomemPeixe extends Monstro {
         super("Homem-Peixe", 50, 5, 40);
         this.danoDoJatoDeAmonia = 25;
         this.contadorDeRaiva = 0;
-
-        this.arma = new MosqueteEnferrujado("Mosquete Enferrujado", 14, 2);
-
-        // OPCIONAL: Mantém na lista para casos especiais
-        this.listaDeArmasParaLargar.add(new MosqueteEnferrujado("Mosquete Enferrujado", 14, 2));
-
-        // Define as ações
+        
+        // Equipa arma diretamente
+        this.arma = new MosqueteEnferrujado();
+        
+        // REFATORADO: Guarda CLASSES, não instâncias (AGREGAÇÃO)
+        this.classesDeArmasParaLargar.add(MosqueteEnferrujado.class);
+        
+        // Ações
         this.acoes.add(new AtaqueTridenteAcao(this));
         this.acoes.add(new JatoDeAmoniaAcao(this));
     }
@@ -33,7 +35,6 @@ public class HomemPeixe extends Monstro {
         }
     }
 
-    // Métodos específicos do HomemPeixe
     public int getDanoDoJatoDeAmonia() { return this.danoDoJatoDeAmonia; }
     public int getContadorDeRaiva() { return this.contadorDeRaiva; }
     public int getAtaquesParaEnfurecer() { return ATAQUES_PARA_ENFURECER; }
