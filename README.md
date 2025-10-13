@@ -140,11 +140,12 @@ src/main/java/
 
 ---
 
-## 👥 Autores
+## 👥 Autoria
 
 - **Disciplina**: MC322 - Programação Orientada a Objetos
 - **Instituição**: Unicamp
 - **Semestre**: 2025
+- **Autores**: Rafael Rodrigues Pimentel de Melo e Matheus Boazão Silveira
 
 ---
 
