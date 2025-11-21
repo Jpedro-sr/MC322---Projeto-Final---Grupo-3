@@ -3,7 +3,7 @@ plugins {
     id 'application'
 }
 
-group = 'main.java.ifome'
+group = 'ifome'
 version = '1.0-SNAPSHOT'
 
 repositories {
@@ -56,6 +56,6 @@ tasks.register('runApp', JavaExec) {
     group = 'application'
     description = 'Executa a aplicação iFome'
     classpath = sourceSets.main.runtimeClasspath
-    mainClass = 'main.java.ifome.Aplicacao'
+    mainClass = 'ifome.Aplicacao'
     standardInput = System.in
 }

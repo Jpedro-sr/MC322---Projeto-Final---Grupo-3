@@ -18,7 +18,6 @@ public class Carrinho implements Calculavel {
     private Restaurante restaurante;
     private Cupom cupomAplicado;
 
-    // Construtor com cliente e restaurante
     public Carrinho(Cliente cliente, Restaurante restaurante) {
         this.itens = new ArrayList<>();
         this.cliente = cliente;
@@ -26,7 +25,6 @@ public class Carrinho implements Calculavel {
         this.cupomAplicado = null;
     }
 
-    // Construtor vazio
     public Carrinho() {
         this(null, null);
     }
@@ -37,24 +35,20 @@ public class Carrinho implements Calculavel {
      */
     public void adicionarItem(Produto p, int quantidade, String obs) {
         if (p == null || quantidade <= 0) {
-            System.out.println("❌ Produto inválido ou quantidade inválida.");
             return;
         }
 
-        // Verificar se produto já está no carrinho
         for (ItemPedido item : itens) {
             if (item.getProduto().equals(p)) {
-                System.out.println("ℹ️  Produto " + p.getNome() + " já existe. Incrementando quantidade.");
+                item.setQuantidade(item.getQuantidade() + quantidade);
                 return;
             }
         }
 
         ItemPedido novoItem = new ItemPedido(p, quantidade, obs);
         this.itens.add(novoItem);
-        System.out.println("✅ Item adicionado: " + p.getNome() + " (x" + quantidade + ")");
     }
 
-    // Versão simplificada sem observações
     public void adicionarItem(Produto p, int quantidade) {
         adicionarItem(p, quantidade, "");
     }
@@ -64,9 +58,7 @@ public class Carrinho implements Calculavel {
      */
     public void removerItem(ItemPedido item) {
         if (itens.remove(item)) {
-            System.out.println("✅ Item removido: " + item.getProduto().getNome());
-        } else {
-            System.out.println("❌ Item não encontrado no carrinho.");
+            // Item removido
         }
     }
 
@@ -80,20 +72,14 @@ public class Carrinho implements Calculavel {
                 return;
             }
         }
-        System.out.println("❌ Produto não encontrado no carrinho.");
     }
 
     /**
      * Limpa todos os itens do carrinho.
      */
     public void limparCarrinho() {
-        if (itens.isEmpty()) {
-            System.out.println("ℹ️  Carrinho já estava vazio.");
-            return;
-        }
         itens.clear();
         cupomAplicado = null;
-        System.out.println("✅ Carrinho limpo.");
     }
 
     /**
@@ -121,49 +107,40 @@ public class Carrinho implements Calculavel {
 
     /**
      * Gera um Pedido a partir do carrinho.
-     * Lança exceções se houver problemas.
      */
     public Pedido gerarPedido() throws RestauranteFechadoException, ValorMinimoException, ProdutoIndisponivelException {
         
-        // Validações
         if (itens.isEmpty()) {
-            throw new ValorMinimoException(
-                "❌ Carrinho vazio. Adicione itens antes de fazer pedido."
-            );
+            throw new ValorMinimoException("Carrinho vazio.");
         }
 
         if (restaurante == null) {
-            throw new RestauranteFechadoException(
-                "❌ Nenhum restaurante selecionado."
-            );
+            throw new RestauranteFechadoException("Nenhum restaurante selecionado.");
         }
 
         if (!restaurante.estaAberto()) {
             throw new RestauranteFechadoException(
-                "❌ Restaurante " + restaurante.getNomeRestaurante() + " está fechado."
+                "Restaurante " + restaurante.getNomeRestaurante() + " está fechado."
             );
         }
 
         double subtotal = calcularPrecoTotal();
-        double valorMinimo = 15.0; // Valor mínimo padrão
+        double valorMinimo = 15.0;
 
         if (subtotal < valorMinimo) {
             throw new ValorMinimoException(
-                "❌ Valor mínimo não atingido. Mínimo: R$" + valorMinimo + 
-                " | Seu carrinho: R$" + String.format("%.2f", subtotal)
+                "Valor mínimo não atingido. Mínimo: R$" + valorMinimo
             );
         }
 
-        // Verificar disponibilidade dos produtos
         for (ItemPedido item : itens) {
             if (!item.getProduto().isDisponivel()) {
                 throw new ProdutoIndisponivelException(
-                    "❌ Produto " + item.getProduto().getNome() + " não está disponível."
+                    "Produto " + item.getProduto().getNome() + " não está disponível."
                 );
             }
         }
 
-        // Criar pedido
         Pedido pedido = new Pedido();
         for (ItemPedido item : itens) {
             pedido.adicionarItem(item);
@@ -177,14 +154,6 @@ public class Carrinho implements Calculavel {
         pedido.setRestaurante(restaurante);
         pedido.atualizarStatus("Pendente");
 
-        System.out.println("\n✅ Pedido gerado com sucesso!");
-        System.out.println("   Itens: " + itens.size());
-        System.out.println("   Subtotal: R$" + String.format("%.2f", subtotal));
-        if (cupomAplicado != null) {
-            System.out.println("   Desconto: " + cupomAplicado.getDescricaoDesconto());
-        }
-        System.out.println("   Total: R$" + String.format("%.2f", pedido.calcularPrecoTotal()));
-
         return pedido;
     }
 
@@ -192,17 +161,10 @@ public class Carrinho implements Calculavel {
      * Aplica um cupom ao carrinho.
      */
     public void aplicarCupom(Cupom cupom) {
-        if (cupom == null) {
-            System.out.println("❌ Cupom inválido.");
-            return;
-        }
-        if (!cupom.estaValido()) {
-            System.out.println("❌ Cupom não está válido.");
+        if (cupom == null || !cupom.estaValido()) {
             return;
         }
         this.cupomAplicado = cupom;
-        System.out.println("✅ Cupom " + cupom.getCodigo() + " aplicado!");
-        System.out.println("   Novo total: R$" + String.format("%.2f", calcularTotalComDesconto()));
     }
 
     /**
@@ -210,10 +172,8 @@ public class Carrinho implements Calculavel {
      */
     public void removerCupom() {
         this.cupomAplicado = null;
-        System.out.println("✅ Cupom removido.");
     }
 
-    // Getters
     public List<ItemPedido> getItens() {
         return new ArrayList<>(itens);
     }
@@ -234,7 +194,6 @@ public class Carrinho implements Calculavel {
         return restaurante;
     }
 
-    // Setters
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
@@ -246,7 +205,7 @@ public class Carrinho implements Calculavel {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\n🛒 === CARRINHO ===\n");
+        sb.append("\n=== CARRINHO ===\n");
         if (itens.isEmpty()) {
             sb.append("(vazio)\n");
         } else {
@@ -265,7 +224,7 @@ public class Carrinho implements Calculavel {
             sb.append("Desconto: ").append(cupomAplicado.getDescricaoDesconto()).append("\n");
             sb.append("Total: R$").append(String.format("%.2f", calcularTotalComDesconto())).append("\n");
         }
-        sb.append("==================\n");
+        sb.append("==============\n");
         return sb.toString();
     }
 }
