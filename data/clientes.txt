@@ -1,0 +1,2 @@
+cliente@email.com;123;João Silva;19999999999
+jp@gmail.com;jp123;jp;123223
