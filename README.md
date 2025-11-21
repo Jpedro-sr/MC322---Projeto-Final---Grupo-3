@@ -504,6 +504,8 @@ Este projeto foi desenvolvido como trabalho final da disciplina **MC322 - Progra
 
 - **Rafael Rodrigues Pimentel de Melo**
 - **Matheus Boazão Silveira**
+- **João Pedro dos Santos Rodrigues**
+- **Pedro Romasanta Rosa**
 
 ---
 
