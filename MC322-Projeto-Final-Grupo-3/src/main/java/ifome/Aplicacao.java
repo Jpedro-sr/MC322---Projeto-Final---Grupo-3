@@ -126,7 +126,9 @@ public class Aplicacao {
         InputManager.linha();
 
         String email = InputManager.lerEmail("Email: ");
+        if (email == null) return;
         String senha = InputManager.lerTexto("Senha: ");
+        if (senhaç.isEmpty()) return;
 
         Cliente cliente = repositorio.buscarClientePorLogin(email, senha);
         
@@ -626,7 +628,12 @@ public class Aplicacao {
         String nome = InputManager.lerTextoObrigatorio("Nome: ");
         String desc = InputManager.lerTexto("Descricao: ");
         
-        String precoStr = InputManager.lerTexto("Preco: R$ ");
+        String desc = InputManager.lerTexto("Descricao: ");
+        // Nenhuma checagem necessária, pois "" é aceitável.
+
+        // CORREÇÃO: Usar lerDouble e tratar o cancelamento (null)
+        Double precoWrapper = InputManager.lerDouble("Preco: R$ ");
+        if (precoWrapper == null) return;
         double preco = Double.parseDouble(precoStr.replace(",", "."));
 
         Produto produto;
