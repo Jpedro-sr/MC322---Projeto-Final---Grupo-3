@@ -8,13 +8,14 @@ import java.text.SimpleDateFormat;
 /**
  * Representa um pedido finalizado.
  * Implementa Rastreavel (status), Calculavel (preço), Avaliavel (notas).
+ * VERSÃO ATUALIZADA - Suporte completo à persistência
  */
 public class Pedido implements Rastreavel, Calculavel, Avaliavel {
 
     private static int contador = 1000; // Para gerar IDs únicos
     private int numeroPedido;
     private Date dataHora;
-    private String status; // Pendente → Confirmado → Preparando → Pronto → Em Entrega → Entregue
+    private String status;
     private double valorTotal;
     private double desconto;
 
@@ -40,6 +41,37 @@ public class Pedido implements Rastreavel, Calculavel, Avaliavel {
         this.restaurante = null;
     }
 
+    /**
+     * NOVO: Método para inicializar o contador com base no maior ID existente.
+     * Deve ser chamado ao carregar pedidos do arquivo.
+     */
+    public static void inicializarContador(int maiorIdExistente) {
+        if (maiorIdExistente >= contador) {
+            contador = maiorIdExistente + 1;
+            System.out.println(">>> Contador de pedidos inicializado em: " + contador);
+        }
+    }
+
+    /**
+     * NOVO: Construtor para restaurar pedido do arquivo
+     */
+    public Pedido(int numeroPedido, Date dataHora, String status, double valorTotal) {
+        this.numeroPedido = numeroPedido;
+        this.dataHora = dataHora;
+        this.status = status;
+        this.valorTotal = valorTotal;
+        this.itens = new ArrayList<>();
+        this.avaliacoes = new ArrayList<>();
+        this.desconto = 0;
+        this.formaPagamento = null;
+        this.cupomAplicado = null;
+        
+        // Atualizar contador se necessário
+        if (numeroPedido >= contador) {
+            contador = numeroPedido + 1;
+        }
+    }
+
     // ============ MÉTODOS DA INTERFACE RASTREAVEL ============
 
     @Override
@@ -47,9 +79,6 @@ public class Pedido implements Rastreavel, Calculavel, Avaliavel {
         return this.status;
     }
 
-    /**
-     * Atualiza o status do pedido com validação de transição.
-     */
     public void atualizarStatus(String novoStatus) {
         String[] statusValidos = {
             "Pendente", "Confirmado", "Preparando", "Pronto", "Em Entrega", "Entregue", "Cancelado"
@@ -68,7 +97,6 @@ public class Pedido implements Rastreavel, Calculavel, Avaliavel {
             return;
         }
 
-        // Validar transição de status
         if (!ehTransicaoValida(this.status, novoStatus)) {
             System.out.println("❌ Transição inválida de " + this.status + " para " + novoStatus);
             return;
@@ -79,11 +107,7 @@ public class Pedido implements Rastreavel, Calculavel, Avaliavel {
         System.out.println("✅ Pedido #" + numeroPedido + ": " + statusAnterior + " → " + novoStatus);
     }
 
-    /**
-     * Verifica se a transição de status é válida.
-     */
     private boolean ehTransicaoValida(String statusAtual, String novoStatus) {
-        // Mapa de transições válidas
         if (statusAtual.equals("Pendente")) {
             return novoStatus.equals("Confirmado") || novoStatus.equals("Cancelado");
         } else if (statusAtual.equals("Confirmado")) {
@@ -95,16 +119,13 @@ public class Pedido implements Rastreavel, Calculavel, Avaliavel {
         } else if (statusAtual.equals("Em Entrega")) {
             return novoStatus.equals("Entregue") || novoStatus.equals("Cancelado");
         } else if (statusAtual.equals("Entregue")) {
-            return false; // Não pode mudar de "Entregue"
+            return false;
         }
         return false;
     }
 
     // ============ MÉTODOS DA INTERFACE CALCULAVEL ============
 
-    /**
-     * Calcula o preço total do pedido com cupom aplicado.
-     */
     @Override
     public double calcularPrecoTotal() {
         this.valorTotal = 0;
@@ -124,18 +145,12 @@ public class Pedido implements Rastreavel, Calculavel, Avaliavel {
 
     // ============ MÉTODOS DA INTERFACE AVALIAVEL ============
 
-    /**
-     * Avalia o pedido com uma nota (1-5).
-     */
     @Override
     public boolean avaliar(int nota) {
         Avaliacao avaliacao = new Avaliacao(nota);
         return avaliacoes.add(avaliacao);
     }
 
-    /**
-     * Avalia o pedido com nota e comentário.
-     */
     public boolean avaliar(int nota, String comentario) {
         Avaliacao avaliacao = new Avaliacao(nota, comentario);
         boolean adicionado = avaliacoes.add(avaliacao);
@@ -147,21 +162,14 @@ public class Pedido implements Rastreavel, Calculavel, Avaliavel {
 
     // ============ MÉTODOS DE GERENCIAMENTO DE ITENS ============
 
-    /**
-     * Adiciona um item ao pedido.
-     */
     public void adicionarItem(ItemPedido item) {
         if (item == null) {
             System.out.println("❌ Item inválido.");
             return;
         }
         itens.add(item);
-        System.out.println("✅ Item adicionado ao pedido: " + item.getProduto().getNome());
     }
 
-    /**
-     * Remove um item do pedido.
-     */
     public void removerItem(ItemPedido item) {
         if (itens.remove(item)) {
             System.out.println("✅ Item removido do pedido.");
@@ -172,9 +180,6 @@ public class Pedido implements Rastreavel, Calculavel, Avaliavel {
 
     // ============ MÉTODOS DE GERAÇÃO DE RESUMO ============
 
-    /**
-     * Gera um resumo formatado do pedido para exibição.
-     */
     public String gerarResumo() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         StringBuilder sb = new StringBuilder();
@@ -183,18 +188,15 @@ public class Pedido implements Rastreavel, Calculavel, Avaliavel {
         sb.append("║          RESUMO DO PEDIDO              ║\n");
         sb.append("╚════════════════════════════════════════╝\n\n");
 
-        // Cabeçalho
         sb.append("📋 NÚMERO: #").append(numeroPedido).append("\n");
         sb.append("📅 DATA: ").append(sdf.format(dataHora)).append("\n");
         sb.append("📍 STATUS: ").append(status).append("\n\n");
 
-        // Cliente
         if (cliente != null) {
             sb.append("👤 CLIENTE: ").append(cliente.getNome()).append("\n");
             sb.append("   📞 ").append(cliente.getTelefone()).append("\n");
         }
 
-        // Restaurante
         if (restaurante != null) {
             sb.append("🏪 RESTAURANTE: ").append(restaurante.getNomeRestaurante()).append("\n");
         }
@@ -237,12 +239,10 @@ public class Pedido implements Rastreavel, Calculavel, Avaliavel {
         sb.append("\n");
         sb.append(String.format("💰 TOTAL: R$%.2f\n\n", valorTotal > 0 ? valorTotal : subtotal));
 
-        // Pagamento
         if (formaPagamento != null) {
             sb.append("💳 PAGAMENTO: ").append(formaPagamento.toString()).append("\n");
         }
 
-        // Avaliações
         if (!avaliacoes.isEmpty()) {
             sb.append("\n⭐ AVALIAÇÃO: ");
             double media = calcularMediaAvaliacoes();
@@ -263,9 +263,6 @@ public class Pedido implements Rastreavel, Calculavel, Avaliavel {
         return this.formaPagamento;
     }
 
-    /**
-     * Processa o pagamento do pedido.
-     */
     public boolean processarPagamento() 
             throws ifome.exceptions.PagamentoRecusadoException {
         if (formaPagamento == null) {
@@ -315,6 +312,10 @@ public class Pedido implements Rastreavel, Calculavel, Avaliavel {
     public double getValorTotal() {
         return valorTotal;
     }
+    
+    public void setValorTotal(double valorTotal) {
+        this.valorTotal = valorTotal;
+    }
 
     public double getDesconto() {
         return desconto;
@@ -347,10 +348,11 @@ public class Pedido implements Rastreavel, Calculavel, Avaliavel {
     public void setItens(List<ItemPedido> itens) {
         this.itens = itens != null ? itens : new ArrayList<>();
     }
+    
+    public void setDataHora(Date dataHora) {
+        this.dataHora = dataHora;
+    }
 
-    /**
-     * Calcula a média de avaliações.
-     */
     public double calcularMediaAvaliacoes() {
         if (avaliacoes.isEmpty()) return 0;
         int soma = 0;

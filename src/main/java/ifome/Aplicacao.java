@@ -6,7 +6,7 @@ import ifome.exceptions.*;
 
 /**
  * Aplicação principal do iFome
- * VERSÃO CORRIGIDA - Não salva dados se operação for cancelada
+ * VERSÃO COMPLETA - Persistência, exceções específicas e funcionalidades implementadas
  */
 public class Aplicacao {
 
@@ -28,7 +28,7 @@ public class Aplicacao {
             menuPrincipal();
 
         } catch (Exception e) {
-            System.err.println("Erro na aplicacao: " + e.getMessage());
+            System.err.println("Erro crítico na aplicação: " + e.getMessage());
             e.printStackTrace();
         } finally {
             repositorio.salvarDados();
@@ -89,7 +89,7 @@ public class Aplicacao {
             case 0:
                 return false;
             default:
-                System.out.println("Opcao invalida!");
+                System.out.println("Opção inválida!");
                 InputManager.pausar("");
         }
 
@@ -139,7 +139,7 @@ public class Aplicacao {
             System.out.println("\nAcesso concedido!");
             InputManager.pausar("");
         } else {
-            System.out.println("\nCredenciais invalidas!");
+            System.out.println("\nCredenciais inválidas!");
             InputManager.pausar("");
         }
     }
@@ -151,24 +151,23 @@ public class Aplicacao {
         System.out.println("==================================================");
 
         String nome = InputManager.lerTextoObrigatorio("Nome completo");
-        if (nome == null) return; // Cancelado - NÃO salvar
+        if (nome == null) return;
         
         String email = InputManager.lerEmail("Email");
-        if (email == null) return; // Cancelado - NÃO salvar
+        if (email == null) return;
         
         if (repositorio.emailJaExiste(email)) {
-            System.out.println("\nEmail ja existe!");
+            System.out.println("\nEmail já existe!");
             InputManager.pausar("");
             return;
         }
 
         String senha = InputManager.lerTexto("Senha");
-        if (senha == null || senha.isEmpty()) return; // Cancelado - NÃO salvar
+        if (senha == null || senha.isEmpty()) return;
         
         String telefone = InputManager.lerTelefone("Telefone");
-        if (telefone == null) return; // Cancelado - NÃO salvar
+        if (telefone == null) return;
 
-        // Só chega aqui se tudo foi preenchido
         Cliente novoCliente = new Cliente(email, senha, nome, telefone);
         repositorio.adicionarCliente(novoCliente);
         sessao.setClienteLogado(novoCliente);
@@ -184,25 +183,25 @@ public class Aplicacao {
         System.out.println("==================================================");
 
         String nome = InputManager.lerTextoObrigatorio("Nome do Restaurante");
-        if (nome == null) return; // Cancelado
+        if (nome == null) return;
         
         String email = InputManager.lerEmail("Email");
-        if (email == null) return; // Cancelado
+        if (email == null) return;
         
         if (repositorio.emailJaExiste(email)) {
-            System.out.println("\nEmail ja existe!");
+            System.out.println("\nEmail já existe!");
             InputManager.pausar("");
             return;
         }
 
         String senha = InputManager.lerTexto("Senha");
-        if (senha == null || senha.isEmpty()) return; // Cancelado
+        if (senha == null || senha.isEmpty()) return;
         
         String cnpj = InputManager.lerTexto("CNPJ");
-        if (cnpj == null) return; // Cancelado
+        if (cnpj == null) return;
 
         Restaurante novoRestaurante = new Restaurante(email, senha, nome, cnpj);
-        novoRestaurante.abrirRestaurante(); // Abre automaticamente
+        novoRestaurante.abrirRestaurante();
         repositorio.adicionarRestaurante(novoRestaurante);
         sessao.setRestauranteLogado(novoRestaurante);
 
@@ -217,14 +216,14 @@ public class Aplicacao {
         System.out.println("==================================================");
         System.out.println("       MENU - CLIENTE");
         System.out.println("==================================================");
-        System.out.println("Usuario: " + cliente.getNome());
+        System.out.println("Usuário: " + cliente.getNome());
         System.out.println("==================================================");
         System.out.println("1. Escolher Restaurante");
         System.out.println("2. Ver Carrinho");
         System.out.println("3. Meus Pedidos");
         System.out.println("4. Avaliar Pedido");
-        System.out.println("5. Meus Enderecos");
-        System.out.println("6. Ver Cupons Disponiveis");
+        System.out.println("5. Meus Endereços");
+        System.out.println("6. Ver Cupons Disponíveis");
         System.out.println("7. Logout");
         System.out.println("==================================================");
 
@@ -253,11 +252,11 @@ public class Aplicacao {
                 break;
             case 7:
                 sessao.logout();
-                System.out.println("\nAte logo!");
+                System.out.println("\nAté logo!");
                 InputManager.pausar("");
                 break;
             default:
-                System.out.println("Opcao invalida!");
+                System.out.println("Opção inválida!");
                 InputManager.pausar("");
         }
     }
@@ -273,13 +272,13 @@ public class Aplicacao {
         String status = restaurante.estaAberto() ? "[ABERTO]" : "[FECHADO]";
         System.out.println("Status: " + status);
         System.out.println("==================================================");
-        System.out.println("1. Ver Cardapio");
+        System.out.println("1. Ver Cardápio");
         System.out.println("2. Adicionar Produto");
         System.out.println("3. Remover Produto");
-        System.out.println("4. Ver Pedidos");
+        System.out.println("4. Gerenciar Pedidos");
         System.out.println("5. Atualizar Status Pedido");
         System.out.println("6. Abrir/Fechar");
-        System.out.println("7. Ver Avaliacoes");
+        System.out.println("7. Ver Avaliações");
         System.out.println("8. Logout");
         System.out.println("==================================================");
 
@@ -298,7 +297,7 @@ public class Aplicacao {
                 removerProdutoCardapio(restaurante);
                 break;
             case 4:
-                verPedidosPendentes(restaurante);
+                gerenciarPedidos(restaurante);
                 break;
             case 5:
                 atualizarStatusPedido(restaurante);
@@ -318,11 +317,11 @@ public class Aplicacao {
                 break;
             case 8:
                 sessao.logout();
-                System.out.println("\nAte logo!");
+                System.out.println("\nAté logo!");
                 InputManager.pausar("");
                 break;
             default:
-                System.out.println("Opcao invalida!");
+                System.out.println("Opção inválida!");
                 InputManager.pausar("");
         }
     }
@@ -340,7 +339,7 @@ public class Aplicacao {
 
         Restaurante restaurante = repositorio.obterPorIndice(opcao - 1);
         if (restaurante == null) {
-            System.out.println("\nRestaurante nao encontrado!");
+            System.out.println("\nRestaurante não encontrado!");
             InputManager.pausar("");
             return;
         }
@@ -361,7 +360,7 @@ public class Aplicacao {
         while (continua && sessao.estaLogado()) {
             InputManager.limparTela();
             System.out.println("==================================================");
-            System.out.println("       CARDAPIO - " + restaurante.getNomeRestaurante());
+            System.out.println("       CARDÁPIO - " + restaurante.getNomeRestaurante());
             System.out.println("==================================================");
 
             java.util.List<Produto> produtos = restaurante.getCardapio();
@@ -396,7 +395,7 @@ public class Aplicacao {
 
     private static void adicionarAoCarrinho(Produto produto, Restaurante restaurante) {
         if (!produto.isDisponivel()) {
-            System.out.println("\nProduto indisponivel!");
+            System.out.println("\nProduto indisponível!");
             InputManager.pausar("");
             return;
         }
@@ -409,7 +408,7 @@ public class Aplicacao {
         carrinho.setRestaurante(restaurante);
         carrinho.setCliente(cliente);
         
-        String obs = InputManager.lerTexto("Observacoes (Enter para pular)");
+        String obs = InputManager.lerTexto("Observações (Enter para pular)");
         carrinho.adicionarItem(produto, qtd, obs);
         
         System.out.println("\nAdicionado ao carrinho!");
@@ -446,111 +445,122 @@ public class Aplicacao {
         Cliente cliente = sessao.getClienteLogado();
         Carrinho carrinho = cliente.getCarrinho();
 
-        if (carrinho.getRestaurante() == null) {
-            System.out.println("\nSelecione um restaurante primeiro!");
-            InputManager.pausar("");
-            return;
-        }
-
-        if (carrinho.getItens().isEmpty()) {
-            System.out.println("\nCarrinho vazio!");
-            InputManager.pausar("");
-            return;
-        }
-
-        if (cliente.getEnderecos().isEmpty()) {
-            System.out.println("\nCadastre um endereco!");
-            adicionarEndereco(cliente);
-            if (cliente.getEnderecos().isEmpty()) {
-                return;
+        try {
+            if (carrinho.getRestaurante() == null) {
+                throw new RestauranteFechadoException("Selecione um restaurante primeiro!");
             }
-        }
 
-        System.out.println("\n--- Endereco de entrega ---");
-        for (int i = 0; i < cliente.getEnderecos().size(); i++) {
-            System.out.println((i + 1) + ". " + cliente.getEnderecos().get(i).getEnderecoCompleto());
-        }
-        Integer idEnd = InputManager.lerInteiro("Escolha");
-        if (idEnd == null || idEnd < 1 || idEnd > cliente.getEnderecos().size()) {
-            System.out.println("\nEndereco invalido!");
-            InputManager.pausar("");
-            return;
-        }
+            if (carrinho.getItens().isEmpty()) {
+                throw new ValorMinimoException("Carrinho vazio!");
+            }
 
-        System.out.println("\n--- Forma de Pagamento ---");
-        System.out.println("1. PIX");
-        System.out.println("2. Cartao");
-        System.out.println("3. Dinheiro");
-        Integer opcaoPag = InputManager.lerInteiro("Escolha");
-        if (opcaoPag == null) return;
-
-        FormaPagamento pag;
-        switch (opcaoPag) {
-            case 1:
-                pag = new PIX();
-                break;
-            case 2:
-                pag = new CartaoCredito("1234567890123456", "CLIENTE", "123");
-                break;
-            case 3:
-                Double val = InputManager.lerDouble("Valor recebido (R$)");
-                if (val == null) return;
-                pag = new Dinheiro(val);
-                break;
-            default:
-                System.out.println("\nOpcao invalida!");
-                InputManager.pausar("");
-                return;
-        }
-
-        // NOVO: Pergunta sobre cupom de desconto
-        System.out.println("\n--- Cupom de Desconto ---");
-        if (InputManager.lerConfirmacao("Possui cupom de desconto?")) {
-            String codigoCupom = InputManager.lerTexto("Digite o codigo do cupom");
-            if (codigoCupom != null && !codigoCupom.isEmpty()) {
-                Cupom cupom = repositorio.buscarCupom(codigoCupom);
-                if (cupom != null && cupom.estaValido()) {
-                    carrinho.aplicarCupom(cupom);
-                    System.out.println("\nCupom aplicado com sucesso!");
-                    System.out.println(cupom.toString());
-                } else {
-                    System.out.println("\nCupom invalido ou expirado!");
+            // Verifica endereços
+            if (cliente.getEnderecos().isEmpty()) {
+                System.out.println("\nCadastre um endereço!");
+                adicionarEndereco(cliente);
+                if (cliente.getEnderecos().isEmpty()) {
+                    return;
                 }
             }
-        }
 
-        // Mostra valor final
-        System.out.println("\n--- Resumo do Pedido ---");
-        System.out.printf("Subtotal: R$%.2f\n", carrinho.calcularPrecoTotal());
-        if (carrinho.getCupomAplicado() != null) {
-            System.out.printf("Desconto: -R$%.2f\n", 
-                carrinho.calcularPrecoTotal() - carrinho.calcularTotalComDesconto());
-        }
-        System.out.printf("TOTAL: R$%.2f\n", carrinho.calcularTotalComDesconto());
-        
-        if (!InputManager.lerConfirmacao("\nConfirmar pedido?")) {
-            System.out.println("\nPedido cancelado!");
-            InputManager.pausar("");
-            return;
-        }
+            // Seleciona endereço
+            System.out.println("\n--- Endereço de entrega ---");
+            for (int i = 0; i < cliente.getEnderecos().size(); i++) {
+                System.out.println((i + 1) + ". " + cliente.getEnderecos().get(i).getEnderecoCompleto());
+            }
+            Integer idEnd = InputManager.lerInteiro("Escolha");
+            if (idEnd == null || idEnd < 1 || idEnd > cliente.getEnderecos().size()) {
+                System.out.println("\nEndereço inválido!");
+                InputManager.pausar("");
+                return;
+            }
 
-        try {
+            // Forma de pagamento com input dinâmico
+            System.out.println("\n--- Forma de Pagamento ---");
+            System.out.println("1. PIX");
+            System.out.println("2. Cartão de Crédito");
+            System.out.println("3. Dinheiro");
+            Integer opcaoPag = InputManager.lerInteiro("Escolha");
+            if (opcaoPag == null) return;
+
+            FormaPagamento pag;
+            switch (opcaoPag) {
+                case 1:
+                    pag = new PIX();
+                    break;
+                case 2:
+                    // SOLICITA DADOS DO CARTÃO DINAMICAMENTE
+                    System.out.println("\n--- Dados do Cartão ---");
+                    String numeroCartao = InputManager.lerTexto("Número (16 dígitos)");
+                    if (numeroCartao == null || numeroCartao.isEmpty()) return;
+                    
+                    String titular = InputManager.lerTexto("Nome do Titular");
+                    if (titular == null || titular.isEmpty()) return;
+                    
+                    String cvv = InputManager.lerTexto("CVV (3 dígitos)");
+                    if (cvv == null || cvv.isEmpty()) return;
+                    
+                    String validade = InputManager.lerTexto("Validade (MM/YY)");
+                    if (validade == null || validade.isEmpty()) validade = "12/25";
+                    
+                    pag = new CartaoCredito(numeroCartao, titular, cvv, validade);
+                    break;
+                case 3:
+                    Double val = InputManager.lerDouble("Valor recebido (R$)");
+                    if (val == null) return;
+                    pag = new Dinheiro(val);
+                    break;
+                default:
+                    System.out.println("\nOpção inválida!");
+                    InputManager.pausar("");
+                    return;
+            }
+
+            // Cupom de desconto
+            System.out.println("\n--- Cupom de Desconto ---");
+            if (InputManager.lerConfirmacao("Possui cupom de desconto?")) {
+                String codigoCupom = InputManager.lerTexto("Digite o código do cupom");
+                if (codigoCupom != null && !codigoCupom.isEmpty()) {
+                    Cupom cupom = repositorio.buscarCupom(codigoCupom);
+                    if (cupom != null && cupom.estaValido()) {
+                        carrinho.aplicarCupom(cupom);
+                        System.out.println("\nCupom aplicado com sucesso!");
+                        System.out.println(cupom.toString());
+                    } else {
+                        System.out.println("\nCupom inválido ou expirado!");
+                    }
+                }
+            }
+
+            // Mostra resumo
+            System.out.println("\n--- Resumo do Pedido ---");
+            System.out.printf("Subtotal: R$%.2f\n", carrinho.calcularPrecoTotal());
+            if (carrinho.getCupomAplicado() != null) {
+                System.out.printf("Desconto: -R$%.2f\n", 
+                    carrinho.calcularPrecoTotal() - carrinho.calcularTotalComDesconto());
+            }
+            System.out.printf("TOTAL: R$%.2f\n", carrinho.calcularTotalComDesconto());
+            
+            if (!InputManager.lerConfirmacao("\nConfirmar pedido?")) {
+                System.out.println("\nPedido cancelado!");
+                InputManager.pausar("");
+                return;
+            }
+
+            // Gera pedido (pode lançar exceções)
             Pedido pedido = carrinho.gerarPedido();
             pedido.setFormaPagamento(pag);
-            
-            // IMPORTANTE: Pedido começa como "Pendente" até o restaurante aceitar
             pedido.atualizarStatus("Pendente");
             
+            // Processa pagamento (pode lançar PagamentoRecusadoException)
             pedido.processarPagamento();
 
-            // Quando o restaurante aceita, muda para "Confirmado"
+            // Aceita pedido no restaurante
             Restaurante rest = carrinho.getRestaurante();
             rest.aceitarPedido(pedido);
             
-            // CRÍTICO: Adiciona o pedido ao histórico do cliente
+            // Adiciona ao histórico e repositório
             cliente.adicionarPedido(pedido);
-            
-            // Salva o pedido no repositório
             repositorio.adicionarPedido(pedido);
 
             System.out.println("\n==================================================");
@@ -558,13 +568,24 @@ public class Aplicacao {
             System.out.println("==================================================");
             System.out.println("Pedido #" + pedido.getNumeroPedido());
             System.out.println("Status: " + pedido.getStatus());
-            System.out.println("Aguardando confirmacao do restaurante...");
             System.out.println("==================================================");
 
             cliente.getCarrinho().limparCarrinho();
 
+        } catch (RestauranteFechadoException e) {
+            System.out.println("\n❌ ERRO: " + e.getMessage());
+            System.out.println("O restaurante está fechado no momento.");
+        } catch (ValorMinimoException e) {
+            System.out.println("\n❌ ERRO: " + e.getMessage());
+            System.out.println("O valor mínimo do pedido é R$15,00.");
+        } catch (ProdutoIndisponivelException e) {
+            System.out.println("\n❌ ERRO: " + e.getMessage());
+            System.out.println("Algum produto do carrinho não está disponível.");
+        } catch (PagamentoRecusadoException e) {
+            System.out.println("\n❌ ERRO: " + e.getMessage());
+            System.out.println("Verifique os dados de pagamento e tente novamente.");
         } catch (Exception e) {
-            System.out.println("\nErro: " + e.getMessage());
+            System.out.println("\n❌ ERRO INESPERADO: " + e.getMessage());
         }
 
         InputManager.pausar("");
@@ -583,14 +604,18 @@ public class Aplicacao {
         } else {
             for (int i = 0; i < pedidos.size(); i++) {
                 Pedido p = pedidos.get(i);
-                System.out.printf("%d. #%d - %s - R$%.2f\n", 
-                    i + 1, p.getNumeroPedido(), p.getStatus(), p.getValorTotal());
+                System.out.printf("%d. #%d - %s - R$%.2f - %s\n", 
+                    i + 1, p.getNumeroPedido(), p.getRestaurante().getNomeRestaurante(),
+                    p.getValorTotal(), p.getStatus());
             }
         }
 
         InputManager.pausar("");
     }
 
+    /**
+     * IMPLEMENTAÇÃO COMPLETA: Avaliar pedidos entregues
+     */
     private static void avaliarPedido() {
         InputManager.limparTela();
         System.out.println("==================================================");
@@ -620,55 +645,58 @@ public class Aplicacao {
             return;
         }
 
-        System.out.println("Pedidos entregues:");
+        System.out.println("Pedidos entregues:\n");
         for (int i = 0; i < pedidosEntregues.size(); i++) {
             Pedido p = pedidosEntregues.get(i);
             boolean jaAvaliado = !p.getAvaliacoes().isEmpty();
-            String statusAvaliacao = jaAvaliado ? "[JA AVALIADO]" : "[PENDENTE]";
-            System.out.printf("%d. #%d - %s %s\n", 
-                i + 1, p.getNumeroPedido(), 
+            String statusAvaliacao = jaAvaliado ? "[JÁ AVALIADO]" : "[PENDENTE]";
+            System.out.printf("%d. #%d - %s - R$%.2f %s\n", 
+                i + 1, 
+                p.getNumeroPedido(), 
                 p.getRestaurante().getNomeRestaurante(),
+                p.getValorTotal(),
                 statusAvaliacao);
         }
 
-        Integer idx = InputManager.lerInteiro("\nEscolha (0 para cancelar)");
+        Integer idx = InputManager.lerInteiro("\nEscolha o pedido (0 para cancelar)");
         if (idx == null || idx < 1 || idx > pedidosEntregues.size()) return;
 
         Pedido ped = pedidosEntregues.get(idx - 1);
 
-        System.out.println("\n--- Avaliacao ---");
-        System.out.println("Pedido #" + ped.getNumeroPedido());
+        System.out.println("\n--- Avaliação do Pedido #" + ped.getNumeroPedido() + " ---");
         System.out.println("Restaurante: " + ped.getRestaurante().getNomeRestaurante());
         
         Integer nota = InputManager.lerInteiro("Nota (1-5)");
         if (nota == null || nota < 1 || nota > 5) {
-            System.out.println("\nNota invalida!");
+            System.out.println("\nNota inválida! Deve ser entre 1 e 5.");
             InputManager.pausar("");
             return;
         }
 
-        String coment = InputManager.lerTexto("Comentario (opcional)");
+        String coment = InputManager.lerTexto("Comentário (opcional)");
         
         // Avalia o pedido
         cliente.avaliarPedido(ped, nota, coment != null ? coment : "");
         
-        // NOVO: Também avalia o restaurante
+        // Também avalia o restaurante
         Restaurante rest = ped.getRestaurante();
         rest.avaliar(nota, coment != null ? coment : "");
 
         System.out.println("\n==================================================");
-        System.out.println("       Avaliacao enviada com sucesso!");
+        System.out.println("       Avaliação enviada com sucesso!");
         System.out.println("==================================================");
         System.out.printf("Nota: %d/5 - %s\n", nota, getDescricaoNota(nota));
         if (coment != null && !coment.isEmpty()) {
-            System.out.println("Comentario: " + coment);
+            System.out.println("Comentário: " + coment);
         }
+        
+        repositorio.salvarDados(); // Salva a avaliação
         InputManager.pausar("");
     }
     
     private static String getDescricaoNota(int nota) {
         switch (nota) {
-            case 1: return "Pessimo";
+            case 1: return "Péssimo";
             case 2: return "Ruim";
             case 3: return "Normal";
             case 4: return "Bom";
@@ -677,18 +705,102 @@ public class Aplicacao {
         }
     }
 
+    /**
+     * IMPLEMENTAÇÃO COMPLETA: Restaurante aceita ou recusa pedidos pendentes
+     */
+    private static void gerenciarPedidos(Restaurante restaurante) {
+        InputManager.limparTela();
+        System.out.println("==================================================");
+        System.out.println("       GERENCIAR PEDIDOS");
+        System.out.println("==================================================");
+        
+        java.util.List<Pedido> pedidosPendentes = new java.util.ArrayList<>();
+        for (Pedido p : restaurante.getFilaPedidos()) {
+            if (p.getStatus().equals("Pendente")) {
+                pedidosPendentes.add(p);
+            }
+        }
+        
+        if (pedidosPendentes.isEmpty()) {
+            System.out.println("Nenhum pedido pendente!");
+            InputManager.pausar("");
+            return;
+        }
+
+        System.out.println("Pedidos pendentes de confirmação:\n");
+        for (int i = 0; i < pedidosPendentes.size(); i++) {
+            Pedido p = pedidosPendentes.get(i);
+            System.out.println((i + 1) + ". PEDIDO #" + p.getNumeroPedido());
+            System.out.println("   Cliente: " + p.getCliente().getNome());
+            System.out.println("   Total: R$" + String.format("%.2f", p.getValorTotal()));
+            System.out.println("   Itens:");
+            for (ItemPedido item : p.getItens()) {
+                System.out.printf("   - %dx %s\n", 
+                    item.getQuantidade(),
+                    item.getProduto().getNome()
+                );
+            }
+            System.out.println();
+        }
+
+        Integer idx = InputManager.lerInteiro("Escolha o pedido (0 para voltar)");
+        if (idx == null || idx < 1 || idx > pedidosPendentes.size()) return;
+
+        Pedido pedidoSelecionado = pedidosPendentes.get(idx - 1);
+
+        System.out.println("\n--- Ações para Pedido #" + pedidoSelecionado.getNumeroPedido() + " ---");
+        System.out.println("1. ACEITAR pedido");
+        System.out.println("2. RECUSAR pedido");
+        System.out.println("0. Voltar");
+
+        Integer acao = InputManager.lerInteiro("Escolha");
+        if (acao == null || acao == 0) return;
+
+        try {
+            if (acao == 1) {
+                // Aceitar pedido
+                pedidoSelecionado.atualizarStatus("Confirmado");
+                repositorio.salvarDados();
+                
+                System.out.println("\n✅ Pedido #" + pedidoSelecionado.getNumeroPedido() + " ACEITO!");
+                System.out.println("O cliente foi notificado.");
+                
+            } else if (acao == 2) {
+                // Recusar pedido
+                String motivo = InputManager.lerTexto("Motivo da recusa (opcional)");
+                restaurante.recusarPedido(pedidoSelecionado);
+                repositorio.salvarDados();
+                
+                System.out.println("\n❌ Pedido #" + pedidoSelecionado.getNumeroPedido() + " RECUSADO!");
+                if (motivo != null && !motivo.isEmpty()) {
+                    System.out.println("Motivo: " + motivo);
+                }
+                
+            } else {
+                System.out.println("\nOpção inválida!");
+            }
+            
+        } catch (RestauranteFechadoException e) {
+            System.out.println("\n❌ ERRO: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("\n❌ ERRO: " + e.getMessage());
+        }
+
+        InputManager.pausar("");
+    }
+
     private static void gerenciarEnderecos() {
         InputManager.limparTela();
         Cliente cliente = sessao.getClienteLogado();
         
         System.out.println("==================================================");
-        System.out.println("       MEUS ENDERECOS");
+        System.out.println("       MEUS ENDEREÇOS");
         System.out.println("==================================================");
 
         java.util.List<Endereco> ends = cliente.getEnderecos();
 
         if (ends.isEmpty()) {
-            System.out.println("Nenhum endereco!");
+            System.out.println("Nenhum endereço!");
         } else {
             for (int i = 0; i < ends.size(); i++) {
                 System.out.println((i + 1) + ". " + ends.get(i).getEnderecoCompleto());
@@ -707,14 +819,14 @@ public class Aplicacao {
     }
 
     private static void adicionarEndereco(Cliente cliente) {
-        System.out.println("\n--- Novo Endereco ---");
+        System.out.println("\n--- Novo Endereço ---");
         String cep = InputManager.lerTexto("CEP");
         if (cep == null || cep.isEmpty()) return;
         
         String rua = InputManager.lerTexto("Rua");
         if (rua == null || rua.isEmpty()) return;
         
-        String num = InputManager.lerTexto("Numero");
+        String num = InputManager.lerTexto("Número");
         if (num == null || num.isEmpty()) return;
         
         String bairro = InputManager.lerTexto("Bairro");
@@ -741,8 +853,8 @@ public class Aplicacao {
         String nome = InputManager.lerTextoObrigatorio("Nome");
         if (nome == null) return;
         
-        String desc = InputManager.lerTexto("Descricao");
-        Double preco = InputManager.lerDouble("Preco (R$)");
+        String desc = InputManager.lerTexto("Descrição");
+        Double preco = InputManager.lerDouble("Preço (R$)");
         if (preco == null) return;
 
         Produto prod;
@@ -760,7 +872,7 @@ public class Aplicacao {
                 prod = new Adicional(nome, preco);
                 break;
             default:
-                System.out.println("\nTipo invalido!");
+                System.out.println("\nTipo inválido!");
                 InputManager.pausar("");
                 return;
         }
@@ -790,40 +902,6 @@ public class Aplicacao {
         InputManager.pausar("");
     }
 
-    private static void verPedidosPendentes(Restaurante restaurante) {
-        InputManager.limparTela();
-        System.out.println("==================================================");
-        System.out.println("       PEDIDOS");
-        System.out.println("==================================================");
-        
-        if (restaurante.getFilaPedidos().isEmpty()) {
-            System.out.println("Nenhum pedido!");
-        } else {
-            for (int i = 0; i < restaurante.getFilaPedidos().size(); i++) {
-                Pedido p = restaurante.getFilaPedidos().get(i);
-                
-                System.out.println((i + 1) + ". PEDIDO #" + p.getNumeroPedido());
-                System.out.println("   Status: " + p.getStatus());
-                System.out.println("   Cliente: " + p.getCliente().getNome());
-                System.out.println("   Total: R$" + String.format("%.2f", p.getValorTotal()));
-                
-                System.out.println("   Itens:");
-                for (ItemPedido item : p.getItens()) {
-                    System.out.printf("   - %dx %s (R$%.2f)\n", 
-                        item.getQuantidade(),
-                        item.getProduto().getNome(),
-                        item.calcularPrecoTotal()
-                    );
-                    
-                    if (!item.getObservacoes().isEmpty()) {
-                        System.out.println("     Obs: " + item.getObservacoes());
-                    }
-                }
-            }
-        }
-        InputManager.pausar("");
-    }
-
     private static void atualizarStatusPedido(Restaurante restaurante) {
         InputManager.limparTela();
         System.out.println("==================================================");
@@ -837,7 +915,7 @@ public class Aplicacao {
         }
 
         java.util.List<Pedido> peds = restaurante.getFilaPedidos();
-        System.out.println("Pedidos:");
+        System.out.println("Pedidos:\n");
         for (int i = 0; i < peds.size(); i++) {
             Pedido p = peds.get(i);
             System.out.printf("%d. #%d - Cliente: %s - Status: %s\n", 
@@ -854,7 +932,7 @@ public class Aplicacao {
 
         System.out.println("\n--- Pedido #" + ped.getNumeroPedido() + " ---");
         System.out.println("Status atual: " + ped.getStatus());
-        System.out.println("\nOpcoes de status:");
+        System.out.println("\nOpções de status:");
         System.out.println("1 - Confirmado");
         System.out.println("2 - Preparando");
         System.out.println("3 - Pronto");
@@ -874,29 +952,29 @@ public class Aplicacao {
             case 5: stat = "Entregue"; break;
             case 6: stat = "Cancelado"; break;
             default: 
-                System.out.println("\nOpcao invalida!");
+                System.out.println("\nOpção inválida!");
                 InputManager.pausar("");
                 return;
         }
 
         restaurante.atualizarStatusPedido(ped, stat);
-        repositorio.salvarDados(); // Salva mudanças
+        repositorio.salvarDados();
         
         System.out.println("\n==================================================");
         System.out.println("       Status atualizado com sucesso!");
         System.out.println("==================================================");
-        System.out.println("Pedido #" + ped.getNumeroPedido() + " -> " + stat);
+        System.out.println("Pedido #" + ped.getNumeroPedido() + " → " + stat);
         InputManager.pausar("");
     }
 
     private static void verAvaliacoes(Restaurante restaurante) {
         InputManager.limparTela();
-        System.out.println("\n=== AVALIACOES ===");
-        System.out.printf("Media: %.1f/5\n", restaurante.calcularMediaAvaliacoes());
+        System.out.println("\n=== AVALIAÇÕES ===");
+        System.out.printf("Média: %.1f/5\n", restaurante.calcularMediaAvaliacoes());
         System.out.printf("Total: %d\n", restaurante.getQuantidadeAvaliacoes());
         
         if (!restaurante.getAvaliacoes().isEmpty()) {
-            System.out.println("\nComentarios:");
+            System.out.println("\nComentários:");
             for (Avaliacao av : restaurante.getAvaliacoes()) {
                 System.out.println("- " + av.getNota() + "/5: " + av.getComentario());
             }
