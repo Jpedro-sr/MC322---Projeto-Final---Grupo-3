@@ -1,1 +1,1 @@
-Pedido;Aguardando Confirmação;95.6
+1000;a@gmail.com;pizzaria@ifome.com;Entregue;0.0

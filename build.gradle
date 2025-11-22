@@ -3,7 +3,7 @@ plugins {
     id 'application'
 }
 
-group = 'ifome'
+group = 'com.ifome'
 version = '1.0-SNAPSHOT'
 
 repositories {
@@ -11,51 +11,60 @@ repositories {
 }
 
 dependencies {
-    // JUnit 5 para testes unitários
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
-    
-    // JavaFX (caso queira adicionar interface gráfica depois)
-    implementation 'org.openjfx:javafx-controls:17.0.2'
-    implementation 'org.openjfx:javafx-fxml:17.0.2'
-}
-test {
-    useJUnitPlatform()
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
 }
 
 application {
-    mainClass = 'ifome.Aplicacao' // Corrigido
+    mainClass = 'ifome.Aplicacao'
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+// CONFIGURAÇÃO CRÍTICA: Remove o timer do Gradle
+tasks.named('run') {
+    standardInput = System.in
+    // Desabilita o rich console que causa o timer
+    logging.captureStandardOutput LogLevel.INFO
+    logging.captureStandardError LogLevel.ERROR
 }
 
-sourceSets {
-    main {
-        java {
-            srcDirs = ['src/main/java']
-        }
-        resources {
-            srcDirs = ['src/main/resources']
-        }
-    }
-    test {
-        java {
-            srcDirs = ['src/test/java']
-        }
-    }
+// Tarefa personalizada para executar sem timer
+task runApp(type: JavaExec) {
+    group = 'application'
+    description = 'Executa a aplicacao sem timer do Gradle'
+    
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'ifome.Aplicacao'
+    
+    // Conecta diretamente stdin/stdout para evitar buffer do Gradle
+    standardInput = System.in
+    standardOutput = System.out
+    errorOutput = System.err
+    
+    // Desabilita logging do Gradle completamente
+    logging.captureStandardOutput LogLevel.QUIET
+    logging.captureStandardError LogLevel.QUIET
+    
+    // JVM args para melhor performance de I/O
+    jvmArgs = [
+        '-Dfile.encoding=UTF-8',
+        '-Djava.io.Console=true'
+    ]
 }
 
 test {
     useJUnitPlatform()
 }
 
-tasks.register('runApp', JavaExec) {
-    group = 'application'
-    description = 'Executa a aplicação iFome'
-    classpath = sourceSets.main.runtimeClasspath
-    mainClass = 'ifome.Aplicacao'
-    standardInput = System.in
+// Compilação com encoding UTF-8
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+// Configurações adicionais para evitar problemas de encoding
+compileJava {
+    options.encoding = 'UTF-8'
+}
+
+javadoc {
+    options.encoding = 'UTF-8'
 }

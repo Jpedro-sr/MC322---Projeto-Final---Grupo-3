@@ -152,7 +152,7 @@ public class Carrinho implements Calculavel {
 
         pedido.setCliente(cliente);
         pedido.setRestaurante(restaurante);
-        pedido.atualizarStatus("Pendente");
+        //pedido.atualizarStatus("Pendente");
 
         return pedido;
     }

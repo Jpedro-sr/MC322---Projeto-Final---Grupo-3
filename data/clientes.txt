@@ -2,3 +2,6 @@ cliente@email.com;123;Jo�o Silva;19999999999
 jp@gmail.com;jp123;jp;Não informado
 rafaelrpm10@gmail.com;batata;Rafael;11945579979
 Rafa@gmail.com;Rafa;Rafa;1234567899
+j@gmail.com;j123;joao;12345678910
+p@gmail.com;123;pe;148393489813498134
+a@gmail.com;123;a;987666622332332

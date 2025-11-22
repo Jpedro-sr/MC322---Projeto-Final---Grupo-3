@@ -28,7 +28,7 @@ public class Restaurante extends Usuario implements Avaliavel {
         this.cardapio = new ArrayList<>();
         this.filaPedidos = new ArrayList<>();
         this.avaliacoes = new ArrayList<>();
-        this.aberto = false; // Começa fechado por padrão
+        this.aberto = true; 
         this.horarioFuncionamento = "Não informado";
     }
 

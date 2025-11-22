@@ -62,6 +62,16 @@ public class Cliente extends Usuario {
         enderecos.remove(endereco);
     }
 
+    /**
+     * MÉTODO CRÍTICO: Adiciona um pedido ao histórico do cliente.
+     * Necessário para a persistência funcionar na Aplicacao.java.
+     */
+    public void adicionarPedido(Pedido pedido) {
+        if (pedido != null) {
+            this.historicoPedidos.add(pedido);
+        }
+    }
+
     public Pedido fazerPedido(Carrinho carrinhoParaPedido) 
             throws ifome.exceptions.RestauranteFechadoException,
                    ifome.exceptions.ValorMinimoException,
@@ -166,7 +176,7 @@ public class Cliente extends Usuario {
 
     @Override
     public String toString() {
-        return String.format("Cliente: %s | Email: %s | Telefone: %s | Endereços: %d | Pedidos: %d",
+        return String.format("Cliente: %s | Email: %s | Telefone: %s | Enderecos: %d | Pedidos: %d",
             nome, email, telefone, enderecos.size(), historicoPedidos.size());
     }
 }
