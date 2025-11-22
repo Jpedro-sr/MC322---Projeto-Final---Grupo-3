@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" prefHeight="640.0" prefWidth="360.0" spacing="10.0" 
+      style="-fx-background-color: #f4f4f4;" 
+      xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="ifome.controller.ListaRestaurantesController">
+
+    <VBox alignment="CENTER" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+        <padding>
+            <Insets bottom="15" top="15" />
+        </padding>
+        <Label text="Restaurantes" textFill="#ea1d2c">
+            <font>
+                <Font name="System Bold" size="20.0" />
+            </font>
+        </Label>
+    </VBox>
+
+    <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: #f4f4f4;" VBox.vgrow="ALWAYS">
+        <content>
+            <VBox fx:id="containerRestaurantes" spacing="10.0" alignment="TOP_CENTER">
+                <padding>
+                    <Insets bottom="20" left="15" right="15" top="10" />
+                </padding>
+            </VBox>
+        </content>
+    </ScrollPane>
+
+    <Button text="Voltar" onAction="#voltar" 
+            style="-fx-background-color: transparent; -fx-text-fill: #666; -fx-cursor: hand;">
+        <VBox.margin>
+            <Insets bottom="10.0" />
+        </VBox.margin>
+    </Button>
+
+</VBox>
