@@ -18,26 +18,18 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 public class GerenciarPedidosController {
 
-    @FXML
-    private VBox containerPedidos;
-
+    @FXML private VBox containerPedidos;
     private Restaurante restaurante;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
@@ -149,7 +141,6 @@ public class GerenciarPedidosController {
         String status = pedido.getStatus();
 
         if (status.equals("Pendente")) {
-            // Pedido pendente: Aceitar ou Recusar
             Button btnRecusar = new Button("✖ Recusar");
             btnRecusar.setStyle(
                 "-fx-background-color: #e74c3c; " +
@@ -175,7 +166,6 @@ public class GerenciarPedidosController {
             botoesBox.getChildren().addAll(btnRecusar, btnAceitar);
 
         } else if (!status.equals("Entregue") && !status.equals("Cancelado")) {
-            // Pedido em andamento: Atualizar Status
             Button btnAtualizar = new Button("⚙ Atualizar Status");
             btnAtualizar.setStyle(
                 "-fx-background-color: #3498db; " +
@@ -203,17 +193,17 @@ public class GerenciarPedidosController {
         confirmacao.setHeaderText("Deseja aceitar o pedido #" + pedido.getNumeroPedido() + "?");
         confirmacao.setContentText(
             "Cliente: " + pedido.getCliente().getNome() + "\n" +
-            "Total: R$ " + String.format("%.2f", pedido.getValorTotal()) + "\n\n" +
-            "O pagamento será processado quando você aceitar."
+            "Total: R$ " + String.format("%.2f", pedido.getValorTotal())
         );
 
         Optional<ButtonType> resultado = confirmacao.showAndWait();
         
         if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
             try {
-                // ✅ CORREÇÃO: AGORA processa o pagamento ao aceitar
-                pedido.processarPagamento(); // Isso também muda status para "Confirmado"
+                // ✅ Processa pagamento
+                pedido.processarPagamento();
                 
+                // ✅ IMPORTANTE: Salva no repositório GLOBAL para sincronizar
                 RepositorioRestaurantes.getInstance().salvarDados();
 
                 Alert sucesso = new Alert(Alert.AlertType.INFORMATION);
@@ -221,8 +211,7 @@ public class GerenciarPedidosController {
                 sucesso.setHeaderText("✅ Pedido #" + pedido.getNumeroPedido() + " aceito!");
                 sucesso.setContentText(
                     "Pagamento processado com sucesso.\n" +
-                    "O cliente foi notificado.\n" +
-                    "Inicie o preparo do pedido."
+                    "O cliente foi notificado."
                 );
                 sucesso.showAndWait();
 
@@ -232,13 +221,10 @@ public class GerenciarPedidosController {
                 Alert erro = new Alert(Alert.AlertType.ERROR);
                 erro.setTitle("Pagamento Recusado");
                 erro.setHeaderText("❌ Não foi possível processar o pagamento");
-                erro.setContentText(
-                    "Motivo: " + e.getMessage() + "\n\n" +
-                    "O pedido será automaticamente cancelado."
-                );
+                erro.setContentText("Motivo: " + e.getMessage());
                 erro.showAndWait();
                 
-                // Cancela o pedido automaticamente
+                // Cancela o pedido
                 try {
                     restaurante.recusarPedido(pedido);
                     RepositorioRestaurantes.getInstance().salvarDados();
@@ -264,6 +250,8 @@ public class GerenciarPedidosController {
         if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
             try {
                 restaurante.recusarPedido(pedido);
+                
+                // ✅ IMPORTANTE: Salva para sincronizar
                 RepositorioRestaurantes.getInstance().salvarDados();
 
                 Alert sucesso = new Alert(Alert.AlertType.INFORMATION);
@@ -327,6 +315,8 @@ public class GerenciarPedidosController {
         if (resultado.isPresent()) {
             String novoStatus = resultado.get();
             pedido.atualizarStatus(novoStatus);
+            
+            // ✅ IMPORTANTE: Salva para sincronizar
             RepositorioRestaurantes.getInstance().salvarDados();
 
             Alert sucesso = new Alert(Alert.AlertType.INFORMATION);
