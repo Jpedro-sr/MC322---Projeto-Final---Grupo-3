@@ -25,34 +25,36 @@ public class LoginController {
     @FXML
     private PasswordField campoSenha;
 
-    // Adicionado @FXML para que a tela consiga chamar este método privado
-    @FXML
+   @FXML
     private void handleLogin(ActionEvent event) {
         String email = campoEmail.getText();
         String senha = campoSenha.getText();
         
         RepositorioRestaurantes repo = RepositorioRestaurantes.getInstance();
         
-        // Tenta logar como Cliente
+        // 1. Tenta logar como Cliente
         Cliente cliente = repo.buscarClientePorLogin(email, senha);
         if (cliente != null) {
             SessaoUsuario.getInstance().setClienteLogado(cliente);
             try {
-                // Redireciona para o Menu do Cliente
                 mudarTela(event, "/ifome/MenuCliente.fxml");
             } catch (IOException e) {
                 e.printStackTrace();
-                mostrarAlerta("Erro", "Não foi possível carregar o menu.");
+                mostrarAlerta("Erro", "Não foi possível carregar o menu do cliente.");
             }
             return;
         }
 
-        // Tenta logar como Restaurante
+        // 2. Tenta logar como Restaurante
         Restaurante restaurante = repo.buscarRestaurantePorLogin(email, senha);
         if (restaurante != null) {
             SessaoUsuario.getInstance().setRestauranteLogado(restaurante);
-            mostrarAlerta("Sucesso", "Bem-vindo, " + restaurante.getNomeRestaurante() + "!");
-            // Futuro: mudarTela(event, "/ifome/MenuRestaurante.fxml");
+            try {
+                mudarTela(event, "/ifome/MenuRestaurante.fxml");
+            } catch (IOException e) {
+                e.printStackTrace();
+                mostrarAlerta("Erro", "Erro ao carregar menu do restaurante.\nVerifique se MenuRestaurante.fxml existe.");
+            }
             return;
         }
 
@@ -79,15 +81,9 @@ public class LoginController {
         alert.showAndWait();
     }
 
-    // Método auxiliar para trocar de tela
     private void mudarTela(ActionEvent event, String fxmlPath) throws IOException {
-        // Carrega o arquivo FXML da nova tela
         Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
-        
-        // Pega a janela (Stage) atual através do botão que foi clicado (event.getSource)
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        
-        // Define a nova cena na janela existente
         stage.setScene(new Scene(root, 360, 640));
     }
 }

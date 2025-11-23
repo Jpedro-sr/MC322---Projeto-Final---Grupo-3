@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" prefHeight="640.0" prefWidth="360.0" spacing="15.0" 
+      style="-fx-background-color: #f4f4f4;" 
+      xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="ifome.controller.MenuRestauranteController">
+
+    <VBox alignment="CENTER" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+        <padding>
+            <Insets bottom="20" top="20" />
+        </padding>
+        <Label fx:id="labelNome" text="Nome do Restaurante" textFill="#333">
+            <font>
+                <Font name="System Bold" size="18.0" />
+            </font>
+        </Label>
+        <Label fx:id="labelStatus" text="🟢 ABERTO" textFill="#4cd137">
+            <font>
+                <Font name="System Bold" size="14.0" />
+            </font>
+            <VBox.margin>
+                <Insets top="5" />
+            </VBox.margin>
+        </Label>
+    </VBox>
+
+    <VBox alignment="TOP_CENTER" spacing="12.0">
+        <padding>
+            <Insets left="20" right="20" top="10" />
+        </padding>
+
+        <Button text="📦  Gerenciar Pedidos" maxWidth="Infinity" prefHeight="60.0" 
+                style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 0 0 15;" 
+                onAction="#irParaPedidos">
+            <font>
+                <Font name="System Bold" size="14.0" />
+            </font>
+        </Button>
+
+        <Button text="📋  Gerenciar Cardápio" maxWidth="Infinity" prefHeight="60.0" 
+                style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 0 0 15;" 
+                onAction="#irParaCardapio">
+            <font>
+                <Font name="System Bold" size="14.0" />
+            </font>
+        </Button>
+
+        <Button text="📊  Ver Estatísticas" maxWidth="Infinity" prefHeight="60.0" 
+                style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 0 0 15;" 
+                onAction="#irParaEstatisticas">
+            <font>
+                <Font name="System Bold" size="14.0" />
+            </font>
+        </Button>
+
+        <Button text="🔄  Abrir/Fechar Restaurante" maxWidth="Infinity" prefHeight="60.0" 
+                style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 0 0 15;" 
+                onAction="#alternarStatus">
+            <font>
+                <Font name="System Bold" size="14.0" />
+            </font>
+        </Button>
+                
+        <Button text="Sair da conta" textFill="#ea1d2c" onAction="#fazerLogout"
+                style="-fx-background-color: transparent; -fx-cursor: hand;">
+            <VBox.margin>
+                <Insets top="20.0" />
+            </VBox.margin>
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Button>
+    </VBox>
+</VBox>

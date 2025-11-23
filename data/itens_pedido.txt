@@ -1,1 +1,1 @@
-1000;pizzaria@ifome.com;Pizza Margherita;1;45.9;
+1007;burger@ifome.com;X-Bacon;1;26.9;

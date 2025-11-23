@@ -14,6 +14,8 @@ import java.util.Date;
  * VERSÃO COMPLETA - Persistência robusta de cardápios, endereços e pedidos
  */
 public class RepositorioRestaurantes {
+
+    private static final String ARQUIVO_CARTOES = "data/cartoes.txt";
     
     private static RepositorioRestaurantes instancia;
     private List<Restaurante> restaurantes;
@@ -645,6 +647,56 @@ public class RepositorioRestaurantes {
         System.out.println("\n=== CUPONS DISPONÍVEIS ===");
         for (Cupom c : disponiveis) {
             System.out.println("Código: " + c.getCodigo() + " - " + c.getDescricaoDesconto());
+        }
+    }
+
+    private void carregarCartoes() {
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(new FileInputStream(ARQUIVO_CARTOES), StandardCharsets.UTF_8))) {
+            String linha;
+            int totalCartoes = 0;
+            while ((linha = br.readLine()) != null) {
+                String[] dados = linha.split(";");
+                if (dados.length >= 6) {
+                    String emailCliente = dados[0];
+                    String numeroCompleto = dados[1];
+                    String nomeTitular = dados[2];
+                    String cvv = dados[3];
+                    String validade = dados[4];
+                    String apelido = dados[5];
+                    
+                    Cliente cliente = buscarClientePorEmail(emailCliente);
+                    if (cliente != null) {
+                        CartaoSalvo cartao = new CartaoSalvo(numeroCompleto, nomeTitular, cvv, validade, apelido);
+                        cliente.adicionarCartao(cartao);
+                        totalCartoes++;
+                    }
+                }
+            }
+            System.out.println(">>> " + totalCartoes + " cartões carregados");
+        } catch (FileNotFoundException e) {
+            System.out.println(">>> Arquivo de cartões não encontrado. Será criado ao salvar.");
+        } catch (IOException e) {
+            System.err.println("Erro ao carregar cartões: " + e.getMessage());
+        }
+    }
+
+    private void salvarCartoes() {
+        try (BufferedWriter bw = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(ARQUIVO_CARTOES), StandardCharsets.UTF_8))) {
+            for (Cliente c : clientes) {
+                for (CartaoSalvo cartao : c.getCartoesSalvos()) {
+                    bw.write(c.getEmail() + ";" + 
+                            cartao.getNumeroCompleto() + ";" + 
+                            cartao.getNomeTitular() + ";" + 
+                            cartao.getCvv() + ";" + 
+                            cartao.getValidade() + ";" + 
+                            cartao.getApelido());
+                    bw.newLine();
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Erro ao salvar cartões: " + e.getMessage());
         }
     }
 

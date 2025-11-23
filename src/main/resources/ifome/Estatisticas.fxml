@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" prefHeight="640.0" prefWidth="360.0" spacing="10.0" 
+      style="-fx-background-color: #f4f4f4;" 
+      xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="ifome.controller.EstatisticasController">
+
+    <!-- CABEÇALHO FIXO -->
+    <VBox alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+        <padding>
+            <Insets bottom="15" left="15" right="15" top="15"/>
+        </padding>
+
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Button onAction="#voltar" style="-fx-background-color: transparent; -fx-text-fill: #666; -fx-cursor: hand; -fx-font-size: 18px; -fx-font-weight: bold;" text="←"/>
+            <Label text="Estatísticas" textFill="#333">
+                <font>
+                    <Font name="System Bold" size="20.0"/>
+                </font>
+            </Label>
+        </HBox>
+    </VBox>
+
+    <!-- CONTEÚDO SCROLLÁVEL -->
+    <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: #f4f4f4;" VBox.vgrow="ALWAYS">
+        <content>
+            <VBox spacing="15.0">
+                <padding>
+                    <Insets bottom="20" left="15" right="15" top="15"/>
+                </padding>
+
+                <!-- CARDS DE MÉTRICAS PRINCIPAIS -->
+                <GridPane hgap="10" vgap="10">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="50"/>
+                        <ColumnConstraints percentWidth="50"/>
+                    </columnConstraints>
+
+                    <!-- Total de Pedidos -->
+                    <VBox alignment="CENTER" style="-fx-background-color: white; -fx-padding: 15; -fx-border-radius: 12; -fx-background-radius: 12;" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                        <Label text="📦" style="-fx-font-size: 24px;">
+                            <VBox.margin>
+                                <Insets bottom="5"/>
+                            </VBox.margin>
+                        </Label>
+                        <Label fx:id="lblTotalPedidos" text="0" textFill="#333">
+                            <font>
+                                <Font name="System Bold" size="28.0"/>
+                            </font>
+                        </Label>
+                        <Label text="Total de Pedidos" textFill="#666">
+                            <font>
+                                <Font size="12.0"/>
+                            </font>
+                        </Label>
+                    </VBox>
+
+                    <!-- Faturamento Total -->
+                    <VBox alignment="CENTER" style="-fx-background-color: white; -fx-padding: 15; -fx-border-radius: 12; -fx-background-radius: 12;" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                        <Label text="💰" style="-fx-font-size: 24px;">
+                            <VBox.margin>
+                                <Insets bottom="5"/>
+                            </VBox.margin>
+                        </Label>
+                        <Label fx:id="lblFaturamentoTotal" text="R$ 0,00" textFill="#4cd137">
+                            <font>
+                                <Font name="System Bold" size="20.0"/>
+                            </font>
+                        </Label>
+                        <Label text="Faturamento" textFill="#666">
+                            <font>
+                                <Font size="12.0"/>
+                            </font>
+                        </Label>
+                    </VBox>
+
+                    <!-- Ticket Médio -->
+                    <VBox alignment="CENTER" style="-fx-background-color: white; -fx-padding: 15; -fx-border-radius: 12; -fx-background-radius: 12;" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <Label text="🎯" style="-fx-font-size: 24px;">
+                            <VBox.margin>
+                                <Insets bottom="5"/>
+                            </VBox.margin>
+                        </Label>
+                        <Label fx:id="lblTicketMedio" text="R$ 0,00" textFill="#333">
+                            <font>
+                                <Font name="System Bold" size="20.0"/>
+                            </font>
+                        </Label>
+                        <Label text="Ticket Médio" textFill="#666">
+                            <font>
+                                <Font size="12.0"/>
+                            </font>
+                        </Label>
+                    </VBox>
+
+                    <!-- Avaliação Média -->
+                    <VBox alignment="CENTER" style="-fx-background-color: white; -fx-padding: 15; -fx-border-radius: 12; -fx-background-radius: 12;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <Label text="⭐" style="-fx-font-size: 24px;">
+                            <VBox.margin>
+                                <Insets bottom="5"/>
+                            </VBox.margin>
+                        </Label>
+                        <Label fx:id="lblAvaliacaoMedia" text="0.0 ⭐" textFill="#333">
+                            <font>
+                                <Font name="System Bold" size="20.0"/>
+                            </font>
+                        </Label>
+                        <Label text="Avaliação" textFill="#666">
+                            <font>
+                                <Font size="12.0"/>
+                            </font>
+                        </Label>
+                    </VBox>
+                </GridPane>
+
+                <!-- PRODUTOS MAIS VENDIDOS -->
+                <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-border-radius: 12; -fx-background-radius: 12;">
+                    <Label text="🏆 Produtos Mais Vendidos" textFill="#333">
+                        <font>
+                            <Font name="System Bold" size="16.0"/>
+                        </font>
+                        <VBox.margin>
+                            <Insets bottom="10"/>
+                        </VBox.margin>
+                    </Label>
+
+                    <VBox fx:id="containerProdutosMaisVendidos" spacing="8">
+                    </VBox>
+                </VBox>
+
+            </VBox>
+        </content>
+    </ScrollPane>
+
+</VBox>

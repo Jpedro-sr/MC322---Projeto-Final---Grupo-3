@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * Representa um Cliente do sistema iFome.
- * Herda de Usuario e gerencia seus endereços, pedidos e carrinho.
+ * ATUALIZADO: Suporte a cartões de crédito salvos
  */
 public class Cliente extends Usuario {
 
@@ -13,6 +13,7 @@ public class Cliente extends Usuario {
     private String telefone;
     private List<Endereco> enderecos;
     private List<Pedido> historicoPedidos;
+    private List<CartaoSalvo> cartoesSalvos; // NOVO
     private Carrinho carrinho;
 
     public Cliente(String email, String senha, String nome, String telefone) {
@@ -23,6 +24,7 @@ public class Cliente extends Usuario {
         this.telefone = validarTelefone(telefone);
         this.enderecos = new ArrayList<>();
         this.historicoPedidos = new ArrayList<>();
+        this.cartoesSalvos = new ArrayList<>(); // NOVO
         this.carrinho = new Carrinho();
     }
 
@@ -62,10 +64,62 @@ public class Cliente extends Usuario {
         enderecos.remove(endereco);
     }
 
+    // ============ MÉTODOS DE CARTÕES SALVOS ============
+    
     /**
-     * MÉTODO CRÍTICO: Adiciona um pedido ao histórico do cliente.
-     * Necessário para a persistência funcionar na Aplicacao.java.
+     * Adiciona um cartão à lista de cartões salvos do cliente.
      */
+    public void adicionarCartao(CartaoSalvo cartao) {
+        if (cartao == null) {
+            return;
+        }
+        if (cartoesSalvos.contains(cartao)) {
+            System.out.println("ℹ️  Cartão já está salvo.");
+            return;
+        }
+        cartoesSalvos.add(cartao);
+        System.out.println("✅ Cartão salvo com sucesso!");
+    }
+    
+    /**
+     * Remove um cartão salvo.
+     */
+    public void removerCartao(CartaoSalvo cartao) {
+        if (cartoesSalvos.remove(cartao)) {
+            System.out.println("✅ Cartão removido.");
+        } else {
+            System.out.println("❌ Cartão não encontrado.");
+        }
+    }
+    
+    /**
+     * Busca um cartão salvo pelo número mascarado.
+     */
+    public CartaoSalvo buscarCartaoPorNumero(String numeroMascarado) {
+        for (CartaoSalvo c : cartoesSalvos) {
+            if (c.getNumeroMascarado().equals(numeroMascarado)) {
+                return c;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Retorna todos os cartões salvos.
+     */
+    public List<CartaoSalvo> getCartoesSalvos() {
+        return new ArrayList<>(cartoesSalvos);
+    }
+    
+    /**
+     * Verifica se o cliente tem cartões salvos.
+     */
+    public boolean temCartoesSalvos() {
+        return !cartoesSalvos.isEmpty();
+    }
+
+    // ============ MÉTODOS EXISTENTES ============
+
     public void adicionarPedido(Pedido pedido) {
         if (pedido != null) {
             this.historicoPedidos.add(pedido);
@@ -176,7 +230,7 @@ public class Cliente extends Usuario {
 
     @Override
     public String toString() {
-        return String.format("Cliente: %s | Email: %s | Telefone: %s | Enderecos: %d | Pedidos: %d",
-            nome, email, telefone, enderecos.size(), historicoPedidos.size());
+        return String.format("Cliente: %s | Email: %s | Telefone: %s | Enderecos: %d | Pedidos: %d | Cartões: %d",
+            nome, email, telefone, enderecos.size(), historicoPedidos.size(), cartoesSalvos.size());
     }
 }

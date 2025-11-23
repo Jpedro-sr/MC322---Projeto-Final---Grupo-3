@@ -1,6 +1,7 @@
 package ifome.controller;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import ifome.model.*;
@@ -10,11 +11,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 public class PagamentoController {
@@ -54,22 +59,28 @@ public class PagamentoController {
         try {
             FormaPagamento pagamento = null;
 
-            // Define forma de pagamento com base na seleção
             if (rbPix.isSelected()) {
-                pagamento = new PIX();
+                if (mostrarQRCodePIX()) {
+                    pagamento = new PIX();
+                } else {
+                    return;
+                }
                 
             } else if (rbCartao.isSelected()) {
-                // Abre dialog para dados do cartão
-                pagamento = solicitarDadosCartao();
+                if (cliente.temCartoesSalvos()) {
+                    pagamento = selecionarOuAdicionarCartao();
+                } else {
+                    pagamento = solicitarDadosCartaoNovo(true);
+                }
+                
                 if (pagamento == null) {
-                    return; // Usuário cancelou
+                    return;
                 }
                 
             } else if (rbDinheiro.isSelected()) {
-                // Abre dialog para valor do troco
                 pagamento = solicitarValorDinheiro();
                 if (pagamento == null) {
-                    return; // Usuário cancelou
+                    return;
                 }
             }
 
@@ -77,11 +88,18 @@ public class PagamentoController {
             Pedido pedido = carrinho.gerarPedido();
             pedido.setFormaPagamento(pagamento);
 
-            // Processa pagamento
-            pedido.processarPagamento();
+            // ⚠️ CORREÇÃO: NÃO processar pagamento ainda - pedido fica pendente
+            // pedido.processarPagamento(); // <-- REMOVER ESTA LINHA
 
-            // Aceita pedido no restaurante
-            carrinho.getRestaurante().aceitarPedido(pedido);
+            // ✅ CORREÇÃO: Pedido inicia como "Pendente"
+            pedido.atualizarStatus("Pendente");
+
+            // ⚠️ CORREÇÃO: NÃO aceitar automaticamente - restaurante deve aceitar
+            // carrinho.getRestaurante().aceitarPedido(pedido); // <-- REMOVER ESTA LINHA
+
+            // ✅ Adiciona à fila do restaurante como PENDENTE
+            Restaurante restaurante = carrinho.getRestaurante();
+            restaurante.getFilaPedidos().add(pedido); // Adiciona diretamente sem aceitar
 
             // Adiciona ao histórico
             cliente.adicionarPedido(pedido);
@@ -93,73 +111,222 @@ public class PagamentoController {
 
             // Mostra confirmação
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Pedido Confirmado");
-            alert.setHeaderText("✅ Pedido realizado com sucesso!");
+            alert.setTitle("Pedido Enviado");
+            alert.setHeaderText("✅ Pedido enviado com sucesso!");
             alert.setContentText(
                 "Pedido #" + pedido.getNumeroPedido() + "\n" +
-                "Status: " + pedido.getStatus() + "\n" +
-                "Total: R$ " + String.format("%.2f", pedido.getValorTotal())
+                "Status: Aguardando confirmação do restaurante\n" +
+                "Total: R$ " + String.format("%.2f", pedido.getValorTotal()) + "\n\n" +
+                "Você receberá uma notificação quando o restaurante aceitar."
             );
             alert.showAndWait();
 
-            // Voltar para o menu
             mudarTela(event, "/ifome/MenuCliente.fxml");
 
         } catch (Exception e) {
             e.printStackTrace();
-            mostrarAlerta("Erro", "Erro ao processar pagamento: " + e.getMessage());
+            mostrarAlerta("Erro", "Erro ao processar pedido: " + e.getMessage());
         }
     }
 
-    private CartaoCredito solicitarDadosCartao() {
-        Dialog<CartaoCredito> dialog = new Dialog<>();
-        dialog.setTitle("Dados do Cartão");
-        dialog.setHeaderText("Preencha os dados do seu cartão");
+    /**
+     * Mostra QR Code simulado do PIX e aguarda confirmação.
+     */
+    private boolean mostrarQRCodePIX() {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Pagamento PIX");
+        dialog.setHeaderText("Escaneie o QR Code para pagar");
 
-        // Botões
+        VBox vbox = new VBox(20);
+        vbox.setPadding(new Insets(30));
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setStyle("-fx-background-color: white;");
+
+        // Simulação de QR Code (ASCII Art simplificado)
+        Label lblQRCode = new Label(
+            "█████████████████████\n" +
+            "██ ▄▄▄▄▄ █▀ █▀██ ▄▄▄▄▄ ██\n" +
+            "██ █   █ █▀▄ ▀██ █   █ ██\n" +
+            "██ █▄▄▄█ █ ▀▄ ██ █▄▄▄█ ██\n" +
+            "██▄▄▄▄▄▄▄█▄█ █▄█▄▄▄▄▄▄▄██\n" +
+            "██ ▄ ▄  ▄ ▄█▄ ▄▀▀ ▀▄▀ ▄██\n" +
+            "██▄ ▀██▄▄█  ▄ █▄  ▄▄█ ▄██\n" +
+            "██ ▄▄▄▄▄ █▄ ▄  █ ▄ █▄▀ ██\n" +
+            "██ █   █ █ ▄▀▄██▀ █▄▀▄ ██\n" +
+            "██ █▄▄▄█ █ ▀▀▄ ▄ ▄  ▀▀ ██\n" +
+            "██▄▄▄▄▄▄▄█▄█▄██▄█▄██▄█▄██\n" +
+            "█████████████████████"
+        );
+        lblQRCode.setFont(Font.font("Monospaced", 10));
+        lblQRCode.setStyle("-fx-background-color: white; -fx-padding: 15; -fx-border-color: #ddd; -fx-border-width: 2;");
+
+        Label lblInstrucoes = new Label("Abra o app do seu banco e escaneie o QR Code");
+        lblInstrucoes.setStyle("-fx-font-size: 14px; -fx-text-fill: #666;");
+
+        Label lblValor = new Label(String.format("Valor: R$ %.2f", carrinho.calcularTotalComDesconto()));
+        lblValor.setFont(Font.font("System", FontWeight.BOLD, 18));
+        lblValor.setStyle("-fx-text-fill: #ea1d2c;");
+
+        vbox.getChildren().addAll(lblQRCode, lblInstrucoes, lblValor);
+        dialog.getDialogPane().setContent(vbox);
+
+        ButtonType btnConfirmarPag = new ButtonType("Já Paguei", ButtonBar.ButtonData.OK_DONE);
+        ButtonType btnCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(btnConfirmarPag, btnCancelar);
+
+        Button btnConfirmar = (Button) dialog.getDialogPane().lookupButton(btnConfirmarPag);
+        btnConfirmar.setStyle("-fx-background-color: #4cd137; -fx-text-fill: white; -fx-font-weight: bold;");
+
+        Optional<ButtonType> result = dialog.showAndWait();
+        return result.isPresent() && result.get() == btnConfirmarPag;
+    }
+
+    /**
+     * Permite ao usuário escolher um cartão salvo ou adicionar um novo.
+     */
+    private FormaPagamento selecionarOuAdicionarCartao() {
+        Dialog<CartaoCredito> dialog = new Dialog<>();
+        dialog.setTitle("Selecionar Cartão");
+        dialog.setHeaderText("Escolha um cartão ou adicione um novo");
+
+        VBox vbox = new VBox(15);
+        vbox.setPadding(new Insets(20));
+
+        ToggleGroup grupoCartoes = new ToggleGroup();
+        
+        List<CartaoSalvo> cartoes = cliente.getCartoesSalvos();
+        
+        for (CartaoSalvo cartao : cartoes) {
+            RadioButton rb = new RadioButton();
+            rb.setUserData(cartao);
+            rb.setToggleGroup(grupoCartoes);
+            rb.setStyle("-fx-font-size: 14px;");
+            
+            HBox hbox = new HBox(10);
+            hbox.setAlignment(Pos.CENTER_LEFT);
+            hbox.setStyle("-fx-padding: 10; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 5;");
+            
+            VBox infoBox = new VBox(3);
+            Label lblNome = new Label(cartao.getApelido());
+            lblNome.setFont(Font.font("System", FontWeight.BOLD, 14));
+            
+            Label lblNumero = new Label(cartao.getNumeroMascarado());
+            lblNumero.setStyle("-fx-text-fill: #666; -fx-font-size: 12px;");
+            
+            infoBox.getChildren().addAll(lblNome, lblNumero);
+            hbox.getChildren().addAll(rb, infoBox);
+            
+            vbox.getChildren().add(hbox);
+        }
+
+        // Botão "Adicionar novo cartão"
+        Button btnNovoCartao = new Button("+ Adicionar Novo Cartão");
+        btnNovoCartao.setMaxWidth(Double.MAX_VALUE);
+        btnNovoCartao.setStyle(
+            "-fx-background-color: #f0f0f0; -fx-text-fill: #333; " +
+            "-fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 15; " +
+            "-fx-border-color: #ddd; -fx-border-width: 1; -fx-border-radius: 5;"
+        );
+        
+        final CartaoCredito[] novoCartao = {null};
+        
+        btnNovoCartao.setOnAction(e -> {
+            novoCartao[0] = solicitarDadosCartaoNovo(true);
+            if (novoCartao[0] != null) {
+                dialog.setResult(novoCartao[0]);
+                dialog.close();
+            }
+        });
+        
+        vbox.getChildren().add(btnNovoCartao);
+        dialog.getDialogPane().setContent(vbox);
+
+        ButtonType btnContinuar = new ButtonType("Continuar", ButtonBar.ButtonData.OK_DONE);
+        ButtonType btnCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(btnContinuar, btnCancelar);
+
+        dialog.setResultConverter(button -> {
+            if (button == btnContinuar) {
+                if (grupoCartoes.getSelectedToggle() != null) {
+                    CartaoSalvo selecionado = (CartaoSalvo) grupoCartoes.getSelectedToggle().getUserData();
+                    return selecionado.toCartaoCredito();
+                }
+            }
+            return novoCartao[0];
+        });
+
+        Optional<CartaoCredito> resultado = dialog.showAndWait();
+        return resultado.orElse(null);
+    }
+
+    /**
+     * Solicita dados de um novo cartão com opção de salvar.
+     */
+    private CartaoCredito solicitarDadosCartaoNovo(boolean permitirSalvar) {
+        Dialog<CartaoCredito> dialog = new Dialog<>();
+        dialog.setTitle("Novo Cartão");
+        dialog.setHeaderText("Preencha os dados do cartão");
+
+        VBox vbox = new VBox(15);
+        vbox.setPadding(new Insets(20));
+
+        TextField txtApelido = new TextField();
+        txtApelido.setPromptText("Apelido do cartão (ex: Cartão Principal)");
+        txtApelido.setStyle("-fx-font-size: 13px; -fx-padding: 10;");
+
+        TextField txtNumero = new TextField();
+        txtNumero.setPromptText("0000 0000 0000 0000");
+        txtNumero.setStyle("-fx-font-size: 13px; -fx-padding: 10;");
+
+        TextField txtTitular = new TextField();
+        txtTitular.setPromptText("Nome do Titular");
+        txtTitular.setStyle("-fx-font-size: 13px; -fx-padding: 10;");
+
+        HBox hboxInferior = new HBox(10);
+        TextField txtValidade = new TextField();
+        txtValidade.setPromptText("MM/AA");
+        txtValidade.setPrefWidth(100);
+        txtValidade.setStyle("-fx-font-size: 13px; -fx-padding: 10;");
+
+        TextField txtCVV = new TextField();
+        txtCVV.setPromptText("CVV");
+        txtCVV.setPrefWidth(80);
+        txtCVV.setStyle("-fx-font-size: 13px; -fx-padding: 10;");
+        
+        hboxInferior.getChildren().addAll(txtValidade, txtCVV);
+
+        CheckBox chkSalvar = new CheckBox("Salvar este cartão para próximas compras");
+        chkSalvar.setStyle("-fx-font-size: 12px;");
+
+        if (permitirSalvar) {
+            vbox.getChildren().addAll(
+                new Label("Apelido (opcional):"), txtApelido,
+                new Label("Número do Cartão:"), txtNumero,
+                new Label("Nome do Titular:"), txtTitular,
+                new Label("Validade e CVV:"), hboxInferior,
+                chkSalvar
+            );
+        } else {
+            vbox.getChildren().addAll(
+                new Label("Número do Cartão:"), txtNumero,
+                new Label("Nome do Titular:"), txtTitular,
+                new Label("Validade e CVV:"), hboxInferior
+            );
+        }
+
+        dialog.getDialogPane().setContent(vbox);
+
         ButtonType btnConfirmar = new ButtonType("Confirmar", ButtonBar.ButtonData.OK_DONE);
         ButtonType btnCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
         dialog.getDialogPane().getButtonTypes().addAll(btnConfirmar, btnCancelar);
 
-        // Conteúdo do diálogo
-        VBox vbox = new VBox(15);
-        vbox.setPadding(new Insets(20));
-
-        Label lblNumero = new Label("Número do Cartão:");
-        TextField txtNumero = new TextField();
-        txtNumero.setPromptText("0000 0000 0000 0000");
-
-        Label lblTitular = new Label("Nome do Titular:");
-        TextField txtTitular = new TextField();
-        txtTitular.setPromptText("Como está no cartão");
-
-        Label lblValidade = new Label("Validade (MM/AA):");
-        TextField txtValidade = new TextField();
-        txtValidade.setPromptText("MM/AA");
-
-        Label lblCVV = new Label("CVV:");
-        TextField txtCVV = new TextField();
-        txtCVV.setPromptText("000");
-
-        vbox.getChildren().addAll(
-            lblNumero, txtNumero,
-            lblTitular, txtTitular,
-            lblValidade, txtValidade,
-            lblCVV, txtCVV
-        );
-
-        dialog.getDialogPane().setContent(vbox);
-
-        // Converte o resultado
         dialog.setResultConverter(button -> {
             if (button == btnConfirmar) {
-
                 String numero = txtNumero.getText().trim().replaceAll("[^0-9]", "");
                 String titular = txtTitular.getText().trim();
                 String validade = txtValidade.getText().trim();
                 String cvv = txtCVV.getText().trim();
 
-                // Validações iguais às que você usava
                 if (numero.length() != 16) {
                     mostrarAlerta("Erro", "O número do cartão deve ter 16 dígitos.");
                     return null;
@@ -179,13 +346,23 @@ public class PagamentoController {
                     validade = "12/30";
                 }
 
+                // Salvar cartão se solicitado
+                if (permitirSalvar && chkSalvar.isSelected()) {
+                    String apelido = txtApelido.getText().trim();
+                    if (apelido.isEmpty()) {
+                        apelido = "Cartão " + numero.substring(12);
+                    }
+                    
+                    CartaoSalvo novoCartao = new CartaoSalvo(numero, titular, cvv, validade, apelido);
+                    cliente.adicionarCartao(novoCartao);
+                    RepositorioRestaurantes.getInstance().salvarDados();
+                }
+
                 return new CartaoCredito(numero, titular, cvv, validade);
             }
-
-            return null; // Cancelado
+            return null;
         });
 
-        // Exibe e aguarda
         Optional<CartaoCredito> resultado = dialog.showAndWait();
         return resultado.orElse(null);
     }
@@ -195,9 +372,6 @@ public class PagamentoController {
         dialog.setTitle("Pagamento em Dinheiro");
         dialog.setHeaderText("Troco para quanto?");
         dialog.setContentText("Valor (R$):");
-
-        // Estilizar
-        dialog.getDialogPane().setStyle("-fx-background-color: white;");
 
         Optional<String> result = dialog.showAndWait();
 
