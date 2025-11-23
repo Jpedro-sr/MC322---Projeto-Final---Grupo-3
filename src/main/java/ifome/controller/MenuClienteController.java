@@ -20,7 +20,6 @@ public class MenuClienteController {
 
     @FXML
     public void initialize() {
-        // Esse método roda automaticamente quando a tela abre
         String nome = SessaoUsuario.getInstance().getClienteLogado().getNome();
         labelNome.setText("Olá, " + nome + "!");
     }
@@ -28,7 +27,6 @@ public class MenuClienteController {
     @FXML
     private void irParaRestaurantes(ActionEvent event) {
         try {
-            // Carrega a tela de lista criada acima
             Parent root = FXMLLoader.load(getClass().getResource("/ifome/ListaRestaurantes.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root, 360, 640));
@@ -51,15 +49,21 @@ public class MenuClienteController {
     }
 
     @FXML
-    private void irParaPedidos() {
-        mostrarAlerta("Em breve", "Tela de Pedidos será implementada!");
+    private void irParaPedidos(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/ifome/TelaMeusPedidos.fxml"));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root, 360, 640));
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarAlerta("Erro", "Erro ao carregar pedidos.");
+        }
     }
 
     @FXML
     private void fazerLogout(ActionEvent event) throws IOException {
         SessaoUsuario.getInstance().logout();
         
-        // Volta para a tela de Login
         Parent root = FXMLLoader.load(getClass().getResource("/ifome/TelaLogin.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root, 360, 640));

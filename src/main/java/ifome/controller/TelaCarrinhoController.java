@@ -31,35 +31,16 @@ import javafx.stage.Stage;
 
 public class TelaCarrinhoController {
 
-    @FXML
-    private VBox containerItens;
-
-    @FXML
-    private Label lblRestaurante;
-
-    @FXML
-    private Label lblSubtotal;
-
-    @FXML
-    private Label lblDesconto;
-
-    @FXML
-    private Label lblTotal;
-
-    @FXML
-    private TextField txtCupom;
-
-    @FXML
-    private Button btnAplicarCupom;
-
-    @FXML
-    private Button btnFinalizarPedido;
-
-    @FXML
-    private Label lblCupomStatus;
-
-    @FXML
-    private HBox boxDesconto;
+    @FXML private VBox containerItens;
+    @FXML private Label lblRestaurante;
+    @FXML private Label lblSubtotal;
+    @FXML private Label lblDesconto;
+    @FXML private Label lblTotal;
+    @FXML private TextField txtCupom;
+    @FXML private Button btnAplicarCupom;
+    @FXML private Button btnFinalizarPedido;
+    @FXML private Label lblCupomStatus;
+    @FXML private HBox boxDesconto;
 
     private Cliente cliente;
     private Carrinho carrinho;
@@ -78,7 +59,6 @@ public class TelaCarrinhoController {
         carregarItens();
         atualizarValores();
         
-        // Estilo hover para botões
         aplicarEfeitoHoverBotao(btnAplicarCupom, "#4cd137", "#3db829");
         aplicarEfeitoHoverBotao(btnFinalizarPedido, "#4cd137", "#3db829");
     }
@@ -125,7 +105,6 @@ public class TelaCarrinhoController {
             "-fx-background-radius: 12;"
         );
 
-        // Header: Nome e Botão Remover
         HBox header = new HBox();
         header.setAlignment(Pos.CENTER_LEFT);
 
@@ -157,7 +136,6 @@ public class TelaCarrinhoController {
 
         header.getChildren().addAll(lblNome, spacer, btnRemover);
 
-        // Detalhes: Quantidade e Preço
         HBox detalhes = new HBox();
         detalhes.setAlignment(Pos.CENTER_LEFT);
         detalhes.setSpacing(10);
@@ -174,7 +152,6 @@ public class TelaCarrinhoController {
 
         detalhes.getChildren().addAll(lblQtd, spacer2, lblPreco);
 
-        // Observações (se houver)
         if (!item.getObservacoes().isEmpty()) {
             Label lblObs = new Label("📝 " + item.getObservacoes());
             lblObs.setStyle("-fx-text-fill: #999; -fx-font-size: 12px; -fx-font-style: italic;");
@@ -256,16 +233,13 @@ public class TelaCarrinhoController {
             return;
         }
 
-        // TODO: Implementar tela de pagamento/endereço
-        mostrarAlerta("Em Desenvolvimento", 
-            "Pedido pronto para finalização!\n\n" +
-            "Total: R$ " + String.format("%.2f", valorTotal) + "\n\n" +
-            "A próxima tela será de seleção de endereço e pagamento.");
-        
-        // Limpar carrinho após confirmação (temporário)
-        // carrinho.limparCarrinho();
-        // carregarItens();
-        // atualizarValores();
+        // Ir para tela de pagamento
+        try {
+            mudarTela(event, "/ifome/TelaPagamento.fxml");
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarAlerta("Erro", "Erro ao carregar tela de pagamento.");
+        }
     }
 
     @FXML

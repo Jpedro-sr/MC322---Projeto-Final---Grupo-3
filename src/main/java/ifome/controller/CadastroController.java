@@ -36,7 +36,6 @@ public class CadastroController {
 
     @FXML
     private void handleCadastro(ActionEvent event) {
-        // Validar campos
         String nome = campoNome.getText().trim();
         String email = campoEmail.getText().trim();
         String telefone = campoTelefone.getText().trim();
@@ -64,9 +63,9 @@ public class CadastroController {
             return;
         }
 
-        // Validar senha
-        if (senha.length() < 6) {
-            mostrarAlerta("Senha Fraca", "A senha deve ter no mínimo 6 caracteres.");
+        // Validar senha (removido limite mínimo)
+        if (senha.isEmpty()) {
+            mostrarAlerta("Senha Obrigatória", "Por favor, digite uma senha.");
             campoSenha.requestFocus();
             return;
         }
