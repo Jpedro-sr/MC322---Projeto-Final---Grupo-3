@@ -1,6 +1,7 @@
 package ifome.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,39 +68,28 @@ public class PagamentoController {
                 }
                 
             } else if (rbCartao.isSelected()) {
-                if (cliente.temCartoesSalvos()) {
-                    pagamento = selecionarOuAdicionarCartao();
-                } else {
-                    pagamento = solicitarDadosCartaoNovo(true);
-                }
-                
-                if (pagamento == null) {
-                    return;
-                }
+                // FLUXO CORRIGIDO: Verifica salvos antes de pedir dados
+                pagamento = processarPagamentoCartao();
+                if (pagamento == null) return; // Cancelado
                 
             } else if (rbDinheiro.isSelected()) {
                 pagamento = solicitarValorDinheiro();
-                if (pagamento == null) {
-                    return;
-                }
+                if (pagamento == null) return;
             }
 
-            // Gera pedido
+            // ✅ CORREÇÃO: Gera pedido
             Pedido pedido = carrinho.gerarPedido();
             pedido.setFormaPagamento(pagamento);
 
-            // ⚠️ CORREÇÃO: NÃO processar pagamento ainda - pedido fica pendente
-            // pedido.processarPagamento(); // <-- REMOVER ESTA LINHA
-
-            // ✅ CORREÇÃO: Pedido inicia como "Pendente"
+            // ✅ CORREÇÃO: Define como Pendente (não processa pagamento ainda)
             pedido.atualizarStatus("Pendente");
 
-            // ⚠️ CORREÇÃO: NÃO aceitar automaticamente - restaurante deve aceitar
-            // carrinho.getRestaurante().aceitarPedido(pedido); // <-- REMOVER ESTA LINHA
-
-            // ✅ Adiciona à fila do restaurante como PENDENTE
+            // ✅ CORREÇÃO: Adiciona à fila do restaurante SEM aceitar automaticamente
             Restaurante restaurante = carrinho.getRestaurante();
-            restaurante.getFilaPedidos().add(pedido); // Adiciona diretamente sem aceitar
+            
+            // NÃO usar restaurante.aceitarPedido() porque ele força "Confirmado"
+            // Adicionar diretamente à fila como PENDENTE
+            restaurante.getFilaPedidos().add(pedido);
 
             // Adiciona ao histórico
             cliente.adicionarPedido(pedido);
@@ -128,7 +118,103 @@ public class PagamentoController {
             mostrarAlerta("Erro", "Erro ao processar pedido: " + e.getMessage());
         }
     }
+    
+    private FormaPagamento processarPagamentoCartao() {
+        List<CartaoSalvo> cartoesSalvos = cliente.getCartoesSalvos();
 
+        // Se tiver cartões salvos, oferece a escolha
+        if (!cartoesSalvos.isEmpty()) {
+            // Cria uma lista mista (Cartões + Opção de Novo)
+            List<Object> opcoes = new ArrayList<>(cartoesSalvos);
+            opcoes.add("➕ Usar outro cartão");
+
+            ChoiceDialog<Object> dialog = new ChoiceDialog<>(opcoes.get(0), opcoes);
+            dialog.setTitle("Seus Cartões");
+            dialog.setHeaderText("Escolha como deseja pagar:");
+            dialog.setContentText("Cartão:");
+
+            Optional<Object> resultado = dialog.showAndWait();
+            
+            if (!resultado.isPresent()) return null; // Cancelou
+
+            Object selecao = resultado.get();
+            
+            if (selecao instanceof CartaoSalvo) {
+                // Usou cartão salvo
+                CartaoSalvo s = (CartaoSalvo) selecao;
+                return new CartaoCredito(s.getNumeroCompleto(), s.getNomeTitular(), s.getCvv(), s.getValidade());
+            }
+        }
+
+        // Se não tem salvos ou escolheu "Outro", abre formulário
+        return solicitarDadosNovoCartao();
+    }
+
+    private CartaoCredito solicitarDadosNovoCartao() {
+        Dialog<CartaoCredito> dialog = new Dialog<>();
+        dialog.setTitle("Novo Cartão");
+        dialog.setHeaderText("Digite os dados do cartão");
+
+        ButtonType btnConfirmar = new ButtonType("Confirmar", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(btnConfirmar, ButtonType.CANCEL);
+
+        VBox vbox = new VBox(10);
+        vbox.setPadding(new Insets(20));
+        vbox.setStyle("-fx-background-color: white;");
+
+        TextField txtNumero = new TextField(); txtNumero.setPromptText("Número (16 dígitos)");
+        TextField txtTitular = new TextField(); txtTitular.setPromptText("Nome do Titular");
+        TextField txtValidade = new TextField(); txtValidade.setPromptText("Validade (MM/AA)");
+        TextField txtCVV = new TextField(); txtCVV.setPromptText("CVV");
+        
+        // CHECKBOX PARA SALVAR
+        CheckBox chkSalvar = new CheckBox("Salvar cartão para próximas compras");
+        TextField txtApelido = new TextField(); 
+        txtApelido.setPromptText("Apelido (ex: Nubank)");
+        txtApelido.disableProperty().bind(chkSalvar.selectedProperty().not()); // Só habilita se marcar salvar
+
+        vbox.getChildren().addAll(
+            new Label("Número:"), txtNumero,
+            new Label("Titular:"), txtTitular,
+            new Label("Validade:"), txtValidade,
+            new Label("CVV:"), txtCVV,
+            new Separator(),
+            chkSalvar, txtApelido
+        );
+
+        dialog.getDialogPane().setContent(vbox);
+
+        dialog.setResultConverter(btn -> {
+            if (btn == btnConfirmar) {
+                String num = txtNumero.getText().replaceAll("[^0-9]", "");
+                String tit = txtTitular.getText();
+                String val = txtValidade.getText();
+                String cvv = txtCVV.getText();
+
+                if (num.length() != 16 || tit.isEmpty() || cvv.length() < 3) return null;
+                if (val.isEmpty()) val = "12/30";
+
+                // LÓGICA DE SALVAR
+                if (chkSalvar.isSelected()) {
+                    String apelido = txtApelido.getText().isEmpty() ? 
+                                     "Cartão final " + num.substring(12) : txtApelido.getText();
+                    
+                    CartaoSalvo novoSalvo = new CartaoSalvo(num, tit, cvv, val, apelido);
+                    
+                    // Salva na memória e no arquivo IMEDIATAMENTE
+                    cliente.adicionarCartao(novoSalvo);
+                    RepositorioRestaurantes.getInstance().salvarDados();
+                }
+
+                return new CartaoCredito(num, tit, cvv, val);
+            }
+            return null;
+        });
+
+        Optional<CartaoCredito> result = dialog.showAndWait();
+        return result.orElse(null);
+    }
+    
     /**
      * Mostra QR Code simulado do PIX e aguarda confirmação.
      */

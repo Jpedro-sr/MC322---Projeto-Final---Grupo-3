@@ -204,18 +204,16 @@ public class GerenciarPedidosController {
         confirmacao.setContentText(
             "Cliente: " + pedido.getCliente().getNome() + "\n" +
             "Total: R$ " + String.format("%.2f", pedido.getValorTotal()) + "\n\n" +
-            "O cliente será notificado e o pagamento será processado."
+            "O pagamento será processado quando você aceitar."
         );
 
         Optional<ButtonType> resultado = confirmacao.showAndWait();
         
         if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
             try {
-                // ✅ AGORA processa o pagamento quando aceita
-                pedido.processarPagamento();
+                // ✅ CORREÇÃO: AGORA processa o pagamento ao aceitar
+                pedido.processarPagamento(); // Isso também muda status para "Confirmado"
                 
-                // Atualiza status para Confirmado
-                pedido.atualizarStatus("Confirmado");
                 RepositorioRestaurantes.getInstance().salvarDados();
 
                 Alert sucesso = new Alert(Alert.AlertType.INFORMATION);

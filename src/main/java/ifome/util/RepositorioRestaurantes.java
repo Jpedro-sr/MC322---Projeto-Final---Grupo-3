@@ -14,7 +14,7 @@ import java.util.Date;
  * VERSÃO COMPLETA - Persistência robusta de cardápios, endereços e pedidos
  */
 public class RepositorioRestaurantes {
-
+    
     private static final String ARQUIVO_CARTOES = "data/cartoes.txt";
     
     private static RepositorioRestaurantes instancia;
@@ -220,6 +220,7 @@ public class RepositorioRestaurantes {
         carregarPedidos();
         carregarItensPedido();
         carregarCupons();
+        carregarCartoes(); // <--- ADICIONADO AQUI
         System.out.println(">>> Dados carregados com sucesso!");
     }
 
@@ -473,6 +474,7 @@ public class RepositorioRestaurantes {
         salvarPedidos();
         salvarItensPedido();
         salvarCupons();
+        salvarCartoes(); // <--- ADICIONADO AQUI
         System.out.println(">>> Dados salvos com sucesso!");
     }
 
