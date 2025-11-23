@@ -16,8 +16,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -34,6 +32,7 @@ public class ListaRestaurantesController {
     }
 
     private void carregarLista() {
+        // Pega TODOS os restaurantes do sistema
         List<Restaurante> lista = RepositorioRestaurantes.getInstance().getTodosRestaurantes();
 
         containerRestaurantes.getChildren().clear();
@@ -45,40 +44,36 @@ public class ListaRestaurantesController {
         }
 
         for (Restaurante r : lista) {
-            // Cria o cartão visual do restaurante
             Button card = criarCardRestaurante(r);
             containerRestaurantes.getChildren().add(card);
         }
     }
 
     private Button criarCardRestaurante(Restaurante r) {
-        // Layout do botão: Nome na esquerda, Nota na direita
-        // Usamos um botão gigante contendo texto e estilo
-        
         String status = r.estaAberto() ? "Aberto" : "Fechado";
-        String corStatus = r.estaAberto() ? "#4cd137" : "#7f8fa6"; // Verde ou Cinza
+        String corStatus = r.estaAberto() ? "#4cd137" : "#7f8fa6";
         
         Button btn = new Button();
-        btn.setMaxWidth(Double.MAX_VALUE); // Ocupa toda largura
+        btn.setMaxWidth(Double.MAX_VALUE);
         btn.setPrefHeight(80);
         
-        // Estilo CSS inline para o botão parecer um "Card"
-        btn.setStyle("-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-cursor: hand;");
+        // Estilo CSS inline
+        btn.setStyle("-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand; -fx-padding: 15;");
 
-        // Conteúdo do Botão (VBox com nome e detalhes)
+        // Conteúdo do Botão
         VBox vBox = new VBox(5);
         vBox.setAlignment(Pos.CENTER_LEFT);
         
         Label lblNome = new Label(r.getNomeRestaurante());
         lblNome.setFont(Font.font("System", FontWeight.BOLD, 16));
+        lblNome.setStyle("-fx-text-fill: #333;");
         
-        Label lblDetalhes = new Label("⭐ " + String.format("%.1f", r.calcularMediaAvaliacoes()) + " • " + status);
-        lblDetalhes.setTextFill(javafx.scene.paint.Color.web(corStatus));
+        Label lblDetalhes = new Label(String.format("⭐ %.1f • %s", r.calcularMediaAvaliacoes(), status));
+        lblDetalhes.setStyle("-fx-text-fill: " + corStatus + "; -fx-font-size: 14px;");
 
         vBox.getChildren().addAll(lblNome, lblDetalhes);
-        btn.setGraphic(vBox); // Coloca o VBox dentro do botão
+        btn.setGraphic(vBox);
 
-        // Ação ao clicar
         btn.setOnAction(e -> abrirRestaurante(e, r));
 
         return btn;
@@ -90,28 +85,25 @@ public class ListaRestaurantesController {
             return;
         }
 
-        // Define na sessão qual restaurante foi escolhido
+        // Salva na sessão para a próxima tela saber qual carregar
         SessaoUsuario.getInstance().setRestauranteAtual(r);
 
-        // TODO: Redirecionar para a tela de Cardápio (Próximo passo)
-        mostrarAlerta("Sucesso", "Você selecionou: " + r.getNomeRestaurante() + "\n(Tela de Cardápio será a próxima)");
-        
-        // try {
-        //    mudarTela(event, "/ifome/TelaCardapio.fxml");
-        // } catch (IOException e) { ... }
+        try {
+            // Carrega a tela de CARDÁPIO
+            // IMPORTANTE: O FXML aqui deve ser TelaCardapio.fxml
+            Stage stage = (Stage) containerRestaurantes.getScene().getWindow();
+            Parent root = FXMLLoader.load(getClass().getResource("/ifome/TelaCardapio.fxml"));
+            stage.setScene(new Scene(root, 360, 640));
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarAlerta("Erro", "Não foi possível carregar o cardápio.");
+        }
     }
 
     @FXML
     private void voltar(ActionEvent event) throws IOException {
-        mudarTela(event, "/ifome/MenuCliente.fxml");
-    }
-
-    private void mudarTela(ActionEvent event, String fxmlPath) throws IOException {
-        // O event.getSource() pode vir de um Button dentro de um container dinâmico,
-        // então pegamos o Scene do Node genérico
-        Node source = (Node) event.getSource();
-        Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
-        Stage stage = (Stage) source.getScene().getWindow();
+        Stage stage = (Stage) containerRestaurantes.getScene().getWindow();
+        Parent root = FXMLLoader.load(getClass().getResource("/ifome/MenuCliente.fxml"));
         stage.setScene(new Scene(root, 360, 640));
     }
 

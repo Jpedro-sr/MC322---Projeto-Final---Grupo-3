@@ -15,35 +15,50 @@
         <padding>
             <Insets bottom="20" top="20" />
         </padding>
-        <Label text="Olá, Cliente!" fx:id="labelNome" textFill="#333">
+        <Label fx:id="labelNome" text="Olá, Cliente!" textFill="#333">
             <font>
                 <Font name="System Bold" size="18.0" />
             </font>
         </Label>
     </VBox>
 
-    <VBox spacing="10.0" alignment="CENTER">
+    <VBox alignment="TOP_CENTER" spacing="12.0">
         <padding>
-            <Insets left="20" right="20" top="20" />
+            <Insets left="20" right="20" top="10" />
         </padding>
 
-        <Button text="🍔 Escolher Restaurante" maxWidth="Infinity" prefHeight="50.0" 
-                style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 5; -fx-background-radius: 5;" 
-                onAction="#irParaRestaurantes"/>
+        <Button text="🍔  Escolher Restaurante" maxWidth="Infinity" prefHeight="60.0" 
+                style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 0 0 15;" 
+                onAction="#irParaRestaurantes">
+            <font>
+                <Font name="System Bold" size="14.0" />
+            </font>
+        </Button>
 
-        <Button text="🛒 Ver Carrinho" maxWidth="Infinity" prefHeight="50.0" 
-                style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 5; -fx-background-radius: 5;" 
-                onAction="#irParaCarrinho"/>
+        <Button text="🛒  Ver Carrinho" maxWidth="Infinity" prefHeight="60.0" 
+                style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 0 0 15;" 
+                onAction="#irParaCarrinho">
+            <font>
+                <Font name="System Bold" size="14.0" />
+            </font>
+        </Button>
 
-        <Button text="📄 Meus Pedidos" maxWidth="Infinity" prefHeight="50.0" 
-                style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 5; -fx-background-radius: 5;" 
-                onAction="#irParaPedidos"/>
+        <Button text="📄  Meus Pedidos" maxWidth="Infinity" prefHeight="60.0" 
+                style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 0 0 0 15;" 
+                onAction="#irParaPedidos">
+            <font>
+                <Font name="System Bold" size="14.0" />
+            </font>
+        </Button>
                 
-        <Button text="Sair" textFill="#ea1d2c" onAction="#fazerLogout"
+        <Button text="Sair da conta" textFill="#ea1d2c" onAction="#fazerLogout"
                 style="-fx-background-color: transparent; -fx-cursor: hand;">
             <VBox.margin>
                 <Insets top="20.0" />
             </VBox.margin>
+            <font>
+                <Font size="14.0" />
+            </font>
         </Button>
     </VBox>
 </VBox>

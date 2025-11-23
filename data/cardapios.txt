@@ -1,0 +1,9 @@
+pizzaria@ifome.com;Comida;Pizza Margherita;Molho de tomate, mussarela, manjericao;45.9;true;false
+pizzaria@ifome.com;Comida;Pizza Calabresa;Molho, mussarela, calabresa, cebola;48.9;true;false
+pizzaria@ifome.com;Bebida;Coca-Cola;Refrigerante 350ml;6.0;true;350
+pizzaria@ifome.com;Sobremesa;Petit Gateau;Com sorvete de baunilha;18.9;true
+burger@ifome.com;Comida;X-Burger;Pao, carne, queijo, alface, tomate;22.9;true;false
+burger@ifome.com;Comida;X-Bacon;Pao, carne, bacon, queijo, alface;26.9;true;false
+burger@ifome.com;Bebida;Suco Natural;Laranja 500ml;8.0;true;350
+sushi@ifome.com;Comida;Combo Sashimi;12 pecas variadas;65.9;true;false
+sushi@ifome.com;Comida;Temaki Salmao;Temaki de salmao com cream cheese;28.9;true;false

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" prefHeight="640.0" prefWidth="360.0" 
+      style="-fx-background-color: #f4f4f4;" 
+      xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="ifome.controller.TelaCardapioController">
+
+    <!-- CABEÇALHO FIXO -->
+    <VBox alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+        <padding>
+            <Insets bottom="15" top="15" left="15" right="15" />
+        </padding>
+        
+        <!-- Botão Voltar -->
+        <HBox alignment="CENTER_LEFT">
+            <Button text="← Voltar" onAction="#voltar" 
+                    style="-fx-background-color: transparent; -fx-text-fill: #666; -fx-cursor: hand; -fx-font-size: 14px;">
+                <HBox.margin>
+                    <Insets bottom="10" />
+                </HBox.margin>
+            </Button>
+        </HBox>
+        
+        <!-- Nome e Avaliação do Restaurante -->
+        <Label fx:id="lblNomeRestaurante" text="Nome do Restaurante" textFill="#333">
+            <font>
+                <Font name="System Bold" size="20.0" />
+            </font>
+        </Label>
+        
+        <HBox spacing="5.0" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="5" />
+            </padding>
+            <Label fx:id="lblAvaliacaoRestaurante" text="⭐ 4.5" textFill="#666">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </Label>
+            <Label fx:id="lblStatusRestaurante" text="• Aberto" textFill="#4cd137">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </Label>
+        </HBox>
+    </VBox>
+
+    <!-- LISTA DE PRODUTOS (ScrollPane) -->
+    <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: #f4f4f4;" VBox.vgrow="ALWAYS">
+        <content>
+            <VBox fx:id="containerProdutos" spacing="10.0" alignment="TOP_CENTER">
+                <padding>
+                    <Insets bottom="80" left="15" right="15" top="15" />
+                </padding>
+            </VBox>
+        </content>
+    </ScrollPane>
+
+    <!-- RODAPÉ FIXO - Botão Ver Carrinho -->
+    <HBox alignment="CENTER" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 8, 0, 0, -2);">
+        <padding>
+            <Insets bottom="15" top="15" left="15" right="15" />
+        </padding>
+        
+        <Button fx:id="btnVerCarrinho" text="🛒 Ver Carrinho (0)" maxWidth="Infinity" prefHeight="50.0" 
+                onAction="#irParaCarrinho" HBox.hgrow="ALWAYS"
+                style="-fx-background-color: #ea1d2c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-size: 16px;">
+        </Button>
+    </HBox>
+
+</VBox>

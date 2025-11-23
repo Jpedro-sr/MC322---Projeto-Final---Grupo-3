@@ -39,8 +39,15 @@ public class MenuClienteController {
     }
 
     @FXML
-    private void irParaCarrinho() {
-        mostrarAlerta("Em breve", "Tela de Carrinho será implementada!");
+    private void irParaCarrinho(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/ifome/TelaCarrinho.fxml"));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root, 360, 640));
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarAlerta("Erro", "Erro ao abrir o carrinho.");
+        }
     }
 
     @FXML

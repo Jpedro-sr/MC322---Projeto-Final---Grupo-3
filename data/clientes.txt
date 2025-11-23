@@ -1,4 +1,4 @@
-cliente@email.com;123;Jo�o Silva;19999999999
+cliente@email.com;123;Jo o Silva;19999999999
 jp@gmail.com;jp123;jp;Não informado
 rafaelrpm10@gmail.com;batata;Rafael;11945579979
 Rafa@gmail.com;Rafa;Rafa;1234567899
