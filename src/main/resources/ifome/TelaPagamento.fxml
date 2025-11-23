@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" prefHeight="640.0" prefWidth="360.0"
+      style="-fx-background-color: #f4f4f4;"
+      xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ifome.controller.PagamentoController">
+
+    <!-- HEADER FIXO -->
+    <VBox alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+        <padding><Insets top="15" bottom="15" left="15" right="15"/></padding>
+
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Button text="←" style="-fx-background-color: transparent; -fx-text-fill: #666; -fx-font-size: 18px;" onAction="#voltar"/>
+            <Label text="Pagamento" textFill="#333">
+                <font><Font name="System Bold" size="20"/></font>
+            </Label>
+        </HBox>
+    </VBox>
+
+    <!-- SCROLL CONTENT -->
+    <ScrollPane fitToWidth="true" style="-fx-background: #f4f4f4;" VBox.vgrow="ALWAYS">
+        <content>
+            <VBox spacing="15">
+                <padding><Insets top="15" bottom="100" left="15" right="15"/></padding>
+
+                <!-- RESUMO DO PEDIDO -->
+                <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8;">
+                    <Label text="📦 Resumo do Pedido">
+                        <font><Font name="System Bold" size="15"/></font>
+                    </Label>
+
+                    <Label fx:id="lblRestaurante" text="Restaurante" textFill="#666"/>
+                    <Label fx:id="lblItens" text="0 itens" textFill="#666"/>
+
+                    <HBox alignment="CENTER_LEFT" style="-fx-padding: 10 0 0 0; -fx-border-width: 1 0 0 0; -fx-border-color: #e0e0e0;">
+                        <Label text="Total">
+                            <font><Font name="System Bold" size="16"/></font>
+                        </Label>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="lblTotal" text="R$ 0,00" textFill="#ea1d2c">
+                            <font><Font name="System Bold" size="18"/></font>
+                        </Label>
+                    </HBox>
+                </VBox>
+
+                <!-- FORMAS DE PAGAMENTO -->
+                <VBox spacing="10">
+
+                    <Label text="💳 Forma de Pagamento">
+                        <font><Font name="System Bold" size="15"/></font>
+                    </Label>
+
+                    <fx:define>
+                        <ToggleGroup fx:id="grupoPagamento"/>
+                    </fx:define>
+
+                    <!-- PIX -->
+                    <RadioButton fx:id="rbPix" toggleGroup="$grupoPagamento" onAction="#selecionarPix"
+                                 style="-fx-padding: 15; -fx-font-size: 15; -fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-background-radius: 8;">
+                        <graphic>
+                            <HBox spacing="15" alignment="CENTER_LEFT">
+                                <Label text="📱" style="-fx-font-size: 22;"/>
+                                <VBox>
+                                    <Label text="PIX" style="-fx-font-weight: bold;"/>
+                                    <Label text="Pagamento instantâneo" textFill="#666" style="-fx-font-size: 12;"/>
+                                </VBox>
+                            </HBox>
+                        </graphic>
+                    </RadioButton>
+
+                    <!-- CARTÃO -->
+                    <RadioButton fx:id="rbCartao" toggleGroup="$grupoPagamento" onAction="#selecionarCartao"
+                                 style="-fx-padding: 15; -fx-font-size: 15; -fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-background-radius: 8;">
+                        <graphic>
+                            <HBox spacing="15" alignment="CENTER_LEFT">
+                                <Label text="💳" style="-fx-font-size: 22;"/>
+                                <VBox>
+                                    <Label text="Cartão de Crédito/Débito" style="-fx-font-weight: bold;"/>
+                                    <Label text="Crédito ou débito" textFill="#666" style="-fx-font-size: 12;"/>
+                                </VBox>
+                            </HBox>
+                        </graphic>
+                    </RadioButton>
+
+                    <!-- DINHEIRO -->
+                    <RadioButton fx:id="rbDinheiro" toggleGroup="$grupoPagamento" onAction="#selecionarDinheiro"
+                                 style="-fx-padding: 15; -fx-font-size: 15; -fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-background-radius: 8;">
+                        <graphic>
+                            <HBox spacing="15" alignment="CENTER_LEFT">
+                                <Label text="💵" style="-fx-font-size: 22;"/>
+                                <VBox>
+                                    <Label text="Dinheiro" style="-fx-font-weight: bold;"/>
+                                    <Label text="Pagamento na entrega" textFill="#666" style="-fx-font-size: 12;"/>
+                                </VBox>
+                            </HBox>
+                        </graphic>
+                    </RadioButton>
+
+                </VBox>
+            </VBox>
+        </content>
+    </ScrollPane>
+
+    <!-- FOOTER -->
+    <HBox alignment="CENTER" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 8, 0, 0, -2);">
+        <padding><Insets top="15" bottom="15" left="15" right="15"/></padding>
+
+        <Button fx:id="btnConfirmar" text="Confirmar Pagamento"
+                HBox.hgrow="ALWAYS" prefHeight="50"
+                disable="true"
+                style="-fx-background-color: #cccccc; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16; -fx-background-radius: 8;"
+                onAction="#confirmarPagamento"/>
+    </HBox>
+
+</VBox>

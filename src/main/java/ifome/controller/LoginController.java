@@ -59,6 +59,18 @@ public class LoginController {
         mostrarAlerta("Erro", "Email ou senha inválidos!");
     }
 
+    @FXML
+    private void irParaCadastro(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/ifome/TelaCadastro.fxml"));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root, 360, 640));
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarAlerta("Erro", "Não foi possível carregar a tela de cadastro.");
+        }
+    }
+
     private void mostrarAlerta(String titulo, String mensagem) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titulo);

@@ -54,13 +54,15 @@
       </VBox.margin>
    </Button>
 
-   <Label text="Não tem conta? Cadastre-se" textFill="#ea1d2c" underline="true">
+   <Button text="Não tem conta? Cadastre-se" textFill="#ea1d2c" underline="true" 
+           onAction="#irParaCadastro"
+           style="-fx-background-color: transparent; -fx-cursor: hand;">
       <font>
          <Font size="12.0" />
       </font>
       <VBox.margin>
          <Insets top="10.0" />
       </VBox.margin>
-   </Label>
+   </Button>
 
 </VBox>
