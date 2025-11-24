@@ -51,7 +51,7 @@ public class MenuRestauranteController {
     @FXML
     private void irParaCardapio(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/ifome/GerenciarCardapio.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/ifome/TelaGerenciarCardapio.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root, 360, 640));
         } catch (IOException e) {

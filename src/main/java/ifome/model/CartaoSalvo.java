@@ -1,5 +1,7 @@
 package ifome.model;
 
+import java.util.Objects;
+
 /**
  * Representa um cartão de crédito salvo pelo cliente.
  * Armazena informações de forma segura (número mascarado).
@@ -21,10 +23,20 @@ public class CartaoSalvo {
         this.validade = validade;
         this.apelido = apelido != null && !apelido.isEmpty() ? apelido : "Meu Cartão";
     }
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CartaoSalvo that = (CartaoSalvo) o;
+        return Objects.equals(numeroCompleto, that.numeroCompleto) && 
+               Objects.equals(apelido, that.apelido);
+    }
+
     public CartaoSalvo(String numeroCompleto, String nomeTitular, String cvv, String validade) {
         this(numeroCompleto, nomeTitular, cvv, validade, "");
     }
+    
     
     private String mascararNumero(String numero) {
         if (numero == null || numero.length() < 8) {
@@ -43,9 +55,17 @@ public class CartaoSalvo {
     
     // Getters
     public String getNumeroMascarado() {
-        return numeroMascarado;
+        if (numeroCompleto != null && numeroCompleto.length() > 4) {
+            return "**** " + numeroCompleto.substring(numeroCompleto.length() - 4);
+        }
+        return "****";
     }
-    
+
+    @Override
+    public String toString() {
+        return apelido + " (" + getNumeroMascarado() + ")";
+    }
+
     public String getNumeroCompleto() {
         return numeroCompleto;
     }
@@ -68,23 +88,5 @@ public class CartaoSalvo {
     
     public void setApelido(String apelido) {
         this.apelido = apelido != null && !apelido.isEmpty() ? apelido : this.apelido;
-    }
-    
-    @Override
-    public String toString() {
-        return apelido + " - " + numeroMascarado;
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        CartaoSalvo cartao = (CartaoSalvo) obj;
-        return numeroCompleto.equals(cartao.numeroCompleto);
-    }
-    
-    @Override
-    public int hashCode() {
-        return numeroCompleto.hashCode();
     }
 }

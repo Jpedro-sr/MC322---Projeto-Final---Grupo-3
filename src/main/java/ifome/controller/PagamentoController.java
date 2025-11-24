@@ -106,10 +106,9 @@ public class PagamentoController {
             mostrarAlerta("Erro", "Erro ao processar pedido: " + e.getMessage());
         }
     }
-    
+
     private FormaPagamento processarPagamentoCartao() {
         List<CartaoSalvo> cartoesSalvos = cliente.getCartoesSalvos();
-
         if (!cartoesSalvos.isEmpty()) {
             return mostrarDialogEscolherCartao();
         } else {
@@ -117,124 +116,77 @@ public class PagamentoController {
         }
     }
 
-    /**
-     * ✅ CORRIGIDO: Dialog para escolher cartão salvo ou adicionar novo
-     */
     private CartaoCredito mostrarDialogEscolherCartao() {
         Dialog<CartaoCredito> dialog = new Dialog<>();
         dialog.setTitle("Seus Cartões");
-        dialog.setHeaderText("Escolha um cartão ou adicione um novo");
+        dialog.setHeaderText("  Escolha um cartão");
+        
+        // APLICA O ESTILO VISUAL NOVO
+        estilizarDialog(dialog);
 
-        VBox vbox = new VBox(15);
-        vbox.setPadding(new Insets(20));
-
+        VBox vbox = new VBox(10);
+        vbox.setPadding(new Insets(10));
+        
         ToggleGroup grupoCartoes = new ToggleGroup();
-        
-        List<CartaoSalvo> cartoes = cliente.getCartoesSalvos();
-        
-        // Lista de cartões salvos
-        for (CartaoSalvo cartao : cartoes) {
-            HBox hbox = criarCardCartao(cartao, grupoCartoes);
-            vbox.getChildren().add(hbox);
+        for (CartaoSalvo cartao : cliente.getCartoesSalvos()) {
+            vbox.getChildren().add(criarCardCartao(cartao, grupoCartoes));
         }
 
-        // Botão "Adicionar novo cartão"
-        Button btnNovoCartao = new Button("➕ Adicionar Novo Cartão");
-        btnNovoCartao.setMaxWidth(Double.MAX_VALUE);
-        btnNovoCartao.setStyle(
-            "-fx-background-color: #f0f0f0; -fx-text-fill: #333; " +
-            "-fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 15; " +
-            "-fx-border-color: #ddd; -fx-border-width: 2; -fx-border-radius: 8; " +
-            "-fx-background-radius: 8;"
-        );
+        Button btnNovo = new Button("➕ Adicionar Novo Cartão");
+        btnNovo.setMaxWidth(Double.MAX_VALUE);
+        // Estilo do botão dentro do dialog
+        btnNovo.setStyle("-fx-background-color: white; -fx-border-color: #ea1d2c; -fx-text-fill: #ea1d2c; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 8; -fx-border-radius: 8;");
         
-        btnNovoCartao.setOnAction(e -> {
-            dialog.close();
-            CartaoCredito novoCartao = solicitarDadosNovoCartao();
-            if (novoCartao != null) {
-                dialog.setResult(novoCartao);
-            }
+        btnNovo.setOnAction(e -> {
+            CartaoCredito novo = solicitarDadosNovoCartao();
+            if (novo != null) dialog.setResult(novo);
         });
         
-        vbox.getChildren().add(btnNovoCartao);
-        
+        vbox.getChildren().add(new Separator());
+        vbox.getChildren().add(btnNovo);
         dialog.getDialogPane().setContent(vbox);
-
+        
         ButtonType btnContinuar = new ButtonType("Continuar", ButtonBar.ButtonData.OK_DONE);
-        ButtonType btnCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
-        dialog.getDialogPane().getButtonTypes().addAll(btnContinuar, btnCancelar);
+        dialog.getDialogPane().getButtonTypes().addAll(btnContinuar, ButtonType.CANCEL);
 
-        dialog.setResultConverter(button -> {
-            if (button == btnContinuar) {
-                if (grupoCartoes.getSelectedToggle() != null) {
-                    CartaoSalvo selecionado = (CartaoSalvo) grupoCartoes.getSelectedToggle().getUserData();
-                    return selecionado.toCartaoCredito();
-                }
+        // Estiliza os botões do rodapé do dialog
+        estilizarBotoesDialog(dialog);
+
+        dialog.setResultConverter(bt -> {
+            if (bt == btnContinuar && grupoCartoes.getSelectedToggle() != null) {
+                CartaoSalvo selecionado = (CartaoSalvo) grupoCartoes.getSelectedToggle().getUserData();
+                return selecionado.toCartaoCredito();
             }
             return null;
         });
 
-        Optional<CartaoCredito> resultado = dialog.showAndWait();
-        return resultado.orElse(null);
+        return dialog.showAndWait().orElse(null);
     }
 
     /**
      * ✅ CORRIGIDO: Cria card visual para cada cartão salvo
      */
     private HBox criarCardCartao(CartaoSalvo cartao, ToggleGroup grupo) {
-        HBox hbox = new HBox(15);
+        HBox hbox = new HBox(10);
         hbox.setAlignment(Pos.CENTER_LEFT);
-        hbox.setStyle(
-            "-fx-padding: 15; -fx-border-color: #e0e0e0; " +
-            "-fx-border-width: 2; -fx-border-radius: 8; -fx-background-radius: 8; " +
-            "-fx-background-color: white;"
-        );
+        hbox.setStyle("-fx-padding: 10; -fx-border-color: #ddd; -fx-border-radius: 5;");
 
-        RadioButton rb = new RadioButton();
+        RadioButton rb = new RadioButton(cartao.getApelido() + "\n" + cartao.getNumeroMascarado());
         rb.setUserData(cartao);
         rb.setToggleGroup(grupo);
+        rb.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(rb, javafx.scene.layout.Priority.ALWAYS);
 
-        VBox infoBox = new VBox(5);
-        Label lblNome = new Label(cartao.getApelido());
-        lblNome.setFont(Font.font("System", FontWeight.BOLD, 14));
-        
-        Label lblNumero = new Label(cartao.getNumeroMascarado());
-        lblNumero.setStyle("-fx-text-fill: #666; -fx-font-size: 12px;");
-        
-        infoBox.getChildren().addAll(lblNome, lblNumero);
-
-        // ✅ NOVO: Botão para remover cartão
-        Button btnRemover = new Button("🗑️");
-        btnRemover.setStyle(
-            "-fx-background-color: #ffe0e0; -fx-text-fill: #e74c3c; " +
-            "-fx-cursor: hand; -fx-background-radius: 20; -fx-font-size: 14px; " +
-            "-fx-padding: 5 10;"
-        );
-        
-        btnRemover.setOnAction(e -> {
-            Alert confirmacao = new Alert(Alert.AlertType.CONFIRMATION);
-            confirmacao.setTitle("Remover Cartão");
-            confirmacao.setHeaderText("Deseja remover este cartão?");
-            confirmacao.setContentText(cartao.getApelido() + " - " + cartao.getNumeroMascarado());
-            
-            Optional<ButtonType> result = confirmacao.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.OK) {
-                cliente.removerCartao(cartao);
-                RepositorioRestaurantes.getInstance().salvarDados();
-                
-                Alert sucesso = new Alert(Alert.AlertType.INFORMATION);
-                sucesso.setTitle("Cartão Removido");
-                sucesso.setContentText("Cartão removido com sucesso!");
-                sucesso.showAndWait();
-                
-                // Fecha o dialog atual para recarregar
-                ((Stage) btnRemover.getScene().getWindow()).close();
-            }
+        Button btnDel = new Button("🗑️");
+        btnDel.setStyle("-fx-background-color: transparent; -fx-text-fill: red; -fx-cursor: hand;");
+        btnDel.setOnAction(e -> {
+            // CORREÇÃO: Remove da memória e da tela visualmente
+            cliente.removerCartao(cartao);
+            RepositorioRestaurantes.getInstance().salvarDados();
+            ((VBox) hbox.getParent()).getChildren().remove(hbox);
         });
 
-        hbox.getChildren().addAll(rb, infoBox, btnRemover);
-        HBox.setHgrow(infoBox, javafx.scene.layout.Priority.ALWAYS);
-        
+        hbox.getChildren().addAll(rb, btnDel);
         return hbox;
     }
 
@@ -244,180 +196,124 @@ public class PagamentoController {
     private CartaoCredito solicitarDadosNovoCartao() {
         Dialog<CartaoCredito> dialog = new Dialog<>();
         dialog.setTitle("Novo Cartão");
-        dialog.setHeaderText("Preencha os dados do cartão");
+        dialog.setHeaderText("Dados do Cartão");
+        estilizarDialog(dialog); // Aplica estilo
 
-        VBox vbox = new VBox(15);
+        VBox vbox = new VBox(10);
         vbox.setPadding(new Insets(20));
 
-        TextField txtApelido = new TextField();
-        txtApelido.setPromptText("Apelido (ex: Nubank)");
-        txtApelido.setStyle("-fx-font-size: 13px; -fx-padding: 10;");
-
-        TextField txtNumero = new TextField();
-        txtNumero.setPromptText("0000 0000 0000 0000");
-        txtNumero.setStyle("-fx-font-size: 13px; -fx-padding: 10;");
-
-        TextField txtTitular = new TextField();
-        txtTitular.setPromptText("Nome do Titular");
-        txtTitular.setStyle("-fx-font-size: 13px; -fx-padding: 10;");
-
-        HBox hboxInferior = new HBox(10);
-        TextField txtValidade = new TextField();
-        txtValidade.setPromptText("MM/AA");
-        txtValidade.setPrefWidth(100);
-        txtValidade.setStyle("-fx-font-size: 13px; -fx-padding: 10;");
-
-        TextField txtCVV = new TextField();
-        txtCVV.setPromptText("CVV");
-        txtCVV.setPrefWidth(80);
-        txtCVV.setStyle("-fx-font-size: 13px; -fx-padding: 10;");
+        // Campos com estilo melhorado
+        TextField txtApelido = criarCampoEstilizado("Apelido (Ex: Nubank)");
+        TextField txtNumero = criarCampoEstilizado("Número (16 dígitos)");
+        TextField txtTitular = criarCampoEstilizado("Nome do Titular");
         
-        hboxInferior.getChildren().addAll(txtValidade, txtCVV);
+        HBox boxVal = new HBox(10);
+        TextField txtVal = criarCampoEstilizado("MM/AA"); txtVal.setPrefWidth(100);
+        TextField txtCvv = criarCampoEstilizado("CVV"); txtCvv.setPrefWidth(80);
+        boxVal.getChildren().addAll(txtVal, txtCvv);
 
-        CheckBox chkSalvar = new CheckBox("Salvar este cartão para próximas compras");
-        chkSalvar.setStyle("-fx-font-size: 12px;");
-        chkSalvar.setSelected(true); // ✅ Marcado por padrão
+        CheckBox chkSalvar = new CheckBox("Salvar Cartão");
+        chkSalvar.setSelected(true);
+        txtApelido.disableProperty().bind(chkSalvar.selectedProperty().not());
 
-        vbox.getChildren().addAll(
-            new Label("Apelido:"), txtApelido,
-            new Label("Número do Cartão:"), txtNumero,
-            new Label("Nome do Titular:"), txtTitular,
-            new Label("Validade e CVV:"), hboxInferior,
-            chkSalvar
-        );
-
+        vbox.getChildren().addAll(new Label("Apelido:"), txtApelido, 
+                                  new Label("Número:"), txtNumero, 
+                                  new Label("Titular:"), txtTitular, 
+                                  new Label("Dados:"), boxVal, chkSalvar);
+        
         dialog.getDialogPane().setContent(vbox);
-
-        ButtonType btnConfirmar = new ButtonType("Confirmar", ButtonBar.ButtonData.OK_DONE);
-        ButtonType btnCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
-        dialog.getDialogPane().getButtonTypes().addAll(btnConfirmar, btnCancelar);
-
-        dialog.setResultConverter(button -> {
-            if (button == btnConfirmar) {
-                String numero = txtNumero.getText().trim().replaceAll("[^0-9]", "");
-                String titular = txtTitular.getText().trim();
-                String validade = txtValidade.getText().trim();
-                String cvv = txtCVV.getText().trim();
-                String apelido = txtApelido.getText().trim();
-
-                // Validações
-                if (numero.length() != 16) {
-                    mostrarAlerta("Erro", "O número do cartão deve ter 16 dígitos.");
-                    return null;
-                }
-
-                if (titular.isEmpty()) {
-                    mostrarAlerta("Erro", "Digite o nome do titular.");
-                    return null;
-                }
-
-                if (!cvv.matches("\\d{3,4}")) {
-                    mostrarAlerta("Erro", "CVV inválido.");
-                    return null;
-                }
-
-                if (validade.isEmpty()) {
-                    validade = "12/30";
-                }
-
-                // ✅ SALVAR CARTÃO SE SOLICITADO
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        estilizarBotoesDialog(dialog);
+        dialog.setResultConverter(bt -> {
+            if (bt == ButtonType.OK) {
+                // Validações básicas
+                if (txtNumero.getText().length() < 13 || txtTitular.getText().isEmpty()) return null;
+                
+                String num = txtNumero.getText();
+                String tit = txtTitular.getText();
+                String val = txtVal.getText().isEmpty() ? "12/30" : txtVal.getText();
+                String cvv = txtCvv.getText();
+                
                 if (chkSalvar.isSelected()) {
-                    if (apelido.isEmpty()) {
-                        apelido = "Cartão final " + numero.substring(12);
-                    }
-                    
-                    CartaoSalvo novoSalvo = new CartaoSalvo(numero, titular, cvv, validade, apelido);
-                    cliente.adicionarCartao(novoSalvo);
-                    
-                    // ✅ SALVAR IMEDIATAMENTE NO ARQUIVO
+                    String apelido = txtApelido.getText().isEmpty() ? "Meu Cartão" : txtApelido.getText();
+                    CartaoSalvo salvo = new CartaoSalvo(num, tit, cvv, val, apelido);
+                    cliente.adicionarCartao(salvo);
                     RepositorioRestaurantes.getInstance().salvarDados();
-                    
-                    System.out.println("✅ Cartão salvo: " + apelido);
                 }
-
-                return new CartaoCredito(numero, titular, cvv, validade);
+                return new CartaoCredito(num, tit, cvv, val);
             }
             return null;
         });
 
-        Optional<CartaoCredito> resultado = dialog.showAndWait();
-        return resultado.orElse(null);
+        Optional<CartaoCredito> res = dialog.showAndWait();
+        return res.orElse(null);
     }
 
     private boolean mostrarQRCodePIX() {
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle("Pagamento PIX");
-        dialog.setHeaderText("Escaneie o QR Code para pagar");
-
-        VBox vbox = new VBox(20);
-        vbox.setPadding(new Insets(30));
-        vbox.setAlignment(Pos.CENTER);
-        vbox.setStyle("-fx-background-color: white;");
-
-        Label lblQRCode = new Label(
-            "█████████████████████\n" +
-            "██ ▄▄▄▄▄ █▀ █▀██ ▄▄▄▄▄ ██\n" +
-            "██ █   █ █▀▄ ▀██ █   █ ██\n" +
-            "██ █▄▄▄█ █ ▀▄ ██ █▄▄▄█ ██\n" +
-            "██▄▄▄▄▄▄▄█▄█ █▄█▄▄▄▄▄▄▄██\n" +
-            "██ ▄ ▄  ▄ ▄█▄ ▄▀▀ ▀▄▀ ▄██\n" +
-            "██▄ ▀██▄▄█  ▄ █▄  ▄▄█ ▄██\n" +
-            "██ ▄▄▄▄▄ █▄ ▄  █ ▄ █▄▀ ██\n" +
-            "██ █   █ █ ▄▀▄██▀ █▄▀▄ ██\n" +
-            "██ █▄▄▄█ █ ▀▀▄ ▄ ▄  ▀▀ ██\n" +
-            "██▄▄▄▄▄▄▄█▄█▄██▄█▄██▄█▄██\n" +
-            "█████████████████████"
-        );
-        lblQRCode.setFont(Font.font("Monospaced", 10));
-        lblQRCode.setStyle("-fx-background-color: white; -fx-padding: 15; -fx-border-color: #ddd; -fx-border-width: 2;");
-
-        Label lblInstrucoes = new Label("Abra o app do seu banco e escaneie o QR Code");
-        lblInstrucoes.setStyle("-fx-font-size: 14px; -fx-text-fill: #666;");
-
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Pagamento PIX");
+        alert.setHeaderText("Pagamento PIX"); // O estilo novo vai deixar isso branco e grande
+        alert.setGraphic(null); // Remove ícone padrão
+        estilizarDialog(alert);
+        
+        // Gera um código PIX aleatório simulado
+        String codigoPix = "00020126360014BR.GOV.BCB.PIX0114+551199999" + 
+                           System.currentTimeMillis() + // Garante que muda sempre
+                           "5204000053039865802BR5913iFomeDelivery6008BRASILIA62070503***6304";
+        
+        TextArea area = new TextArea(codigoPix);
+        area.setEditable(false); // Não deixa editar, mas deixa copiar
+        area.setWrapText(true);  // Quebra linha se for grande
+        area.setMaxHeight(80);
+        area.setStyle("-fx-font-family: 'Monospaced'; -fx-control-inner-background: #f4f4f4; -fx-highlight-fill: #ea1d2c; -fx-highlight-text-fill: white;");
+        
+        VBox content = new VBox(15);
+        content.setAlignment(Pos.CENTER);
+        
+        Label lblInstrucao = new Label("Copie o código abaixo e cole no app do seu banco:");
+        lblInstrucao.setStyle("-fx-font-size: 14px; -fx-text-fill: #333;");
+        
         Label lblValor = new Label(String.format("Valor: R$ %.2f", carrinho.calcularTotalComDesconto()));
         lblValor.setFont(Font.font("System", FontWeight.BOLD, 18));
         lblValor.setStyle("-fx-text-fill: #ea1d2c;");
 
-        vbox.getChildren().addAll(lblQRCode, lblInstrucoes, lblValor);
-        dialog.getDialogPane().setContent(vbox);
+        content.getChildren().addAll(lblValor, lblInstrucao, area);
+        alert.getDialogPane().setContent(content);
+        
+        // Botões personalizados
+        estilizarBotoesDialog(alert);
 
-        ButtonType btnConfirmarPag = new ButtonType("Já Paguei", ButtonBar.ButtonData.OK_DONE);
-        ButtonType btnCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
-        dialog.getDialogPane().getButtonTypes().addAll(btnConfirmarPag, btnCancelar);
-
-        Optional<ButtonType> result = dialog.showAndWait();
-        return result.isPresent() && result.get() == btnConfirmarPag;
+        return alert.showAndWait().map(bt -> bt == ButtonType.OK).orElse(false);
     }
 
     private Dinheiro solicitarValorDinheiro() {
         TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Pagamento em Dinheiro");
+        dialog.setTitle("Dinheiro");
         dialog.setHeaderText("Troco para quanto?");
         dialog.setContentText("Valor (R$):");
+        
+        // Remove o ícone padrão feio e aplica estilo
+        dialog.setGraphic(null); 
+        estilizarDialog(dialog);
+        
+        // Estiliza o campo de texto interno do TextInputDialog
+        TextField input = dialog.getEditor();
+        input.setStyle("-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #ddd;");
+        estilizarBotoesDialog(dialog);
 
-        Optional<String> result = dialog.showAndWait();
-
-        if (result.isPresent()) {
+        Optional<String> res = dialog.showAndWait();
+        if (res.isPresent()) {
             try {
-                String valorStr = result.get().replace(",", ".");
-                double valor = Double.parseDouble(valorStr);
-
-                double totalPedido = carrinho.calcularTotalComDesconto();
-
-                if (valor < totalPedido) {
-                    mostrarAlerta("Valor Insuficiente", 
-                        String.format("O valor deve ser no mínimo R$ %.2f", totalPedido));
+                double valor = Double.parseDouble(res.get().replace(",", "."));
+                if (valor < carrinho.calcularTotalComDesconto()) {
+                    mostrarAlerta("Erro", "Valor insuficiente.");
                     return null;
                 }
-
                 return new Dinheiro(valor);
-
-            } catch (NumberFormatException e) {
-                mostrarAlerta("Erro", "Digite um valor válido.");
-                return null;
+            } catch (Exception e) {
+                mostrarAlerta("Erro", "Valor inválido");
             }
         }
-
         return null;
     }
 
@@ -439,5 +335,51 @@ public class PagamentoController {
         alert.setHeaderText(null);
         alert.setContentText(mensagem);
         alert.showAndWait();
+    }
+
+    // --- MÉTODOS VISUAIS AUXILIARES (A Mágica do Design) ---
+
+    private void estilizarDialog(Dialog<?> dialog) {
+        DialogPane pane = dialog.getDialogPane();
+        
+        // Fundo Branco e Borda
+        pane.setStyle("-fx-background-color: white; -fx-font-family: 'System';");
+        
+        // Estiliza o cabeçalho (header) para vermelho
+        Node header = pane.lookup(".header-panel");
+        if (header != null) {
+            header.setStyle("-fx-background-color: #ea1d2c; -fx-padding: 15;");
+            
+            // Busca o Label DENTRO do header para mudar a cor e fonte
+            header.lookupAll(".label").forEach(node -> {
+                node.setStyle(
+                    "-fx-text-fill: white; " +       // Cor Branca
+                    "-fx-font-size: 20px; " +        // Tamanho Maior
+                    "-fx-font-weight: bold; " +      // Negrito
+                    "-fx-alignment: center;"         // Centralizado
+                );
+            });
+        }
+    }
+
+    private void estilizarBotoesDialog(Dialog<?> dialog) {
+        DialogPane pane = dialog.getDialogPane();
+        // Botão OK/Confirmar fica Vermelho
+        Node btnOk = pane.lookupButton(ButtonType.OK);
+        if (btnOk != null) btnOk.setStyle("-fx-background-color: #ea1d2c; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 5;");
+        
+        Node btnSim = pane.lookupButton(ButtonType.YES); // Caso use YES/NO
+        if (btnSim != null) btnSim.setStyle("-fx-background-color: #ea1d2c; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 5;");
+
+        // Botão Cancelar fica transparente/cinza
+        Node btnCancel = pane.lookupButton(ButtonType.CANCEL);
+        if (btnCancel != null) btnCancel.setStyle("-fx-background-color: white; -fx-border-color: #ddd; -fx-text-fill: #666; -fx-cursor: hand; -fx-background-radius: 5; -fx-border-radius: 5;");
+    }
+
+    private TextField criarCampoEstilizado(String prompt) {
+        TextField txt = new TextField();
+        txt.setPromptText(prompt);
+        txt.setStyle("-fx-padding: 10; -fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e0e0e0; -fx-background-color: #f9f9f9;");
+        return txt;
     }
 }

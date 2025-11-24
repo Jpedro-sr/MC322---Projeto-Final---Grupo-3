@@ -9,4 +9,7 @@
 1008;2025-11-23 19:29:36;a@gmail.com;sushi@ifome.com;Confirmado;0.0
 1009;2025-11-23 19:39:29;a@gmail.com;sushi@ifome.com;Confirmado;0.0
 1010;2025-11-23 20:08:16;a@gmail.com;pizzaria@ifome.com;Confirmado;0.0
-1011;2025-11-23 20:14:36;a@gmail.com;sushi@ifome.com;Pendente;0.0
+1011;2025-11-23 20:14:36;a@gmail.com;sushi@ifome.com;Confirmado;0.0
+1012;2025-11-23 20:53:05;a@gmail.com;burger@ifome.com;Confirmado;0.0
+1013;2025-11-23 21:10:25;aloalomarciano123@gmail.com;sushi@ifome.com;Pendente;0.0
+1014;2025-11-23 21:11:12;aloalomarciano123@gmail.com;burger@ifome.com;Pendente;0.0

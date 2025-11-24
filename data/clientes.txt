@@ -6,3 +6,4 @@ j@gmail.com;j123;joao;12345678910
 p@gmail.com;123;pe;148393489813498134
 a@gmail.com;123;a;987666622332332
 vetor@gmail.com;123123;asddas;123223322131321
+aloalomarciano123@gmail.com;Varrevassourinha;Juscelino Kubitscheck;11919191919
