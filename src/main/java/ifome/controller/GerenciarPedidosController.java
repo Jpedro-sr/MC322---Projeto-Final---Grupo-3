@@ -27,6 +27,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+/**
+ * ✅ CORRIGIDO: Exibe pedidos com status e valor corretos
+ */
 public class GerenciarPedidosController {
 
     @FXML private VBox containerPedidos;
@@ -36,15 +39,33 @@ public class GerenciarPedidosController {
     @FXML
     public void initialize() {
         restaurante = SessaoUsuario.getInstance().getRestauranteLogado();
+        
+        // ✅ DEBUG: Mostra informações do restaurante
+        System.out.println(">>> Restaurante logado: " + restaurante.getNomeRestaurante());
+        System.out.println(">>> Email: " + restaurante.getEmail());
+        
         carregarPedidos();
     }
 
+    /**
+     * ✅ CORRIGIDO: Carrega pedidos da fila do restaurante
+     */
     private void carregarPedidos() {
         containerPedidos.getChildren().clear();
 
-        List<Pedido> pedidos = restaurante.getFilaPedidos();
+        // ✅ IMPORTANTE: Busca pedidos diretamente do repositório global
+        List<Pedido> todosPedidos = RepositorioRestaurantes.getInstance().getTodosPedidos();
+        
+        // Filtra apenas os pedidos DESTE restaurante
+        List<Pedido> pedidosDoRestaurante = todosPedidos.stream()
+            .filter(p -> p.getRestaurante() != null && 
+                        p.getRestaurante().getEmail().equals(restaurante.getEmail()))
+            .toList();
 
-        if (pedidos.isEmpty()) {
+        System.out.println(">>> Total de pedidos no sistema: " + todosPedidos.size());
+        System.out.println(">>> Pedidos deste restaurante: " + pedidosDoRestaurante.size());
+
+        if (pedidosDoRestaurante.isEmpty()) {
             VBox emptyBox = new VBox(20);
             emptyBox.setAlignment(Pos.CENTER);
             emptyBox.setPadding(new Insets(50));
@@ -61,12 +82,20 @@ public class GerenciarPedidosController {
             return;
         }
 
-        for (Pedido pedido : pedidos) {
+        // ✅ Exibe os pedidos
+        for (Pedido pedido : pedidosDoRestaurante) {
+            System.out.println(">>> Pedido #" + pedido.getNumeroPedido() + 
+                             " | Status: " + pedido.getStatus() + 
+                             " | Valor: R$" + String.format("%.2f", pedido.getValorTotal()));
+            
             VBox cardPedido = criarCardPedido(pedido);
             containerPedidos.getChildren().add(cardPedido);
         }
     }
 
+    /**
+     * ✅ CORRIGIDO: Cria card visual do pedido com valor correto
+     */
     private VBox criarCardPedido(Pedido pedido) {
         VBox card = new VBox(12);
         card.setPadding(new Insets(15));
@@ -111,20 +140,28 @@ public class GerenciarPedidosController {
         itensBox.getChildren().add(lblItensHeader);
 
         for (ItemPedido item : pedido.getItens()) {
-            Label lblItem = new Label(String.format("  • %dx %s", 
+            Label lblItem = new Label(String.format("  • %dx %s - R$ %.2f", 
                 item.getQuantidade(), 
-                item.getProduto().getNome()
+                item.getProduto().getNome(),
+                item.calcularPrecoTotal()
             ));
             lblItem.setStyle("-fx-text-fill: #666; -fx-font-size: 13px;");
             itensBox.getChildren().add(lblItem);
         }
 
-        // Valor Total
+        // ✅ CORRIGIDO: Valor Total (agora exibe corretamente)
         HBox footerBox = new HBox();
         footerBox.setAlignment(Pos.CENTER_LEFT);
         footerBox.setStyle("-fx-padding: 10 0 0 0; -fx-border-width: 1 0 0 0; -fx-border-color: #e0e0e0;");
 
-        Label lblTotal = new Label("Total: R$ " + String.format("%.2f", pedido.getValorTotal()));
+        // ✅ Se valor está zerado, recalcula
+        double valorExibir = pedido.getValorTotal();
+        if (valorExibir == 0.0 && !pedido.getItens().isEmpty()) {
+            valorExibir = pedido.calcularPrecoTotal();
+            pedido.setValorTotal(valorExibir); // Atualiza no objeto
+        }
+
+        Label lblTotal = new Label("Total: R$ " + String.format("%.2f", valorExibir));
         lblTotal.setFont(Font.font("System", FontWeight.BOLD, 15));
         lblTotal.setStyle("-fx-text-fill: #ea1d2c;");
 
@@ -187,13 +224,24 @@ public class GerenciarPedidosController {
         return card;
     }
 
+    /**
+     * ✅ CORRIGIDO: Aceita pedido e processa pagamento
+     */
     private void aceitarPedido(Pedido pedido) {
         Alert confirmacao = new Alert(Alert.AlertType.CONFIRMATION);
         confirmacao.setTitle("Aceitar Pedido");
         confirmacao.setHeaderText("Deseja aceitar o pedido #" + pedido.getNumeroPedido() + "?");
+        
+        // ✅ Recalcula valor se necessário
+        double valorExibir = pedido.getValorTotal();
+        if (valorExibir == 0.0 && !pedido.getItens().isEmpty()) {
+            valorExibir = pedido.calcularPrecoTotal();
+            pedido.setValorTotal(valorExibir);
+        }
+        
         confirmacao.setContentText(
             "Cliente: " + pedido.getCliente().getNome() + "\n" +
-            "Total: R$ " + String.format("%.2f", pedido.getValorTotal())
+            "Total: R$ " + String.format("%.2f", valorExibir)
         );
 
         Optional<ButtonType> resultado = confirmacao.showAndWait();
@@ -203,7 +251,7 @@ public class GerenciarPedidosController {
                 // ✅ Processa pagamento
                 pedido.processarPagamento();
                 
-                // ✅ IMPORTANTE: Salva no repositório GLOBAL para sincronizar
+                // ✅ Salva no repositório GLOBAL
                 RepositorioRestaurantes.getInstance().salvarDados();
 
                 Alert sucesso = new Alert(Alert.AlertType.INFORMATION);
@@ -250,8 +298,6 @@ public class GerenciarPedidosController {
         if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
             try {
                 restaurante.recusarPedido(pedido);
-                
-                // ✅ IMPORTANTE: Salva para sincronizar
                 RepositorioRestaurantes.getInstance().salvarDados();
 
                 Alert sucesso = new Alert(Alert.AlertType.INFORMATION);
@@ -315,8 +361,6 @@ public class GerenciarPedidosController {
         if (resultado.isPresent()) {
             String novoStatus = resultado.get();
             pedido.atualizarStatus(novoStatus);
-            
-            // ✅ IMPORTANTE: Salva para sincronizar
             RepositorioRestaurantes.getInstance().salvarDados();
 
             Alert sucesso = new Alert(Alert.AlertType.INFORMATION);

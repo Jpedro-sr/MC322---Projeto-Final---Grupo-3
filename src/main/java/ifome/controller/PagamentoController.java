@@ -1,10 +1,7 @@
 package ifome.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-
 import ifome.model.*;
 import ifome.util.RepositorioRestaurantes;
 import ifome.util.SessaoUsuario;
@@ -23,6 +20,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+/**
+ * ✅ CORRIGIDO: Fluxo de pagamento com valor correto e status Pendente
+ */
 public class PagamentoController {
 
     @FXML private Label lblRestaurante;
@@ -50,6 +50,9 @@ public class PagamentoController {
         lblTotal.setText(String.format("R$ %.2f", carrinho.calcularTotalComDesconto()));
     }
 
+    /**
+     * ✅ CORRIGIDO: Gera pedido com valor correto e adiciona à fila do restaurante
+     */
     @FXML
     private void confirmarPagamento(ActionEvent event) {
         if (grupoPagamento.getSelectedToggle() == null) {
@@ -76,19 +79,28 @@ public class PagamentoController {
                 if (pagamento == null) return;
             }
 
+            // ✅ CORRIGIDO: Gera pedido (já com valor calculado)
             Pedido pedido = carrinho.gerarPedido();
             pedido.setFormaPagamento(pagamento);
+            
+            // ✅ IMPORTANTE: Pedido inicia como "Pendente" (aguardando confirmação)
             pedido.atualizarStatus("Pendente");
 
+            // ✅ CRÍTICO: Adiciona pedido à fila do RESTAURANTE
             Restaurante restaurante = carrinho.getRestaurante();
             restaurante.getFilaPedidos().add(pedido);
 
+            // Adiciona ao histórico do cliente
             cliente.adicionarPedido(pedido);
+            
+            // Salva no repositório global
             RepositorioRestaurantes.getInstance().adicionarPedido(pedido);
             RepositorioRestaurantes.getInstance().salvarDados();
 
+            // Limpa o carrinho APÓS salvar tudo
             carrinho.limparCarrinho();
 
+            // ✅ Mostra confirmação com valor correto
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Pedido Enviado");
             alert.setHeaderText("✅ Pedido enviado com sucesso!");
@@ -108,8 +120,7 @@ public class PagamentoController {
     }
 
     private FormaPagamento processarPagamentoCartao() {
-        List<CartaoSalvo> cartoesSalvos = cliente.getCartoesSalvos();
-        if (!cartoesSalvos.isEmpty()) {
+        if (!cliente.getCartoesSalvos().isEmpty()) {
             return mostrarDialogEscolherCartao();
         } else {
             return solicitarDadosNovoCartao();
@@ -120,8 +131,6 @@ public class PagamentoController {
         Dialog<CartaoCredito> dialog = new Dialog<>();
         dialog.setTitle("Seus Cartões");
         dialog.setHeaderText("  Escolha um cartão");
-        
-        // APLICA O ESTILO VISUAL NOVO
         estilizarDialog(dialog);
 
         VBox vbox = new VBox(10);
@@ -134,7 +143,6 @@ public class PagamentoController {
 
         Button btnNovo = new Button("➕ Adicionar Novo Cartão");
         btnNovo.setMaxWidth(Double.MAX_VALUE);
-        // Estilo do botão dentro do dialog
         btnNovo.setStyle("-fx-background-color: white; -fx-border-color: #ea1d2c; -fx-text-fill: #ea1d2c; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 8; -fx-border-radius: 8;");
         
         btnNovo.setOnAction(e -> {
@@ -148,8 +156,6 @@ public class PagamentoController {
         
         ButtonType btnContinuar = new ButtonType("Continuar", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(btnContinuar, ButtonType.CANCEL);
-
-        // Estiliza os botões do rodapé do dialog
         estilizarBotoesDialog(dialog);
 
         dialog.setResultConverter(bt -> {
@@ -163,9 +169,6 @@ public class PagamentoController {
         return dialog.showAndWait().orElse(null);
     }
 
-    /**
-     * ✅ CORRIGIDO: Cria card visual para cada cartão salvo
-     */
     private HBox criarCardCartao(CartaoSalvo cartao, ToggleGroup grupo) {
         HBox hbox = new HBox(10);
         hbox.setAlignment(Pos.CENTER_LEFT);
@@ -180,7 +183,6 @@ public class PagamentoController {
         Button btnDel = new Button("🗑️");
         btnDel.setStyle("-fx-background-color: transparent; -fx-text-fill: red; -fx-cursor: hand;");
         btnDel.setOnAction(e -> {
-            // CORREÇÃO: Remove da memória e da tela visualmente
             cliente.removerCartao(cartao);
             RepositorioRestaurantes.getInstance().salvarDados();
             ((VBox) hbox.getParent()).getChildren().remove(hbox);
@@ -190,19 +192,15 @@ public class PagamentoController {
         return hbox;
     }
 
-    /**
-     * ✅ CORRIGIDO: Solicita dados de novo cartão e SALVA imediatamente
-     */
     private CartaoCredito solicitarDadosNovoCartao() {
         Dialog<CartaoCredito> dialog = new Dialog<>();
         dialog.setTitle("Novo Cartão");
         dialog.setHeaderText("Dados do Cartão");
-        estilizarDialog(dialog); // Aplica estilo
+        estilizarDialog(dialog);
 
         VBox vbox = new VBox(10);
         vbox.setPadding(new Insets(20));
 
-        // Campos com estilo melhorado
         TextField txtApelido = criarCampoEstilizado("Apelido (Ex: Nubank)");
         TextField txtNumero = criarCampoEstilizado("Número (16 dígitos)");
         TextField txtTitular = criarCampoEstilizado("Nome do Titular");
@@ -224,9 +222,9 @@ public class PagamentoController {
         dialog.getDialogPane().setContent(vbox);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
         estilizarBotoesDialog(dialog);
+        
         dialog.setResultConverter(bt -> {
             if (bt == ButtonType.OK) {
-                // Validações básicas
                 if (txtNumero.getText().length() < 13 || txtTitular.getText().isEmpty()) return null;
                 
                 String num = txtNumero.getText();
@@ -245,25 +243,23 @@ public class PagamentoController {
             return null;
         });
 
-        Optional<CartaoCredito> res = dialog.showAndWait();
-        return res.orElse(null);
+        return dialog.showAndWait().orElse(null);
     }
 
     private boolean mostrarQRCodePIX() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Pagamento PIX");
-        alert.setHeaderText("Pagamento PIX"); // O estilo novo vai deixar isso branco e grande
-        alert.setGraphic(null); // Remove ícone padrão
+        alert.setHeaderText("Pagamento PIX");
+        alert.setGraphic(null);
         estilizarDialog(alert);
         
-        // Gera um código PIX aleatório simulado
         String codigoPix = "00020126360014BR.GOV.BCB.PIX0114+551199999" + 
-                           System.currentTimeMillis() + // Garante que muda sempre
+                           System.currentTimeMillis() + 
                            "5204000053039865802BR5913iFomeDelivery6008BRASILIA62070503***6304";
         
         TextArea area = new TextArea(codigoPix);
-        area.setEditable(false); // Não deixa editar, mas deixa copiar
-        area.setWrapText(true);  // Quebra linha se for grande
+        area.setEditable(false);
+        area.setWrapText(true);
         area.setMaxHeight(80);
         area.setStyle("-fx-font-family: 'Monospaced'; -fx-control-inner-background: #f4f4f4; -fx-highlight-fill: #ea1d2c; -fx-highlight-text-fill: white;");
         
@@ -279,8 +275,6 @@ public class PagamentoController {
 
         content.getChildren().addAll(lblValor, lblInstrucao, area);
         alert.getDialogPane().setContent(content);
-        
-        // Botões personalizados
         estilizarBotoesDialog(alert);
 
         return alert.showAndWait().map(bt -> bt == ButtonType.OK).orElse(false);
@@ -291,12 +285,9 @@ public class PagamentoController {
         dialog.setTitle("Dinheiro");
         dialog.setHeaderText("Troco para quanto?");
         dialog.setContentText("Valor (R$):");
-        
-        // Remove o ícone padrão feio e aplica estilo
-        dialog.setGraphic(null); 
+        dialog.setGraphic(null);
         estilizarDialog(dialog);
         
-        // Estiliza o campo de texto interno do TextInputDialog
         TextField input = dialog.getEditor();
         input.setStyle("-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #ddd;");
         estilizarBotoesDialog(dialog);
@@ -337,26 +328,19 @@ public class PagamentoController {
         alert.showAndWait();
     }
 
-    // --- MÉTODOS VISUAIS AUXILIARES (A Mágica do Design) ---
-
     private void estilizarDialog(Dialog<?> dialog) {
         DialogPane pane = dialog.getDialogPane();
-        
-        // Fundo Branco e Borda
         pane.setStyle("-fx-background-color: white; -fx-font-family: 'System';");
         
-        // Estiliza o cabeçalho (header) para vermelho
         Node header = pane.lookup(".header-panel");
         if (header != null) {
             header.setStyle("-fx-background-color: #ea1d2c; -fx-padding: 15;");
-            
-            // Busca o Label DENTRO do header para mudar a cor e fonte
             header.lookupAll(".label").forEach(node -> {
                 node.setStyle(
-                    "-fx-text-fill: white; " +       // Cor Branca
-                    "-fx-font-size: 20px; " +        // Tamanho Maior
-                    "-fx-font-weight: bold; " +      // Negrito
-                    "-fx-alignment: center;"         // Centralizado
+                    "-fx-text-fill: white; " +
+                    "-fx-font-size: 20px; " +
+                    "-fx-font-weight: bold; " +
+                    "-fx-alignment: center;"
                 );
             });
         }
@@ -364,14 +348,12 @@ public class PagamentoController {
 
     private void estilizarBotoesDialog(Dialog<?> dialog) {
         DialogPane pane = dialog.getDialogPane();
-        // Botão OK/Confirmar fica Vermelho
         Node btnOk = pane.lookupButton(ButtonType.OK);
         if (btnOk != null) btnOk.setStyle("-fx-background-color: #ea1d2c; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 5;");
         
-        Node btnSim = pane.lookupButton(ButtonType.YES); // Caso use YES/NO
+        Node btnSim = pane.lookupButton(ButtonType.YES);
         if (btnSim != null) btnSim.setStyle("-fx-background-color: #ea1d2c; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 5;");
 
-        // Botão Cancelar fica transparente/cinza
         Node btnCancel = pane.lookupButton(ButtonType.CANCEL);
         if (btnCancel != null) btnCancel.setStyle("-fx-background-color: white; -fx-border-color: #ddd; -fx-text-fill: #666; -fx-cursor: hand; -fx-background-radius: 5; -fx-border-radius: 5;");
     }

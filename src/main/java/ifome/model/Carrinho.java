@@ -8,8 +8,7 @@ import ifome.exceptions.ProdutoIndisponivelException;
 
 /**
  * Representa o carrinho de compras do cliente.
- * Implementa Calculavel para calcular totais.
- * Pode gerar um Pedido quando finalizado.
+ * CORRIGIDO: Calcula valor total corretamente ao gerar pedido
  */
 public class Carrinho implements Calculavel {
 
@@ -29,10 +28,6 @@ public class Carrinho implements Calculavel {
         this(null, null);
     }
 
-    /**
-     * Adiciona um item ao carrinho.
-     * Se o produto já existe, incrementa a quantidade.
-     */
     public void adicionarItem(Produto p, int quantidade, String obs) {
         if (p == null || quantidade <= 0) {
             return;
@@ -53,18 +48,12 @@ public class Carrinho implements Calculavel {
         adicionarItem(p, quantidade, "");
     }
 
-    /**
-     * Remove um item específico do carrinho.
-     */
     public void removerItem(ItemPedido item) {
         if (itens.remove(item)) {
             // Item removido
         }
     }
 
-    /**
-     * Remove o primeiro item de um produto específico.
-     */
     public void removerPorProduto(Produto p) {
         for (ItemPedido item : itens) {
             if (item.getProduto().equals(p)) {
@@ -74,17 +63,11 @@ public class Carrinho implements Calculavel {
         }
     }
 
-    /**
-     * Limpa todos os itens do carrinho.
-     */
     public void limparCarrinho() {
         itens.clear();
         cupomAplicado = null;
     }
 
-    /**
-     * Calcula o subtotal do carrinho sem descontos.
-     */
     @Override
     public double calcularPrecoTotal() {
         double total = 0;
@@ -94,9 +77,6 @@ public class Carrinho implements Calculavel {
         return total;
     }
 
-    /**
-     * Calcula o total com cupom aplicado.
-     */
     public double calcularTotalComDesconto() {
         double subtotal = calcularPrecoTotal();
         if (cupomAplicado != null && cupomAplicado.estaValido()) {
@@ -106,7 +86,7 @@ public class Carrinho implements Calculavel {
     }
 
     /**
-     * Gera um Pedido a partir do carrinho.
+     * ✅ CORRIGIDO: Gera pedido com valor total calculado corretamente
      */
     public Pedido gerarPedido() throws RestauranteFechadoException, ValorMinimoException, ProdutoIndisponivelException {
         
@@ -124,6 +104,7 @@ public class Carrinho implements Calculavel {
             );
         }
 
+        // Validação de valor mínimo
         double subtotal = calcularPrecoTotal();
         double valorMinimo = 15.0;
 
@@ -133,6 +114,7 @@ public class Carrinho implements Calculavel {
             );
         }
 
+        // Validação de disponibilidade dos produtos
         for (ItemPedido item : itens) {
             if (!item.getProduto().isDisponivel()) {
                 throw new ProdutoIndisponivelException(
@@ -141,25 +123,34 @@ public class Carrinho implements Calculavel {
             }
         }
 
+        // ✅ CORRIGIDO: Cria pedido e configura valor ANTES de adicionar itens
         Pedido pedido = new Pedido();
+        pedido.setCliente(cliente);
+        pedido.setRestaurante(restaurante);
+        
+        // Adiciona todos os itens
         for (ItemPedido item : itens) {
             pedido.adicionarItem(item);
         }
         
+        // Aplica cupom se existir
         if (cupomAplicado != null) {
             pedido.setCupomAplicado(cupomAplicado);
         }
 
-        pedido.setCliente(cliente);
-        pedido.setRestaurante(restaurante);
-        //pedido.atualizarStatus("Pendente");
+        // ✅ CRÍTICO: Calcula o valor total DEPOIS de adicionar os itens
+        double valorFinal = pedido.calcularPrecoTotal();
+        pedido.setValorTotal(valorFinal);
+        
+        // Define status inicial como Pendente (aguardando confirmação do restaurante)
+        pedido.atualizarStatus("Pendente");
+
+        System.out.println(">>> Pedido gerado: #" + pedido.getNumeroPedido() + 
+                          " | Valor: R$" + String.format("%.2f", valorFinal));
 
         return pedido;
     }
 
-    /**
-     * Aplica um cupom ao carrinho.
-     */
     public void aplicarCupom(Cupom cupom) {
         if (cupom == null || !cupom.estaValido()) {
             return;
@@ -167,9 +158,6 @@ public class Carrinho implements Calculavel {
         this.cupomAplicado = cupom;
     }
 
-    /**
-     * Remove o cupom do carrinho.
-     */
     public void removerCupom() {
         this.cupomAplicado = null;
     }

@@ -178,6 +178,10 @@ public class RepositorioRestaurantes {
         return new ArrayList<>(clientes);
     }
 
+    public List<Pedido> getTodosPedidos() {
+    return new ArrayList<>(pedidos);
+}
+
     public void exibirLista() {
         if (restaurantes.isEmpty()) {
             System.out.println("Nenhum restaurante cadastrado.");
