@@ -2,12 +2,18 @@ pizzaria@ifome.com;Comida;Pizza Margherita;Molho de tomate, mussarela, manjerica
 pizzaria@ifome.com;Comida;Pizza Calabresa;Molho, mussarela, calabresa, cebola;48.9;true;false
 pizzaria@ifome.com;Bebida;Coca-Cola;Refrigerante 350ml;6.0;true;350
 pizzaria@ifome.com;Sobremesa;Petit Gateau;Com sorvete de baunilha;18.9;true
-burger@ifome.com;Comida;X-Burger;Pao, carne, queijo, alface, tomate;22.9;true;false
-burger@ifome.com;Comida;X-Bacon;Pao, carne, bacon, queijo, alface;26.9;true;false
-burger@ifome.com;Bebida;Suco Natural;Laranja 500ml;8.0;true;350
+burger@ifome.com;Comida;X-Burger;Pao, carne, queijo, alface, tomate;22.9;false;false
+burger@ifome.com;Comida;X-Bacon;Pao, carne, bacon, queijo, alface;26.9;false;false
+burger@ifome.com;Bebida;Suco Natural;Laranja 500ml;8.0;false;350
 burger@ifome.com;Comida;Vegan Burger;Pao organico, carne de soja, alface, tomate, queijo vegano;30.4;true;false
+burger@ifome.com;Comida;X-Ratão;Rato;300.0;true;false
+burger@ifome.com;Comida;lal;assad;12.0;true;false
 sushi@ifome.com;Comida;Combo Sashimi;12 pecas variadas;65.9;true;false
 sushi@ifome.com;Comida;Temaki Salmao;Temaki de salmao com cream cheese;28.9;true;false
 arabe@ifome.com;Comida;Esfiha Fechada;Deliciosa esfiha fecha de carne de cordeiro.;17.0;true;false
 arabe@ifome.com;Comida;Falafel;Deliciosos pães árabes.;12.0;true;false
 arabe@ifome.com;Bebida;Chá Árabe;Delicioso chá árabe tradicional, com especiarias e pimenta;20.0;true;350
+arabe@ifome.com;Sobremesa;Sorvete Árabe;sorvete arabe delicioso (Servida gelada);12.99;true
+acai@ifome.com;Sobremesa;Açaí Clássico;Açaí com Granola e Mel (Servida gelada);15.0;true
+acai@ifome.com;Bebida;soda caustica;soda gelada;30.0;true;350
+acai@ifome.com;Bebida;soda2;sos;50.0;true;350

@@ -21,7 +21,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 /**
- * ✅ CORRIGIDO: Fluxo de pagamento com valor correto e status Pendente
+ * ✅ CORRIGIDO: Fluxo de pagamento com registro correto de pedidos
  */
 public class PagamentoController {
 
@@ -51,7 +51,7 @@ public class PagamentoController {
     }
 
     /**
-     * ✅ CORRIGIDO: Gera pedido com valor correto e adiciona à fila do restaurante
+     * ✅ CORRIGIDO: Gera pedido e adiciona corretamente à fila do restaurante
      */
     @FXML
     private void confirmarPagamento(ActionEvent event) {
@@ -79,28 +79,42 @@ public class PagamentoController {
                 if (pagamento == null) return;
             }
 
-            // ✅ CORRIGIDO: Gera pedido (já com valor calculado)
+            // ✅ Gera pedido
             Pedido pedido = carrinho.gerarPedido();
             pedido.setFormaPagamento(pagamento);
             
-            // ✅ IMPORTANTE: Pedido inicia como "Pendente" (aguardando confirmação)
+            // ✅ CRÍTICO: Define status inicial como "Pendente"
             pedido.atualizarStatus("Pendente");
 
-            // ✅ CRÍTICO: Adiciona pedido à fila do RESTAURANTE
+            // ✅ CRÍTICO: Adiciona à fila do RESTAURANTE antes de salvar
             Restaurante restaurante = carrinho.getRestaurante();
-            restaurante.getFilaPedidos().add(pedido);
+            if (!restaurante.getFilaPedidos().contains(pedido)) {
+                restaurante.getFilaPedidos().add(pedido);
+            }
 
             // Adiciona ao histórico do cliente
-            cliente.adicionarPedido(pedido);
+            if (!cliente.getHistoricoPedidos().contains(pedido)) {
+                cliente.adicionarPedido(pedido);
+            }
             
-            // Salva no repositório global
-            RepositorioRestaurantes.getInstance().adicionarPedido(pedido);
-            RepositorioRestaurantes.getInstance().salvarDados();
+            // ✅ Adiciona ao repositório global
+            RepositorioRestaurantes repo = RepositorioRestaurantes.getInstance();
+            if (!repo.getTodosPedidos().contains(pedido)) {
+                repo.adicionarPedido(pedido);
+            }
+            
+            // ✅ Salva TUDO
+            repo.salvarDados();
 
-            // Limpa o carrinho APÓS salvar tudo
+            // Limpa o carrinho APÓS salvar
             carrinho.limparCarrinho();
 
-            // ✅ Mostra confirmação com valor correto
+            System.out.println(">>> Pedido #" + pedido.getNumeroPedido() + " criado com sucesso!");
+            System.out.println(">>> Restaurante: " + restaurante.getNomeRestaurante());
+            System.out.println(">>> Valor: R$" + String.format("%.2f", pedido.getValorTotal()));
+            System.out.println(">>> Pedidos na fila do restaurante: " + restaurante.getFilaPedidos().size());
+
+            // Mostra confirmação
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Pedido Enviado");
             alert.setHeaderText("✅ Pedido enviado com sucesso!");
@@ -130,7 +144,7 @@ public class PagamentoController {
     private CartaoCredito mostrarDialogEscolherCartao() {
         Dialog<CartaoCredito> dialog = new Dialog<>();
         dialog.setTitle("Seus Cartões");
-        dialog.setHeaderText("  Escolha um cartão");
+        dialog.setHeaderText("Escolha um cartão");
         estilizarDialog(dialog);
 
         VBox vbox = new VBox(10);

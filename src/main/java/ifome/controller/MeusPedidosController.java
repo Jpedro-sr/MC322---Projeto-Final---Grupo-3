@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
 
+import ifome.model.Avaliacao;
 import ifome.model.Cliente;
 import ifome.model.Pedido;
 import ifome.util.RepositorioRestaurantes;
@@ -26,6 +27,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+/**
+ * ✅ CORRIGIDO: Exibe avaliações com comentários
+ */
 public class MeusPedidosController {
 
     @FXML
@@ -68,6 +72,9 @@ public class MeusPedidosController {
         }
     }
 
+    /**
+     * ✅ CORRIGIDO: Exibe avaliação com comentário quando já foi avaliado
+     */
     private VBox criarCardPedido(Pedido pedido) {
         VBox card = new VBox(12);
         card.setPadding(new Insets(15));
@@ -117,8 +124,33 @@ public class MeusPedidosController {
 
         footerBox.getChildren().add(lblTotal);
 
-        // Botão Avaliar (apenas para pedidos entregues)
-        if (pedido.getStatus().equals("Entregue") && pedido.getAvaliacoes().isEmpty()) {
+        // ✅ CORRIGIDO: Exibe avaliação se já foi avaliado
+        if (!pedido.getAvaliacoes().isEmpty()) {
+            Avaliacao avaliacao = pedido.getAvaliacoes().get(0);
+            
+            VBox boxAvaliacao = new VBox(5);
+            boxAvaliacao.setPadding(new Insets(10, 0, 0, 0));
+            boxAvaliacao.setStyle("-fx-border-width: 1 0 0 0; -fx-border-color: #e0e0e0;");
+            
+            Label lblAvaliacaoTitulo = new Label("✅ Sua Avaliação");
+            lblAvaliacaoTitulo.setStyle("-fx-text-fill: #4cd137; -fx-font-size: 13px; -fx-font-weight: bold;");
+            
+            Label lblNota = new Label("⭐".repeat(avaliacao.getNota()) + " " + avaliacao.getNota() + "/5");
+            lblNota.setStyle("-fx-text-fill: #333; -fx-font-size: 14px;");
+            
+            boxAvaliacao.getChildren().addAll(lblAvaliacaoTitulo, lblNota);
+            
+            if (!avaliacao.getComentario().isEmpty()) {
+                Label lblComentario = new Label("💬 \"" + avaliacao.getComentario() + "\"");
+                lblComentario.setStyle("-fx-text-fill: #666; -fx-font-size: 13px; -fx-font-style: italic;");
+                lblComentario.setWrapText(true);
+                boxAvaliacao.getChildren().add(lblComentario);
+            }
+            
+            card.getChildren().addAll(header, lblData, lblStatus, footerBox, boxAvaliacao);
+            
+        } else if (pedido.getStatus().equals("Entregue")) {
+            // Botão Avaliar (apenas para pedidos entregues não avaliados)
             Button btnAvaliar = new Button("⭐ Avaliar");
             btnAvaliar.setStyle(
                 "-fx-background-color: #ea1d2c; " +
@@ -129,7 +161,6 @@ public class MeusPedidosController {
                 "-fx-padding: 8 15;"
             );
 
-            // Efeito hover
             btnAvaliar.setOnMouseEntered(e -> {
                 btnAvaliar.setStyle(
                     "-fx-background-color: #d11a26; " +
@@ -157,13 +188,11 @@ public class MeusPedidosController {
             btnAvaliar.setOnAction(e -> abrirDialogAvaliacao(pedido));
 
             footerBox.getChildren().addAll(spacer2, btnAvaliar);
-        } else if (!pedido.getAvaliacoes().isEmpty()) {
-            Label lblAvaliado = new Label("✓ Avaliado");
-            lblAvaliado.setStyle("-fx-text-fill: #4cd137; -fx-font-size: 13px; -fx-font-weight: bold;");
-            footerBox.getChildren().addAll(spacer2, lblAvaliado);
+            card.getChildren().addAll(header, lblData, lblStatus, footerBox);
+            
+        } else {
+            card.getChildren().addAll(header, lblData, lblStatus, footerBox);
         }
-
-        card.getChildren().addAll(header, lblData, lblStatus, footerBox);
 
         return card;
     }
@@ -219,7 +248,6 @@ public class MeusPedidosController {
         ButtonType btnCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
         dialog.getDialogPane().getButtonTypes().addAll(btnAvaliar, btnCancelar);
 
-        // Estilizar botão avaliar
         Button btnAvaliarNode = (Button) dialog.getDialogPane().lookupButton(btnAvaliar);
         btnAvaliarNode.setStyle("-fx-background-color: #ea1d2c; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
 
@@ -243,14 +271,12 @@ public class MeusPedidosController {
             // Salvar
             RepositorioRestaurantes.getInstance().salvarDados();
 
-            // Feedback
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Avaliação Enviada");
             alert.setHeaderText("Obrigado pela sua avaliação!");
             alert.setContentText("Sua opinião é muito importante para nós. 🌟");
             alert.showAndWait();
 
-            // Recarregar lista
             carregarPedidos();
         }
     }

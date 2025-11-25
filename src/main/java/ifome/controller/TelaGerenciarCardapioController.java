@@ -23,6 +23,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+/**
+ * ✅ ATUALIZADO: Agora redireciona para TelaEscolherTipoProduto ao invés de abrir dialog
+ */
 public class TelaGerenciarCardapioController {
 
     @FXML private VBox containerProdutos;
@@ -91,8 +94,28 @@ public class TelaGerenciarCardapioController {
 
         header.getChildren().addAll(lblNome, spacer, lblPreco);
 
-        // Linha 2: Descrição
-        Label lblDesc = new Label(p.getDescricao() + " (" + p.getCategoria() + ")");
+        // Linha 2: Descrição + Categoria + Detalhes específicos
+        StringBuilder detalhes = new StringBuilder();
+        detalhes.append(p.getDescricao());
+        
+        if (!p.getDescricao().isEmpty()) {
+            detalhes.append(" • ");
+        }
+        
+        detalhes.append(p.getCategoria());
+        
+        // Adiciona informações específicas de cada tipo
+        if (p instanceof Sobremesa) {
+            Sobremesa sobremesa = (Sobremesa) p;
+            detalhes.append(" • ").append(sobremesa.getIconeTemperatura()).append(" ").append(sobremesa.getTemperatura());
+        } else if (p instanceof Bebida) {
+            // Se adicionar volumeML público na classe Bebida, pode exibir aqui
+            detalhes.append(" • Bebida");
+        } else if (p instanceof Comida) {
+            detalhes.append(" • Comida");
+        }
+        
+        Label lblDesc = new Label(detalhes.toString());
         lblDesc.setStyle("-fx-text-fill: #666; -fx-font-size: 12px;");
         lblDesc.setWrapText(true);
 
@@ -147,100 +170,19 @@ public class TelaGerenciarCardapioController {
         return card;
     }
 
+    /**
+     * ✅ ATUALIZADO: Agora vai para TelaEscolherTipoProduto ao invés de abrir dialog
+     */
     @FXML
     private void adicionarProduto() {
         try {
-            Dialog<Produto> dialog = new Dialog<>();
-            dialog.setTitle("Novo Produto");
-            dialog.setHeaderText("Adicionar item ao cardápio");
-
-            VBox vbox = new VBox(10);
-            vbox.setPadding(new Insets(20));
-            
-            TextField txtNome = new TextField(); 
-            txtNome.setPromptText("Nome do produto");
-            
-            TextField txtDesc = new TextField(); 
-            txtDesc.setPromptText("Descrição");
-            
-            TextField txtPreco = new TextField(); 
-            txtPreco.setPromptText("Preço (R$)");
-            
-            ComboBox<String> cmbTipo = new ComboBox<>();
-            cmbTipo.getItems().addAll("Comida", "Bebida", "Sobremesa", "Adicional");
-            cmbTipo.setPromptText("Categoria");
-            cmbTipo.setMaxWidth(Double.MAX_VALUE);
-
-            vbox.getChildren().addAll(
-                new Label("Nome:"), txtNome,
-                new Label("Descrição:"), txtDesc,
-                new Label("Preço:"), txtPreco,
-                new Label("Tipo:"), cmbTipo
-            );
-
-            dialog.getDialogPane().setContent(vbox);
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-            dialog.setResultConverter(btn -> {
-                if (btn == ButtonType.OK) {
-                    try {
-                        String nome = txtNome.getText().trim();
-                        String desc = txtDesc.getText().trim();
-                        String precoStr = txtPreco.getText().trim().replace(",", ".");
-                        
-                        if (nome.isEmpty()) {
-                            mostrarAlerta("Erro", "Nome do produto é obrigatório.");
-                            return null;
-                        }
-                        
-                        if (precoStr.isEmpty()) {
-                            mostrarAlerta("Erro", "Preço é obrigatório.");
-                            return null;
-                        }
-                        
-                        double preco = Double.parseDouble(precoStr);
-                        String tipo = cmbTipo.getValue();
-
-                        if (tipo == null) {
-                            mostrarAlerta("Erro", "Selecione uma categoria.");
-                            return null;
-                        }
-
-                        // Cria o produto baseado no tipo
-                        switch (tipo) {
-                            case "Comida":
-                                return new Comida(nome, desc, preco, false);
-                            case "Bebida":
-                                return new Bebida(nome, desc, preco, 350);
-                            case "Sobremesa":
-                                return new Sobremesa(nome, desc, preco);
-                            case "Adicional":
-                                return new Adicional(nome, preco);
-                            default:
-                                return null;
-                        }
-                    } catch (NumberFormatException e) {
-                        mostrarAlerta("Erro", "Preço inválido. Use números e ponto/vírgula para decimais.");
-                        return null;
-                    }
-                }
-                return null;
-            });
-
-            Optional<Produto> result = dialog.showAndWait();
-            
-            if (result.isPresent()) {
-                Produto novo = result.get();
-                restaurante.adicionarProdutoCardapio(novo);
-                RepositorioRestaurantes.getInstance().salvarDados();
-                carregarCardapio();
-                mostrarAlerta("Sucesso", "Produto adicionado com sucesso!");
-            }
-            
-        } catch (Exception e) {
-            System.err.println("❌ Erro ao adicionar produto:");
+            Parent root = FXMLLoader.load(getClass().getResource("/ifome/TelaEscolherTipoProduto.fxml"));
+            Stage stage = (Stage) containerProdutos.getScene().getWindow();
+            stage.setScene(new Scene(root, 360, 640));
+        } catch (IOException e) {
+            System.err.println("❌ Erro ao abrir tela de escolha de tipo:");
             e.printStackTrace();
-            mostrarAlerta("Erro", "Erro ao adicionar produto: " + e.getMessage());
+            mostrarAlerta("Erro", "Erro ao abrir tela: " + e.getMessage());
         }
     }
 

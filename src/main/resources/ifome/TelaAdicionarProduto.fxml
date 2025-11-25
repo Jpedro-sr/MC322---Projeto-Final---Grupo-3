@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" prefHeight="640.0" prefWidth="360.0" 
+      style="-fx-background-color: #f4f4f4;" 
+      xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="ifome.controller.AdicionarProdutoController">
+
+    <!-- CABEÇALHO FIXO -->
+    <VBox alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+        <padding>
+            <Insets bottom="15" left="15" right="15" top="15"/>
+        </padding>
+
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Button onAction="#voltar" style="-fx-background-color: transparent; -fx-text-fill: #666; -fx-cursor: hand; -fx-font-size: 18px; -fx-font-weight: bold;" text="←"/>
+            <Label fx:id="lblTitulo" text="Novo Produto" textFill="#333">
+                <font>
+                    <Font name="System Bold" size="20.0"/>
+                </font>
+            </Label>
+        </HBox>
+    </VBox>
+
+    <!-- FORMULÁRIO SCROLLÁVEL -->
+    <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: #f4f4f4;" VBox.vgrow="ALWAYS">
+        <content>
+            <VBox spacing="15.0">
+                <padding>
+                    <Insets bottom="100" left="15" right="15" top="15"/>
+                </padding>
+
+                <!-- CAMPOS BÁSICOS -->
+                <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 15; -fx-border-radius: 8; -fx-background-radius: 8;">
+                    <Label text="Informações Básicas" textFill="#333" style="-fx-border-width: 0 0 1 0; -fx-border-color: #e0e0e0; -fx-padding: 0 0 10 0;">
+                        <font>
+                            <Font name="System Bold" size="15.0"/>
+                        </font>
+                    </Label>
+
+                    <VBox spacing="5">
+                        <Label text="Nome do Produto *" textFill="#333">
+                            <font>
+                                <Font name="System Bold" size="13.0"/>
+                            </font>
+                        </Label>
+                        <TextField fx:id="txtNome" promptText="Ex: Pizza Margherita" 
+                                   style="-fx-background-color: white; -fx-border-color: #dcdcdc; -fx-border-radius: 5; -fx-background-radius: 5; -fx-padding: 10;"/>
+                    </VBox>
+
+                    <VBox spacing="5">
+                        <Label text="Descrição" textFill="#333">
+                            <font>
+                                <Font name="System Bold" size="13.0"/>
+                            </font>
+                        </Label>
+                        <TextArea fx:id="txtDescricao" promptText="Descreva os ingredientes e características..." 
+                                  prefRowCount="3" wrapText="true"
+                                  style="-fx-background-color: white; -fx-border-color: #dcdcdc; -fx-border-radius: 5; -fx-background-radius: 5; -fx-padding: 10;"/>
+                    </VBox>
+
+                    <VBox spacing="5">
+                        <Label text="Preço (R$) *" textFill="#333">
+                            <font>
+                                <Font name="System Bold" size="13.0"/>
+                            </font>
+                        </Label>
+                        <TextField fx:id="txtPreco" promptText="0.00" 
+                                   style="-fx-background-color: white; -fx-border-color: #dcdcdc; -fx-border-radius: 5; -fx-background-radius: 5; -fx-padding: 10;"/>
+                    </VBox>
+                </VBox>
+
+                <!-- CAMPOS ESPECÍFICOS - COMIDA -->
+                <VBox fx:id="boxComida" spacing="10" visible="false" managed="false"
+                      style="-fx-background-color: #fff5f0; -fx-border-color: #fed7aa; -fx-border-width: 2; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 15;">
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Label text="🍽️" style="-fx-font-size: 20px;"/>
+                        <Label text="Características da Comida" textFill="#333">
+                            <font>
+                                <Font name="System Bold" size="15.0"/>
+                            </font>
+                        </Label>
+                    </HBox>
+
+                    <VBox spacing="10">
+                        <CheckBox fx:id="chkVegetariano" text="🌱 Vegetariano" style="-fx-font-size: 14px; -fx-text-fill: #333;"/>
+                        <CheckBox fx:id="chkVegano" text="🥬 Vegano" style="-fx-font-size: 14px; -fx-text-fill: #333;"/>
+                    </VBox>
+                </VBox>
+
+                <!-- CAMPOS ESPECÍFICOS - BEBIDA -->
+                <VBox fx:id="boxBebida" spacing="10" visible="false" managed="false"
+                      style="-fx-background-color: #eff6ff; -fx-border-color: #bfdbfe; -fx-border-width: 2; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 15;">
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Label text="🍷" style="-fx-font-size: 20px;"/>
+                        <Label text="Características da Bebida" textFill="#333">
+                            <font>
+                                <Font name="System Bold" size="15.0"/>
+                            </font>
+                        </Label>
+                    </HBox>
+
+                    <VBox spacing="5">
+                        <Label text="Volume (ml) *" textFill="#333">
+                            <font>
+                                <Font name="System Bold" size="13.0"/>
+                            </font>
+                        </Label>
+                        <TextField fx:id="txtVolumeML" promptText="Ex: 350, 500, 1000" 
+                                   style="-fx-background-color: white; -fx-border-color: #dcdcdc; -fx-border-radius: 5; -fx-background-radius: 5; -fx-padding: 10;"/>
+                        <Label text="Informe o volume em mililitros" textFill="#666">
+                            <font>
+                                <Font size="11.0"/>
+                            </font>
+                        </Label>
+                    </VBox>
+                </VBox>
+
+                <!-- CAMPOS ESPECÍFICOS - SOBREMESA -->
+                <VBox fx:id="boxSobremesa" spacing="10" visible="false" managed="false"
+                      style="-fx-background-color: #fdf2f8; -fx-border-color: #fbcfe8; -fx-border-width: 2; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 15;">
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Label text="🍨" style="-fx-font-size: 20px;"/>
+                        <Label text="Características da Sobremesa" textFill="#333">
+                            <font>
+                                <Font name="System Bold" size="15.0"/>
+                            </font>
+                        </Label>
+                    </HBox>
+
+                    <VBox spacing="8">
+                        <Label text="Temperatura *" textFill="#333">
+                            <font>
+                                <Font name="System Bold" size="13.0"/>
+                            </font>
+                        </Label>
+
+                        <fx:define>
+                            <ToggleGroup fx:id="grupoTemperatura"/>
+                        </fx:define>
+
+                        <RadioButton fx:id="rbGelada" text="❄️ Gelada" toggleGroup="$grupoTemperatura" 
+                                     style="-fx-font-size: 14px; -fx-text-fill: #333;"/>
+                        <RadioButton fx:id="rbQuente" text="🔥 Quente" toggleGroup="$grupoTemperatura" 
+                                     style="-fx-font-size: 14px; -fx-text-fill: #333;"/>
+                        <RadioButton fx:id="rbAmbiente" text="🌡️ Ambiente" toggleGroup="$grupoTemperatura" selected="true"
+                                     style="-fx-font-size: 14px; -fx-text-fill: #333;"/>
+                    </VBox>
+                </VBox>
+
+                <!-- CAMPOS ESPECÍFICOS - ADICIONAL -->
+                <VBox fx:id="boxAdicional" spacing="10" visible="false" managed="false"
+                      style="-fx-background-color: #f0fdf4; -fx-border-color: #bbf7d0; -fx-border-width: 2; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 15;">
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Label text="➕" style="-fx-font-size: 20px;"/>
+                        <Label text="Adicional" textFill="#333">
+                            <font>
+                                <Font name="System Bold" size="15.0"/>
+                            </font>
+                        </Label>
+                    </HBox>
+                    <Label text="ℹ️ Adicionais são itens complementares ao pedido. Use os campos básicos acima para configurar nome, descrição e preço." 
+                           textFill="#666" wrapText="true">
+                        <font>
+                            <Font size="12.0"/>
+                        </font>
+                    </Label>
+                </VBox>
+
+            </VBox>
+        </content>
+    </ScrollPane>
+
+    <!-- RODAPÉ FIXO -->
+    <VBox spacing="8" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 8, 0, 0, -2);">
+        <padding>
+            <Insets bottom="15" left="15" right="15" top="15"/>
+        </padding>
+
+        <Button fx:id="btnAdicionar" onAction="#adicionarProduto" maxWidth="Infinity" prefHeight="50.0"
+                style="-fx-background-color: #ea1d2c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-size: 16px;" 
+                text="Adicionar Produto"/>
+
+        <Button onAction="#voltar" maxWidth="Infinity"
+                style="-fx-background-color: transparent; -fx-text-fill: #666; -fx-font-weight: bold; -fx-cursor: hand;" 
+                text="Cancelar"/>
+    </VBox>
+
+</VBox>

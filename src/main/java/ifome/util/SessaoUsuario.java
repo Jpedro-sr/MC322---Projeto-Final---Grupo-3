@@ -6,7 +6,7 @@ import ifome.model.Usuario;
 
 /**
  * Singleton para gerenciar a sessão do usuário logado.
- * Mantém apenas UM usuário logado por vez (Cliente OU Restaurante).
+ * ✅ ATUALIZADO: Agora inclui tipoProdutoSelecionado para o fluxo de criação de produtos
  */
 public class SessaoUsuario {
     
@@ -15,6 +15,7 @@ public class SessaoUsuario {
     private Cliente clienteLogado;
     private Restaurante restauranteLogado;
     private Restaurante restauranteAtual; // Restaurante sendo navegado pelo cliente
+    private String tipoProdutoSelecionado; // ✅ NOVO: Para o fluxo de criação de produtos
 
     // Construtor privado (Singleton)
     private SessaoUsuario() {
@@ -22,6 +23,7 @@ public class SessaoUsuario {
         this.clienteLogado = null;
         this.restauranteLogado = null;
         this.restauranteAtual = null;
+        this.tipoProdutoSelecionado = null; // ✅ NOVO
     }
 
     /**
@@ -59,6 +61,22 @@ public class SessaoUsuario {
      */
     public void setRestauranteAtual(Restaurante restaurante) {
         this.restauranteAtual = restaurante;
+    }
+
+    // ✅ NOVO: Métodos para o tipo de produto selecionado
+    /**
+     * Define o tipo de produto que será criado (Comida, Bebida, Sobremesa, Adicional)
+     */
+    public void setTipoProdutoSelecionado(String tipo) {
+        this.tipoProdutoSelecionado = tipo;
+        System.out.println(">>> Tipo de produto selecionado: " + tipo);
+    }
+
+    /**
+     * Retorna o tipo de produto selecionado
+     */
+    public String getTipoProdutoSelecionado() {
+        return this.tipoProdutoSelecionado;
     }
 
     /**
@@ -122,6 +140,7 @@ public class SessaoUsuario {
         this.clienteLogado = null;
         this.restauranteLogado = null;
         this.restauranteAtual = null;
+        this.tipoProdutoSelecionado = null; // ✅ NOVO: Limpa também o tipo de produto
     }
 
     /**

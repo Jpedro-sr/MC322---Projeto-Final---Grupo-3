@@ -9,6 +9,7 @@ import ifome.util.SessaoUsuario;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -16,11 +17,17 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+/**
+ * ✅ CORRIGIDO: Exibe avaliações corretamente
+ */
 public class ListaRestaurantesController {
 
     @FXML
@@ -32,7 +39,6 @@ public class ListaRestaurantesController {
     }
 
     private void carregarLista() {
-        // Pega TODOS os restaurantes do sistema
         List<Restaurante> lista = RepositorioRestaurantes.getInstance().getTodosRestaurantes();
 
         containerRestaurantes.getChildren().clear();
@@ -44,53 +50,80 @@ public class ListaRestaurantesController {
         }
 
         for (Restaurante r : lista) {
-            Button card = criarCardRestaurante(r);
+            VBox card = criarCardRestaurante(r);
             containerRestaurantes.getChildren().add(card);
         }
     }
 
-    private Button criarCardRestaurante(Restaurante r) {
-        String status = r.estaAberto() ? "Aberto" : "Fechado";
-        String corStatus = r.estaAberto() ? "#4cd137" : "#7f8fa6";
-        
-        Button btn = new Button();
-        btn.setMaxWidth(Double.MAX_VALUE);
-        btn.setPrefHeight(80);
-        
-        // Estilo CSS inline
-        btn.setStyle("-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand; -fx-padding: 15;");
+    /**
+     * ✅ CORRIGIDO: Mostra avaliação média corretamente
+     */
+    private VBox criarCardRestaurante(Restaurante r) {
+        VBox card = new VBox(8);
+        card.setPadding(new Insets(15));
+        card.setStyle("-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand;");
 
-        // Conteúdo do Botão
-        VBox vBox = new VBox(5);
-        vBox.setAlignment(Pos.CENTER_LEFT);
-        
+        // Header: Nome e Status
+        HBox header = new HBox();
+        header.setAlignment(Pos.CENTER_LEFT);
+
         Label lblNome = new Label(r.getNomeRestaurante());
         lblNome.setFont(Font.font("System", FontWeight.BOLD, 16));
         lblNome.setStyle("-fx-text-fill: #333;");
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        String status = r.estaAberto() ? "🟢 Aberto" : "🔴 Fechado";
+        String corStatus = r.estaAberto() ? "#4cd137" : "#e74c3c";
+        Label lblStatus = new Label(status);
+        lblStatus.setStyle("-fx-text-fill: " + corStatus + "; -fx-font-size: 13px; -fx-font-weight: bold;");
+
+        header.getChildren().addAll(lblNome, spacer, lblStatus);
+
+        // ✅ CORRIGIDO: Calcula e exibe avaliação média
+        double mediaAvaliacoes = r.calcularMediaAvaliacoes();
+        int totalAvaliacoes = r.getQuantidadeAvaliacoes();
         
-        Label lblDetalhes = new Label(String.format("⭐ %.1f • %s", r.calcularMediaAvaliacoes(), status));
-        lblDetalhes.setStyle("-fx-text-fill: " + corStatus + "; -fx-font-size: 14px;");
+        String avaliacaoTexto = mediaAvaliacoes > 0 
+            ? String.format("⭐ %.1f (%d avaliações)", mediaAvaliacoes, totalAvaliacoes)
+            : "⭐ Sem avaliações";
+        
+        Label lblAvaliacao = new Label(avaliacaoTexto);
+        lblAvaliacao.setStyle("-fx-text-fill: #666; -fx-font-size: 13px;");
 
-        vBox.getChildren().addAll(lblNome, lblDetalhes);
-        btn.setGraphic(vBox);
+        // Descrição (quantidade de produtos)
+        Label lblProdutos = new Label(r.getQuantidadeProdutos() + " produtos no cardápio");
+        lblProdutos.setStyle("-fx-text-fill: #999; -fx-font-size: 12px;");
 
-        btn.setOnAction(e -> abrirRestaurante(e, r));
+        card.getChildren().addAll(header, lblAvaliacao, lblProdutos);
 
-        return btn;
+        // Evento de clique
+        card.setOnMouseClicked(e -> abrirRestaurante(r));
+
+        // Efeito hover
+        card.setOnMouseEntered(e -> {
+            if (r.estaAberto()) {
+                card.setStyle("-fx-background-color: #f8f8f8; -fx-border-color: #ea1d2c; -fx-border-width: 2; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand;");
+            }
+        });
+
+        card.setOnMouseExited(e -> {
+            card.setStyle("-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand;");
+        });
+
+        return card;
     }
 
-    private void abrirRestaurante(ActionEvent event, Restaurante r) {
+    private void abrirRestaurante(Restaurante r) {
         if (!r.estaAberto()) {
             mostrarAlerta("Restaurante Fechado", "Este restaurante não está aceitando pedidos no momento.");
             return;
         }
 
-        // Salva na sessão para a próxima tela saber qual carregar
         SessaoUsuario.getInstance().setRestauranteAtual(r);
 
         try {
-            // Carrega a tela de CARDÁPIO
-            // IMPORTANTE: O FXML aqui deve ser TelaCardapio.fxml
             Stage stage = (Stage) containerRestaurantes.getScene().getWindow();
             Parent root = FXMLLoader.load(getClass().getResource("/ifome/TelaCardapio.fxml"));
             stage.setScene(new Scene(root, 360, 640));

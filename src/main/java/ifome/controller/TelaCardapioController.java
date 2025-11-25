@@ -8,6 +8,8 @@ import ifome.model.Cliente;
 import ifome.model.Produto;
 import ifome.model.Restaurante;
 import ifome.model.Carrinho;
+import ifome.model.Bebida;
+import ifome.model.Comida;
 import ifome.util.SessaoUsuario;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,6 +27,8 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -32,9 +36,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.ButtonBar;
 
+/**
+ * ✅ CORRIGIDO: Exibe informações específicas dos produtos (volume, etc.)
+ */
 public class TelaCardapioController {
 
     @FXML
@@ -65,16 +70,12 @@ public class TelaCardapioController {
             return;
         }
 
-        // Configura informações do restaurante
         lblNomeRestaurante.setText(restaurante.getNomeRestaurante());
         lblAvaliacaoRestaurante.setText(String.format("⭐ %.1f", restaurante.calcularMediaAvaliacoes()));
         lblStatusRestaurante.setText(restaurante.estaAberto() ? "• Aberto" : "• Fechado");
         lblStatusRestaurante.setStyle("-fx-text-fill: " + (restaurante.estaAberto() ? "#4cd137" : "#e74c3c"));
 
-        // Carrega produtos
         carregarProdutos();
-        
-        // Atualiza contador do carrinho
         atualizarContadorCarrinho();
     }
 
@@ -96,13 +97,15 @@ public class TelaCardapioController {
         }
     }
 
+    /**
+     * ✅ CORRIGIDO: Exibe informações específicas (volume para bebidas, etc.)
+     */
     private Button criarCardProduto(Produto produto) {
         Button card = new Button();
         card.setMaxWidth(Double.MAX_VALUE);
         card.setPrefHeight(100);
         card.setAlignment(Pos.CENTER_LEFT);
         
-        // Estilo base do cartão
         String corDisponibilidade = produto.isDisponivel() ? "white" : "#f9f9f9";
         String opacidade = produto.isDisponivel() ? "1.0" : "0.6";
         
@@ -117,7 +120,6 @@ public class TelaCardapioController {
             corDisponibilidade, opacidade
         ));
 
-        // EFEITO HOVER - Escurece e dá leve push
         card.setOnMouseEntered(e -> {
             if (produto.isDisponivel()) {
                 card.setStyle(
@@ -147,7 +149,6 @@ public class TelaCardapioController {
             ));
         });
 
-        // EFEITO CLICK - Push para baixo
         card.setOnMousePressed(e -> {
             if (produto.isDisponivel()) {
                 card.setStyle(
@@ -177,12 +178,17 @@ public class TelaCardapioController {
             }
         });
 
-        // Layout interno do cartão
+        // Layout interno
         VBox vBox = new VBox(5);
         vBox.setAlignment(Pos.CENTER_LEFT);
 
-        HBox headerBox = new HBox();
+        HBox headerBox = new HBox(10);
         headerBox.setAlignment(Pos.CENTER_LEFT);
+
+        // ✅ Símbolo baseado no tipo
+        String simbolo = getSimbolo(produto);
+        Label lblSimbolo = new Label(simbolo);
+        lblSimbolo.setStyle("-fx-font-size: 20px;");
 
         Label lblNome = new Label(produto.getNome());
         lblNome.setFont(Font.font("System", FontWeight.BOLD, 16));
@@ -195,9 +201,18 @@ public class TelaCardapioController {
         lblPreco.setFont(Font.font("System", FontWeight.BOLD, 16));
         lblPreco.setStyle("-fx-text-fill: #ea1d2c;");
 
-        headerBox.getChildren().addAll(lblNome, spacer, lblPreco);
+        headerBox.getChildren().addAll(lblSimbolo, lblNome, spacer, lblPreco);
 
-        Label lblDescricao = new Label(produto.getDescricao());
+        // ✅ CORRIGIDO: Exibe descrição + informações específicas
+        String descricaoCompleta = produto.getDescricao();
+        
+        // Adiciona volume para bebidas
+        if (produto instanceof Bebida) {
+            Bebida bebida = (Bebida) produto;
+            descricaoCompleta += " • " + bebida.getVolumeML() + "ml";
+        }
+        
+        Label lblDescricao = new Label(descricaoCompleta);
         lblDescricao.setStyle("-fx-text-fill: #666; -fx-font-size: 13px;");
         lblDescricao.setWrapText(true);
 
@@ -207,7 +222,6 @@ public class TelaCardapioController {
         vBox.getChildren().addAll(headerBox, lblDescricao, lblDisponibilidade);
         card.setGraphic(vBox);
 
-        // Ação ao clicar
         card.setOnAction(e -> {
             if (produto.isDisponivel()) {
                 abrirDialogAdicionarProduto(produto);
@@ -219,17 +233,39 @@ public class TelaCardapioController {
         return card;
     }
 
+    /**
+     * ✅ Retorna símbolo correto para cada tipo
+     */
+    private String getSimbolo(Produto p) {
+        String categoria = p.getCategoria();
+        
+        if (categoria == null || categoria.isEmpty()) {
+            return "🍽️";
+        }
+        
+        switch (categoria) {
+            case "Comida":
+                return "🍔";
+            case "Bebida":
+                return "🥤";
+            case "Sobremesa":
+                return "🍰";
+            case "Adicional":
+                return "➕";
+            default:
+                return "🍽️";
+        }
+    }
+
     private void abrirDialogAdicionarProduto(Produto produto) {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Adicionar ao Carrinho");
         dialog.setHeaderText(produto.getNome() + " - R$ " + String.format("%.2f", produto.getPreco()));
 
-        // Layout do Dialog
         VBox vbox = new VBox(15);
         vbox.setPadding(new Insets(20));
         vbox.setAlignment(Pos.CENTER_LEFT);
 
-        // Spinner para quantidade
         Label lblQuantidade = new Label("Quantidade:");
         lblQuantidade.setStyle("-fx-font-weight: bold;");
         
@@ -239,7 +275,6 @@ public class TelaCardapioController {
         spinnerQtd.setEditable(true);
         spinnerQtd.setPrefWidth(100);
 
-        // TextArea para observações
         Label lblObs = new Label("Observações (opcional):");
         lblObs.setStyle("-fx-font-weight: bold;");
         
@@ -251,12 +286,10 @@ public class TelaCardapioController {
         vbox.getChildren().addAll(lblQuantidade, spinnerQtd, lblObs, txtObs);
         dialog.getDialogPane().setContent(vbox);
 
-        // Botões
         ButtonType btnAdicionar = new ButtonType("Adicionar", ButtonBar.ButtonData.OK_DONE);
         ButtonType btnCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
         dialog.getDialogPane().getButtonTypes().addAll(btnAdicionar, btnCancelar);
 
-        // Estilização dos botões
         Button btnAdd = (Button) dialog.getDialogPane().lookupButton(btnAdicionar);
         btnAdd.setStyle("-fx-background-color: #ea1d2c; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
 
@@ -266,7 +299,6 @@ public class TelaCardapioController {
             int quantidade = spinnerQtd.getValue();
             String observacoes = txtObs.getText().trim();
 
-            // Adiciona ao carrinho
             Carrinho carrinho = cliente.getCarrinho();
             carrinho.setRestaurante(restaurante);
             carrinho.setCliente(cliente);
