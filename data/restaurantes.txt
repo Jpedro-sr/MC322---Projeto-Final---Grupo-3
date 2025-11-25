@@ -1,3 +1,4 @@
 pizzaria@ifome.com;123;Pizzaria Italiana;12345678000199
 burger@ifome.com;123;Burger House;98765432000188
 sushi@ifome.com;123;Sushi Master;11122233000144
+arabe@ifome.com;123;Delicias Arabes;12345678909876

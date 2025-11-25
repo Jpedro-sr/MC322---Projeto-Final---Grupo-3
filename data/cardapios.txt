@@ -8,3 +8,6 @@ burger@ifome.com;Bebida;Suco Natural;Laranja 500ml;8.0;true;350
 burger@ifome.com;Comida;Vegan Burger;Pao organico, carne de soja, alface, tomate, queijo vegano;30.4;true;false
 sushi@ifome.com;Comida;Combo Sashimi;12 pecas variadas;65.9;true;false
 sushi@ifome.com;Comida;Temaki Salmao;Temaki de salmao com cream cheese;28.9;true;false
+arabe@ifome.com;Comida;Esfiha Fechada;Deliciosa esfiha fecha de carne de cordeiro.;17.0;true;false
+arabe@ifome.com;Comida;Falafel;Deliciosos pães árabes.;12.0;true;false
+arabe@ifome.com;Bebida;Chá Árabe;Delicioso chá árabe tradicional, com especiarias e pimenta;20.0;true;350

@@ -1,7 +1,6 @@
 package ifome.controller;
 
 import java.io.IOException;
-
 import ifome.model.Cliente;
 import ifome.model.Restaurante;
 import ifome.util.RepositorioRestaurantes;
@@ -19,13 +18,10 @@ import javafx.stage.Stage;
 
 public class LoginController {
 
-    @FXML
-    private TextField campoEmail;
+    @FXML private TextField campoEmail;
+    @FXML private PasswordField campoSenha;
 
     @FXML
-    private PasswordField campoSenha;
-
-   @FXML
     private void handleLogin(ActionEvent event) {
         String email = campoEmail.getText();
         String senha = campoSenha.getText();
@@ -53,7 +49,7 @@ public class LoginController {
                 mudarTela(event, "/ifome/MenuRestaurante.fxml");
             } catch (IOException e) {
                 e.printStackTrace();
-                mostrarAlerta("Erro", "Erro ao carregar menu do restaurante.\nVerifique se MenuRestaurante.fxml existe.");
+                mostrarAlerta("Erro", "Erro ao carregar menu do restaurante.");
             }
             return;
         }
@@ -61,10 +57,13 @@ public class LoginController {
         mostrarAlerta("Erro", "Email ou senha inválidos!");
     }
 
+    /**
+     * ✅ ATUALIZADO: Redireciona para tela de escolha de tipo de conta
+     */
     @FXML
     private void irParaCadastro(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/ifome/TelaCadastro.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/ifome/TelaEscolhaTipoConta.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root, 360, 640));
         } catch (IOException e) {
