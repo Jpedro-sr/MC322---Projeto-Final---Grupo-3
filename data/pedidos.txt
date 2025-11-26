@@ -25,3 +25,4 @@
 1024;2025-11-24 22:11:09;a@gmail.com;acai@ifome.com;Preparando;50.0
 1025;2025-11-25 21:09:09;a@gmail.com;acai@ifome.com;Entregue;15.0
 1026;2025-11-25 22:40:57;a@gmail.com;pizzaria@ifome.com;Confirmado;18.9
+1027;2025-11-26 00:20:16;a@gmail.com;pizzaria@ifome.com;Pendente;44.01

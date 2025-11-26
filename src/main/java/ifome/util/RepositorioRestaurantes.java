@@ -11,11 +11,9 @@ import java.util.Date;
 
 /**
  * Singleton para gerenciar restaurantes, clientes e persistência.
- * VERSÃO COMPLETA - Persistência robusta de cardápios, endereços e pedidos
+ * VERSÃO CORRIGIDA - Solução para avaliações não carregando (Split fix)
  */
 public class RepositorioRestaurantes {
-    
-    private static final String ARQUIVO_CARTOES = "data/cartoes.txt";
     
     private static RepositorioRestaurantes instancia;
     private List<Restaurante> restaurantes;
@@ -30,7 +28,10 @@ public class RepositorioRestaurantes {
     private static final String ARQUIVO_ITENS_PEDIDO = "data/itens_pedido.txt";
     private static final String ARQUIVO_CARDAPIOS = "data/cardapios.txt";
     private static final String ARQUIVO_CUPONS = "data/cupons.txt";
-    private static final String ARQUIVO_AVALIACOES = "data/avaliacoes.txt"; // ✅ NOVO
+    private static final String ARQUIVO_AVALIACOES = "data/avaliacoes.txt";
+    private static final String ARQUIVO_AVALIACOES_PEDIDOS = "data/avaliacoes_pedidos.txt";
+    private static final String ARQUIVO_CARTOES = "data/cartoes.txt";
+    
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     private RepositorioRestaurantes() {
@@ -180,8 +181,8 @@ public class RepositorioRestaurantes {
     }
 
     public List<Pedido> getTodosPedidos() {
-    return new ArrayList<>(pedidos);
-}
+        return new ArrayList<>(pedidos);
+    }
 
     public void exibirLista() {
         if (restaurantes.isEmpty()) {
@@ -226,7 +227,8 @@ public class RepositorioRestaurantes {
         carregarItensPedido();
         carregarCupons();
         carregarCartoes();
-        carregarAvaliacoes(); // ✅ NOVO
+        carregarAvaliacoes(); // Carrega estrelas dos restaurantes
+        carregarAvaliacoesPedidos(); // Carrega avaliações dos pedidos
         System.out.println(">>> Dados carregados com sucesso!");
     }
 
@@ -388,7 +390,6 @@ public class RepositorioRestaurantes {
                 }
             }
             
-            // Inicializar contador de pedidos
             if (maiorId > 0) {
                 Pedido.inicializarContador(maiorId);
             }
@@ -481,7 +482,8 @@ public class RepositorioRestaurantes {
         salvarItensPedido();
         salvarCupons();
         salvarCartoes();
-        salvarAvaliacoes(); // ✅ NOVO
+        salvarAvaliacoes();
+        salvarAvaliacoesPedidos();
         System.out.println(">>> Dados salvos com sucesso!");
     }
 
@@ -524,11 +526,10 @@ public class RepositorioRestaurantes {
                     sb.append(p.getPreco()).append(";");
                     sb.append(p.isDisponivel());
                     
-                    // Adiciona campos específicos de cada tipo
                     if (p instanceof Comida) {
-                        sb.append(";false"); // vegetariano (simplificado)
+                        sb.append(";false");
                     } else if (p instanceof Bebida) {
-                        sb.append(";350"); // volumeML (simplificado)
+                        sb.append(";350");
                     }
                     
                     bw.write(sb.toString());
@@ -608,10 +609,10 @@ public class RepositorioRestaurantes {
         }
     }
 
-    // ================ MÉTODOS DE AVALIAÇÕES ================
+    // ================ MÉTODOS DE AVALIAÇÕES (RESTAURANTE) ================
     
     /**
-     * ✅ NOVO: Carrega avaliações dos restaurantes
+     * ✅ CORRIGIDO: Usa split(..., -1) para ler avaliações com comentários vazios
      */
     private void carregarAvaliacoes() {
         try (BufferedReader br = new BufferedReader(
@@ -619,7 +620,8 @@ public class RepositorioRestaurantes {
             String linha;
             int totalAvaliacoes = 0;
             while ((linha = br.readLine()) != null) {
-                String[] dados = linha.split(";");
+                // O parâmetro -1 é CRUCIAL: ele impede que campos vazios no final (comentários) sejam ignorados
+                String[] dados = linha.split(";", -1);
                 if (dados.length >= 3) {
                     String emailRestaurante = dados[0];
                     int nota = Integer.parseInt(dados[1]);
@@ -640,9 +642,6 @@ public class RepositorioRestaurantes {
         }
     }
 
-    /**
-     * ✅ NOVO: Salva avaliações dos restaurantes
-     */
     private void salvarAvaliacoes() {
         try (BufferedWriter bw = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(ARQUIVO_AVALIACOES), StandardCharsets.UTF_8))) {
@@ -656,6 +655,59 @@ public class RepositorioRestaurantes {
             }
         } catch (IOException e) {
             System.err.println("Erro ao salvar avaliações: " + e.getMessage());
+        }
+    }
+
+    // ================ MÉTODOS DE AVALIAÇÕES (PEDIDOS) ================
+
+    /**
+     * ✅ CORRIGIDO: Usa split(..., -1) para ler avaliações com comentários vazios
+     */
+    private void carregarAvaliacoesPedidos() {
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(new FileInputStream(ARQUIVO_AVALIACOES_PEDIDOS), StandardCharsets.UTF_8))) {
+            String linha;
+            int totalAvaliacoesPedidos = 0;
+            while ((linha = br.readLine()) != null) {
+                // O parâmetro -1 é CRUCIAL aqui também
+                String[] dados = linha.split(";", -1);
+                if (dados.length >= 3) {
+                    int numeroPedido = Integer.parseInt(dados[0]);
+                    int nota = Integer.parseInt(dados[1]);
+                    String comentario = dados[2];
+                    
+                    Pedido pedido = buscarPedidoPorNumero(numeroPedido);
+                    if (pedido != null) {
+                        pedido.avaliar(nota, comentario);
+                        totalAvaliacoesPedidos++;
+                    }
+                }
+            }
+            System.out.println(">>> " + totalAvaliacoesPedidos + " avaliações de pedidos carregadas");
+        } catch (FileNotFoundException e) {
+            System.out.println(">>> Arquivo de avaliações de pedidos não encontrado. Será criado ao salvar.");
+        } catch (IOException e) {
+            System.err.println("Erro ao carregar avaliações de pedidos: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Salva as avaliações específicas de cada pedido.
+     */
+    private void salvarAvaliacoesPedidos() {
+        try (BufferedWriter bw = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(ARQUIVO_AVALIACOES_PEDIDOS), StandardCharsets.UTF_8))) {
+            for (Pedido p : pedidos) {
+                if (!p.getAvaliacoes().isEmpty()) {
+                    Avaliacao av = p.getAvaliacoes().get(0);
+                    bw.write(p.getNumeroPedido() + ";" +
+                            av.getNota() + ";" +
+                            av.getComentario());
+                    bw.newLine();
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Erro ao salvar avaliações de pedidos: " + e.getMessage());
         }
     }
 
@@ -759,8 +811,6 @@ public class RepositorioRestaurantes {
             System.err.println("Erro ao salvar cartões: " + e.getMessage());
         }
     }
-
-    // ================ MÉTODOS AUXILIARES ================
 
     public void limparTodos() {
         restaurantes.clear();

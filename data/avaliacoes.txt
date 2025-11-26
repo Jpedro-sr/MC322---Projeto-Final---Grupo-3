@@ -1,1 +1,4 @@
-pizzaria@ifome.com;5;
+pizzaria@ifome.com;4;
+burger@ifome.com;3;
+sushi@ifome.com;5;
+acai@ifome.com;5;
