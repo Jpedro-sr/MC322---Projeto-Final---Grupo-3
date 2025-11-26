@@ -30,6 +30,7 @@ public class RepositorioRestaurantes {
     private static final String ARQUIVO_ITENS_PEDIDO = "data/itens_pedido.txt";
     private static final String ARQUIVO_CARDAPIOS = "data/cardapios.txt";
     private static final String ARQUIVO_CUPONS = "data/cupons.txt";
+    private static final String ARQUIVO_AVALIACOES = "data/avaliacoes.txt"; // ✅ NOVO
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     private RepositorioRestaurantes() {
@@ -224,7 +225,8 @@ public class RepositorioRestaurantes {
         carregarPedidos();
         carregarItensPedido();
         carregarCupons();
-        carregarCartoes(); // <--- ADICIONADO AQUI
+        carregarCartoes();
+        carregarAvaliacoes(); // ✅ NOVO
         System.out.println(">>> Dados carregados com sucesso!");
     }
 
@@ -469,7 +471,7 @@ public class RepositorioRestaurantes {
 
     // ================ SALVAR DADOS ================
 
-    public void salvarDados() {
+     public void salvarDados() {
         System.out.println(">>> Salvando dados do sistema...");
         salvarRestaurantes();
         salvarClientes();
@@ -478,7 +480,8 @@ public class RepositorioRestaurantes {
         salvarPedidos();
         salvarItensPedido();
         salvarCupons();
-        salvarCartoes(); // <--- ADICIONADO AQUI
+        salvarCartoes();
+        salvarAvaliacoes(); // ✅ NOVO
         System.out.println(">>> Dados salvos com sucesso!");
     }
 
@@ -602,6 +605,57 @@ public class RepositorioRestaurantes {
             }
         } catch (IOException e) {
             System.err.println("Erro ao salvar cupons: " + e.getMessage());
+        }
+    }
+
+    // ================ MÉTODOS DE AVALIAÇÕES ================
+    
+    /**
+     * ✅ NOVO: Carrega avaliações dos restaurantes
+     */
+    private void carregarAvaliacoes() {
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(new FileInputStream(ARQUIVO_AVALIACOES), StandardCharsets.UTF_8))) {
+            String linha;
+            int totalAvaliacoes = 0;
+            while ((linha = br.readLine()) != null) {
+                String[] dados = linha.split(";");
+                if (dados.length >= 3) {
+                    String emailRestaurante = dados[0];
+                    int nota = Integer.parseInt(dados[1]);
+                    String comentario = dados[2];
+                    
+                    Restaurante restaurante = buscarRestaurantePorEmail(emailRestaurante);
+                    if (restaurante != null) {
+                        restaurante.avaliar(nota, comentario);
+                        totalAvaliacoes++;
+                    }
+                }
+            }
+            System.out.println(">>> " + totalAvaliacoes + " avaliações de restaurantes carregadas");
+        } catch (FileNotFoundException e) {
+            System.out.println(">>> Arquivo de avaliações não encontrado. Será criado ao salvar.");
+        } catch (IOException e) {
+            System.err.println("Erro ao carregar avaliações: " + e.getMessage());
+        }
+    }
+
+    /**
+     * ✅ NOVO: Salva avaliações dos restaurantes
+     */
+    private void salvarAvaliacoes() {
+        try (BufferedWriter bw = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(ARQUIVO_AVALIACOES), StandardCharsets.UTF_8))) {
+            for (Restaurante r : restaurantes) {
+                for (Avaliacao avaliacao : r.getAvaliacoes()) {
+                    bw.write(r.getEmail() + ";" +
+                            avaliacao.getNota() + ";" +
+                            avaliacao.getComentario());
+                    bw.newLine();
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Erro ao salvar avaliações: " + e.getMessage());
         }
     }
 

@@ -86,7 +86,7 @@
                 <VBox fx:id="boxComida" spacing="10" visible="false" managed="false"
                       style="-fx-background-color: #fff5f0; -fx-border-color: #fed7aa; -fx-border-width: 2; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 15;">
                     <HBox alignment="CENTER_LEFT" spacing="8">
-                        <Label text="🍽️" style="-fx-font-size: 20px;"/>
+                        <Label text="🍕" style="-fx-font-size: 20px;"/>
                         <Label text="Características da Comida" textFill="#333">
                             <font>
                                 <Font name="System Bold" size="15.0"/>
@@ -95,8 +95,8 @@
                     </HBox>
 
                     <VBox spacing="10">
-                        <CheckBox fx:id="chkVegetariano" text="🌱 Vegetariano" style="-fx-font-size: 14px; -fx-text-fill: #333;"/>
-                        <CheckBox fx:id="chkVegano" text="🥬 Vegano" style="-fx-font-size: 14px; -fx-text-fill: #333;"/>
+                        <CheckBox fx:id="chkVegetariano" text="Vegetariano" style="-fx-font-size: 14px; -fx-text-fill: #333;"/>
+                        <CheckBox fx:id="chkVegano" text="Vegano" style="-fx-font-size: 14px; -fx-text-fill: #333;"/>
                     </VBox>
                 </VBox>
 
@@ -151,11 +151,11 @@
                             <ToggleGroup fx:id="grupoTemperatura"/>
                         </fx:define>
 
-                        <RadioButton fx:id="rbGelada" text="❄️ Gelada" toggleGroup="$grupoTemperatura" 
+                        <RadioButton fx:id="rbGelada" text="Gelada" toggleGroup="$grupoTemperatura" 
                                      style="-fx-font-size: 14px; -fx-text-fill: #333;"/>
-                        <RadioButton fx:id="rbQuente" text="🔥 Quente" toggleGroup="$grupoTemperatura" 
+                        <RadioButton fx:id="rbQuente" text="Quente" toggleGroup="$grupoTemperatura" 
                                      style="-fx-font-size: 14px; -fx-text-fill: #333;"/>
-                        <RadioButton fx:id="rbAmbiente" text="🌡️ Ambiente" toggleGroup="$grupoTemperatura" selected="true"
+                        <RadioButton fx:id="rbAmbiente" text="Ambiente" toggleGroup="$grupoTemperatura" selected="true"
                                      style="-fx-font-size: 14px; -fx-text-fill: #333;"/>
                     </VBox>
                 </VBox>
@@ -171,7 +171,7 @@
                             </font>
                         </Label>
                     </HBox>
-                    <Label text="ℹ️ Adicionais são itens complementares ao pedido. Use os campos básicos acima para configurar nome, descrição e preço." 
+                    <Label text="ℹAdicionais são itens complementares ao pedido. Use os campos básicos acima para configurar nome, descrição e preço." 
                            textFill="#666" wrapText="true">
                         <font>
                             <Font size="12.0"/>
@@ -183,17 +183,19 @@
         </content>
     </ScrollPane>
 
-    <!-- RODAPÉ FIXO -->
+     <!-- RODAPÉ FIXO -->
     <VBox spacing="8" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 8, 0, 0, -2);">
-    <padding>
-        <Insets bottom="15" left="15" right="15" top="15"/>
-    </padding>
+        <padding>
+            <Insets bottom="15" left="15" right="15" top="15"/>
+        </padding>
 
-    <Button fx:id="btnAdicionar" onAction="#adicionarProduto" maxWidth="Infinity" prefHeight="50.0"
-            style="-fx-background-color: #ea1d2c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-size: 16px;" 
-            text="Adicionar Produto"/>
+        <Button fx:id="btnAdicionar" onAction="#adicionarProduto" maxWidth="Infinity" prefHeight="50.0"
+                style="-fx-background-color: #ea1d2c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-size: 16px;" 
+                text="Adicionar Produto"/>
 
-    <Button onAction="#voltar" maxWidth="Infinity" prefHeight="40.0"
-            style="-fx-background-color: transparent; -fx-text-fill: #666; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 14px;" 
-            text="Cancelar"/>
+        <Button onAction="#voltar" maxWidth="Infinity" prefHeight="40.0"
+                style="-fx-background-color: transparent; -fx-text-fill: #666; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 14px;" 
+                text="Cancelar"/>
+    </VBox>
+
 </VBox>
