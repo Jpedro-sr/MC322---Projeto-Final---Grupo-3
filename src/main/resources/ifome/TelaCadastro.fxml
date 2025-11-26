@@ -99,12 +99,9 @@
       </VBox>
 
       <!-- Botão Cadastrar -->
-      <Button mnemonicParsing="false" onAction="#handleCadastro" prefHeight="50.0" maxWidth="Infinity" 
-              style="-fx-background-color: #ea1d2c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;" 
-              text="CRIAR CONTA">
-         <font>
-            <Font size="16.0" />
-         </font>
+      <Button mnemonicParsing="false" onAction="#handleCadastro" maxWidth="Infinity" prefHeight="50.0" 
+        style="-fx-background-color: #ea1d2c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-size: 16px;" 
+        text="CRIAR CONTA">
          <VBox.margin>
             <Insets top="20.0" />
          </VBox.margin>

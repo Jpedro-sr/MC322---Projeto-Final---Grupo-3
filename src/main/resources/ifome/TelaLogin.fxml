@@ -43,9 +43,9 @@
       </children>
    </VBox>
 
-   <Button mnemonicParsing="false" onAction="#handleLogin" prefHeight="50.0" prefWidth="300.0" 
-           style="-fx-background-color: #ea1d2c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;" 
-           text="ENTRAR">
+   <Button mnemonicParsing="false" onAction="#handleLogin" maxWidth="Infinity" prefHeight="50.0" 
+        style="-fx-background-color: #ea1d2c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-size: 16px;" 
+        text="ENTRAR">
       <font>
          <Font size="16.0" />
       </font>

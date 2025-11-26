@@ -35,6 +35,11 @@ public class CadastroController {
     private PasswordField campoConfirmarSenha;
 
     @FXML
+    private void irParaLogin(ActionEvent event) throws IOException {
+        mudarTela(event, "/ifome/TelaLogin.fxml");
+    }
+
+    @FXML
     private void handleCadastro(ActionEvent event) {
         String nome = campoNome.getText().trim();
         String email = campoEmail.getText().trim();

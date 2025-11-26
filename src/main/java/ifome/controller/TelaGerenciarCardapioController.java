@@ -115,28 +115,45 @@ public class TelaGerenciarCardapioController {
         // Descrição
         if (!p.getDescricao().isEmpty()) {
             detalhes.append(p.getDescricao());
-            detalhes.append(" • ");
         }
-        
-        // Categoria
-        detalhes.append(p.getCategoria());
         
         // ✅ CRÍTICO: Informações específicas de cada tipo
         if (p instanceof Sobremesa) {
             Sobremesa sobremesa = (Sobremesa) p;
-            detalhes.append(" • ")
+            if (detalhes.length() > 0) {
+                detalhes.append(" • ");
+            }
+            detalhes.append("Sobremesa • ")
                    .append(sobremesa.getIconeTemperatura())
                    .append(" ")
                    .append(sobremesa.getTemperatura());
                    
         } else if (p instanceof Bebida) {
             Bebida bebida = (Bebida) p;
-            detalhes.append(" • ")
+            if (detalhes.length() > 0) {
+                detalhes.append(" • ");
+            }
+            detalhes.append("Bebida • ")
                    .append(bebida.getVolumeML())
                    .append("ml");
                    
         } else if (p instanceof Comida) {
-            detalhes.append(" • 🍽️");
+            Comida comida = (Comida) p;
+            if (detalhes.length() > 0) {
+                detalhes.append(" • ");
+            }
+            detalhes.append("Comida");
+            
+            if (comida.ehVegano()) {
+                detalhes.append(" • Vegano");
+            } else if (comida.ehVegetariano()) {
+                detalhes.append(" • Vegetariano");
+            }
+        } else if (p instanceof Adicional) {
+            if (detalhes.length() > 0) {
+                detalhes.append(" • ");
+            }
+            detalhes.append("Adicional");
         }
         
         Label lblDesc = new Label(detalhes.toString());
@@ -149,7 +166,7 @@ public class TelaGerenciarCardapioController {
         boxBotoes.setPadding(new Insets(10, 0, 0, 0));
 
         // Botão Disponibilidade
-        Button btnStatus = new Button(p.isDisponivel() ? "⏸️ Pausar Venda" : "▶️ Ativar Venda");
+        Button btnStatus = new Button(p.isDisponivel() ? "⏸ Pausar Venda" : "▶ Ativar Venda");
         btnStatus.setStyle(
             "-fx-background-color: " + (p.isDisponivel() ? "#f39c12" : "#27ae60") + 
             "; -fx-text-fill: white; " +
@@ -170,8 +187,8 @@ public class TelaGerenciarCardapioController {
             }
         });
 
-        // Botão Remover
-        Button btnRemover = new Button("🗑️ Remover");
+        // Botão Remover - ✅ TROCADO EMOJI POR ✕
+        Button btnRemover = new Button("✕ Remover");
         btnRemover.setStyle(
             "-fx-background-color: transparent; " +
             "-fx-text-fill: #c0392b; " +
@@ -214,20 +231,20 @@ public class TelaGerenciarCardapioController {
         String categoria = p.getCategoria();
         
         if (categoria == null || categoria.isEmpty()) {
-            return "🍽️";
+            return "🍔";
         }
         
         switch (categoria) {
             case "Comida":
                 return "🍔";
             case "Bebida":
-                return "🥤";
+                return "🥛";
             case "Sobremesa":
                 return "🍰";
             case "Adicional":
                 return "➕";
             default:
-                return "🍽️";
+                return "🍔";
         }
     }
 

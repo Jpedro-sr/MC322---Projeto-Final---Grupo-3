@@ -44,16 +44,16 @@
         </padding>
         
         <Button text="Adicionar Novo Produto" maxWidth="Infinity" prefHeight="50.0" 
-                style="-fx-background-color: #ea1d2c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;" 
-                onAction="#adicionarProduto">
+            style="-fx-background-color: #ea1d2c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;" 
+            onAction="#adicionarProduto">
             <font>
                 <Font size="16.0" />
             </font>
         </Button>
 
-        <Button text="Voltar ao Menu" maxWidth="Infinity" 
-                style="-fx-background-color: transparent; -fx-text-fill: #666; -fx-cursor: hand; -fx-font-weight: bold;" 
-                onAction="#voltar" />
+        <Button text="Adicionar Novo Produto" maxWidth="Infinity" prefHeight="50.0" 
+            style="-fx-background-color: #ea1d2c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-size: 16px;" 
+            onAction="#adicionarProduto">
     </VBox>
-
+</Button>
 </VBox>

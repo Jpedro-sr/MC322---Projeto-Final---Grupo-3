@@ -204,15 +204,38 @@ public class TelaCardapioController {
         headerBox.getChildren().addAll(lblSimbolo, lblNome, spacer, lblPreco);
 
         // ✅ CORRIGIDO: Exibe descrição + informações específicas
-        String descricaoCompleta = produto.getDescricao();
-        
+        StringBuilder descricaoCompleta = new StringBuilder();
+
+        if (!produto.getDescricao().isEmpty()) {
+            descricaoCompleta.append(produto.getDescricao());
+        }
+
         // Adiciona volume para bebidas
         if (produto instanceof Bebida) {
             Bebida bebida = (Bebida) produto;
-            descricaoCompleta += " • " + bebida.getVolumeML() + "ml";
+            if (descricaoCompleta.length() > 0) {
+                descricaoCompleta.append(" • ");
+            }
+            descricaoCompleta.append(bebida.getVolumeML()).append("ml");
         }
-        
-        Label lblDescricao = new Label(descricaoCompleta);
+
+        // Adiciona tags de vegetariano/vegano para comidas
+        if (produto instanceof Comida) {
+            Comida comida = (Comida) produto;
+            if (comida.ehVegano()) {
+                if (descricaoCompleta.length() > 0) {
+                    descricaoCompleta.append(" • ");
+                }
+                descricaoCompleta.append("Vegano");
+            } else if (comida.ehVegetariano()) {
+                if (descricaoCompleta.length() > 0) {
+                    descricaoCompleta.append(" • ");
+                }
+                descricaoCompleta.append("Vegetariano");
+            }
+        }
+
+        Label lblDescricao = new Label(descricaoCompleta.toString());
         lblDescricao.setStyle("-fx-text-fill: #666; -fx-font-size: 13px;");
         lblDescricao.setWrapText(true);
 
@@ -240,20 +263,20 @@ public class TelaCardapioController {
         String categoria = p.getCategoria();
         
         if (categoria == null || categoria.isEmpty()) {
-            return "🍽️";
+            return "🍔";
         }
         
         switch (categoria) {
             case "Comida":
                 return "🍔";
             case "Bebida":
-                return "🥤";
+                return "🥛";
             case "Sobremesa":
                 return "🍰";
             case "Adicional":
                 return "➕";
             default:
-                return "🍽️";
+                return "🍔";
         }
     }
 

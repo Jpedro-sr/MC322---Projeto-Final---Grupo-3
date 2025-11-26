@@ -115,7 +115,7 @@ public class TelaCarrinhoController {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        Button btnRemover = new Button("🗑️");
+        Button btnRemover = new Button("✕");
         btnRemover.setStyle(
             "-fx-background-color: #ffe0e0; " +
             "-fx-text-fill: #e74c3c; " +

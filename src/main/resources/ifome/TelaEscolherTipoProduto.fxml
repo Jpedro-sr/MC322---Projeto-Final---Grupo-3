@@ -49,7 +49,8 @@
             <graphic>
                 <HBox alignment="CENTER_LEFT" spacing="15">
                     <VBox alignment="CENTER" style="-fx-background-color: white; -fx-padding: 12; -fx-background-radius: 10;">
-                        <Label text="🍽️" style="-fx-font-size: 32px;"/>
+                        <Label text="🍕" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #666;"/>
+
                     </VBox>
                     <VBox alignment="CENTER_LEFT" spacing="5">
                         <Label text="Comida" textFill="#333">
@@ -73,7 +74,7 @@
             <graphic>
                 <HBox alignment="CENTER_LEFT" spacing="15">
                     <VBox alignment="CENTER" style="-fx-background-color: white; -fx-padding: 12; -fx-background-radius: 10;">
-                        <Label text="🍷" style="-fx-font-size: 32px;"/>
+                        <Label text="☕" style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: #666;"/>
                     </VBox>
                     <VBox alignment="CENTER_LEFT" spacing="5">
                         <Label text="Bebida" textFill="#333">
@@ -97,7 +98,7 @@
             <graphic>
                 <HBox alignment="CENTER_LEFT" spacing="15">
                     <VBox alignment="CENTER" style="-fx-background-color: white; -fx-padding: 12; -fx-background-radius: 10;">
-                        <Label text="🍨" style="-fx-font-size: 32px;"/>
+                        <Label text="🍰" style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: #666;"/>
                     </VBox>
                     <VBox alignment="CENTER_LEFT" spacing="5">
                         <Label text="Sobremesa" textFill="#333">
