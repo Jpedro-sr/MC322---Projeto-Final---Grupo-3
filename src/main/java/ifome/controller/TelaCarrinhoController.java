@@ -190,6 +190,15 @@ public class TelaCarrinhoController {
             mostrarAlerta("Atenção", "Digite um código de cupom válido.");
             return;
         }
+        
+        // ✅ VERIFICAÇÃO DE USO ANTERIOR
+        if (cliente.jaUsouCupom(codigoCupom)) {
+            mostrarAlerta("Cupom já utilizado", "Você já usou este cupom anteriormente.");
+            lblCupomStatus.setText("❌ Cupom já utilizado");
+            lblCupomStatus.setStyle("-fx-text-fill: #e74c3c;");
+            lblCupomStatus.setVisible(true);
+            return;
+        }
 
         Cupom cupom = RepositorioRestaurantes.getInstance().buscarCupom(codigoCupom);
 
@@ -290,4 +299,6 @@ public class TelaCarrinhoController {
         alert.setContentText(mensagem);
         alert.showAndWait();
     }
+
+    
 }

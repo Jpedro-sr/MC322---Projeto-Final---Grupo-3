@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * Representa um Cliente do sistema iFome.
- * ATUALIZADO: Suporte a cartões de crédito salvos
+ * ATUALIZADO: Suporte a cartões de crédito salvos e cupons usados.
  */
 public class Cliente extends Usuario {
 
@@ -13,7 +13,8 @@ public class Cliente extends Usuario {
     private String telefone;
     private List<Endereco> enderecos;
     private List<Pedido> historicoPedidos;
-    private List<CartaoSalvo> cartoesSalvos; // NOVO
+    private List<CartaoSalvo> cartoesSalvos;
+    private List<String> cuponsUsados; // ✅ NOVO: Lista de códigos de cupons já usados
     private Carrinho carrinho;
 
     public Cliente(String email, String senha, String nome, String telefone) {
@@ -24,9 +25,12 @@ public class Cliente extends Usuario {
         this.telefone = validarTelefone(telefone);
         this.enderecos = new ArrayList<>();
         this.historicoPedidos = new ArrayList<>();
-        this.cartoesSalvos = new ArrayList<>(); // NOVO
+        this.cartoesSalvos = new ArrayList<>();
+        this.cuponsUsados = new ArrayList<>(); // ✅ Inicializa lista
         this.carrinho = new Carrinho();
     }
+
+    // ... (Mantenha os métodos existentes de validação e cadastro) ...
 
     private String validarTelefone(String telefone) {
         if (telefone == null || telefone.isEmpty()) {
@@ -49,14 +53,12 @@ public class Cliente extends Usuario {
         this.senha = senha;
         this.telefone = validarTelefone(telefone);
     }
+    
+    // ... (Métodos de Endereço e Cartão mantidos iguais) ...
 
     public void adicionarEndereco(Endereco endereco) {
-        if (endereco == null) {
-            return;
-        }
-        if (enderecos.contains(endereco)) {
-            return;
-        }
+        if (endereco == null) return;
+        if (enderecos.contains(endereco)) return;
         enderecos.add(endereco);
     }
 
@@ -64,61 +66,58 @@ public class Cliente extends Usuario {
         enderecos.remove(endereco);
     }
 
-    // ============ MÉTODOS DE CARTÕES SALVOS ============
-    
-    /**
-     * Adiciona um cartão à lista de cartões salvos do cliente.
-     */
     public void adicionarCartao(CartaoSalvo cartao) {
-        if (cartao == null) {
-            return;
-        }
-        if (cartoesSalvos.contains(cartao)) {
-            System.out.println("ℹ️  Cartão já está salvo.");
-            return;
-        }
+        if (cartao == null) return;
+        if (cartoesSalvos.contains(cartao)) return;
         cartoesSalvos.add(cartao);
-        System.out.println("✅ Cartão salvo com sucesso!");
     }
     
-    /**
-     * Remove um cartão salvo.
-     */
     public void removerCartao(CartaoSalvo cartao) {
-        if (cartoesSalvos.remove(cartao)) {
-            System.out.println("✅ Cartão removido.");
-        } else {
-            System.out.println("❌ Cartão não encontrado.");
-        }
+        cartoesSalvos.remove(cartao);
     }
     
-    /**
-     * Busca um cartão salvo pelo número mascarado.
-     */
     public CartaoSalvo buscarCartaoPorNumero(String numeroMascarado) {
         for (CartaoSalvo c : cartoesSalvos) {
-            if (c.getNumeroMascarado().equals(numeroMascarado)) {
-                return c;
-            }
+            if (c.getNumeroMascarado().equals(numeroMascarado)) return c;
         }
         return null;
     }
     
-    /**
-     * Retorna todos os cartões salvos.
-     */
     public List<CartaoSalvo> getCartoesSalvos() {
         return new ArrayList<>(cartoesSalvos);
     }
     
-    /**
-     * Verifica se o cliente tem cartões salvos.
-     */
     public boolean temCartoesSalvos() {
         return !cartoesSalvos.isEmpty();
     }
 
-    // ============ MÉTODOS EXISTENTES ============
+    // ============ ✅ NOVOS MÉTODOS DE CUPONS USADOS ============
+
+    /**
+     * Verifica se o cliente já usou um cupom específico.
+     */
+    public boolean jaUsouCupom(String codigoCupom) {
+        if (codigoCupom == null) return false;
+        return cuponsUsados.contains(codigoCupom.toUpperCase());
+    }
+
+    /**
+     * Registra que o cliente usou um cupom.
+     */
+    public void registrarUsoCupom(String codigoCupom) {
+        if (codigoCupom != null && !jaUsouCupom(codigoCupom)) {
+            cuponsUsados.add(codigoCupom.toUpperCase());
+        }
+    }
+    
+    /**
+     * Retorna a lista de cupons usados (para persistência).
+     */
+    public List<String> getCuponsUsados() {
+        return new ArrayList<>(cuponsUsados);
+    }
+
+    // ============ MÉTODOS EXISTENTES (Pedido, Avaliação, etc) ============
 
     public void adicionarPedido(Pedido pedido) {
         if (pedido != null) {
@@ -135,9 +134,7 @@ public class Cliente extends Usuario {
         Carrinho carrinhoAtivo = (carrinhoParaPedido != null) ? carrinhoParaPedido : this.carrinho;
 
         if (carrinhoAtivo.getItens().isEmpty()) {
-            throw new ifome.exceptions.ValorMinimoException(
-                "Carrinho vazio."
-            );
+            throw new ifome.exceptions.ValorMinimoException("Carrinho vazio.");
         }
 
         Pedido pedido = carrinhoAtivo.gerarPedido();
@@ -149,18 +146,9 @@ public class Cliente extends Usuario {
     }
 
     public void avaliarPedido(Pedido pedido, int nota, String comentario) {
-        if (pedido == null) {
+        if (pedido == null || !historicoPedidos.contains(pedido) || !pedido.getStatus().equals("Entregue")) {
             return;
         }
-
-        if (!historicoPedidos.contains(pedido)) {
-            return;
-        }
-
-        if (!pedido.getStatus().equals("Entregue")) {
-            return;
-        }
-
         pedido.avaliar(nota, comentario);
     }
 
@@ -186,51 +174,27 @@ public class Cliente extends Usuario {
         }
     }
 
-    public String getNome() {
-        return nome;
-    }
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public List<Endereco> getEnderecos() {
-        return new ArrayList<>(enderecos);
-    }
-
-    public List<Pedido> getHistoricoPedidos() {
-        return new ArrayList<>(historicoPedidos);
-    }
-
-    public int getQuantidadeEnderecos() {
-        return enderecos.size();
-    }
-
-    public int getQuantidadePedidos() {
-        return historicoPedidos.size();
-    }
-
+    // Getters e Setters básicos
+    public String getNome() { return nome; }
+    public String getTelefone() { return telefone; }
+    public List<Endereco> getEnderecos() { return new ArrayList<>(enderecos); }
+    public List<Pedido> getHistoricoPedidos() { return new ArrayList<>(historicoPedidos); }
+    public int getQuantidadeEnderecos() { return enderecos.size(); }
+    public int getQuantidadePedidos() { return historicoPedidos.size(); }
+    
     public Endereco getEnderecoMaisRecente() {
-        if (enderecos.isEmpty()) return null;
-        return enderecos.get(enderecos.size() - 1);
+        return enderecos.isEmpty() ? null : enderecos.get(enderecos.size() - 1);
     }
 
     public Pedido getPedidoMaisRecente() {
-        if (historicoPedidos.isEmpty()) return null;
-        return historicoPedidos.get(historicoPedidos.size() - 1);
+        return historicoPedidos.isEmpty() ? null : historicoPedidos.get(historicoPedidos.size() - 1);
     }
 
-    public void setNome(String nome) {
-        this.nome = nome != null ? nome : this.nome;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = validarTelefone(telefone);
-    }
+    public void setNome(String nome) { this.nome = nome != null ? nome : this.nome; }
+    public void setTelefone(String telefone) { this.telefone = validarTelefone(telefone); }
 
     @Override
     public String toString() {
-        return String.format("Cliente: %s | Email: %s | Telefone: %s | Enderecos: %d | Pedidos: %d | Cartões: %d",
-            nome, email, telefone, enderecos.size(), historicoPedidos.size(), cartoesSalvos.size());
+        return String.format("Cliente: %s | Email: %s", nome, email);
     }
 }

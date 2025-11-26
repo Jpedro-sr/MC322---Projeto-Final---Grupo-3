@@ -86,6 +86,12 @@ public class PagamentoController {
             // ✅ CRÍTICO: Define status inicial como "Pendente"
             pedido.atualizarStatus("Pendente");
 
+            // ✅ REGISTRA O USO DO CUPOM (Se houver)
+            if (carrinho.getCupomAplicado() != null) {
+                cliente.registrarUsoCupom(carrinho.getCupomAplicado().getCodigo());
+                System.out.println(">>> Cupom registrado como usado: " + carrinho.getCupomAplicado().getCodigo());
+            }
+
             // ✅ CRÍTICO: Adiciona à fila do RESTAURANTE antes de salvar
             Restaurante restaurante = carrinho.getRestaurante();
             if (!restaurante.getFilaPedidos().contains(pedido)) {
@@ -102,7 +108,8 @@ public class PagamentoController {
             if (!repo.getTodosPedidos().contains(pedido)) {
                 repo.adicionarPedido(pedido);
             }
-            
+           
+
             // ✅ Salva TUDO
             repo.salvarDados();
 

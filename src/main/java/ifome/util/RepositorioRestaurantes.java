@@ -31,6 +31,7 @@ public class RepositorioRestaurantes {
     private static final String ARQUIVO_AVALIACOES = "data/avaliacoes.txt";
     private static final String ARQUIVO_AVALIACOES_PEDIDOS = "data/avaliacoes_pedidos.txt";
     private static final String ARQUIVO_CARTOES = "data/cartoes.txt";
+    private static final String ARQUIVO_CUPONS_USADOS = "data/cupons_usados.txt"; // ✅ NOVO ARQUIVO
     
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -227,8 +228,9 @@ public class RepositorioRestaurantes {
         carregarItensPedido();
         carregarCupons();
         carregarCartoes();
-        carregarAvaliacoes(); // Carrega estrelas dos restaurantes
-        carregarAvaliacoesPedidos(); // Carrega avaliações dos pedidos
+        carregarAvaliacoes();
+        carregarAvaliacoesPedidos();
+        carregarCuponsUsados(); // ✅ NOVO
         System.out.println(">>> Dados carregados com sucesso!");
     }
 
@@ -253,24 +255,17 @@ public class RepositorioRestaurantes {
     }
 
     private void carregarClientes() {
-        try (BufferedReader br = new BufferedReader(
-                new InputStreamReader(new FileInputStream(ARQUIVO_CLIENTES), StandardCharsets.UTF_8))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(ARQUIVO_CLIENTES), StandardCharsets.UTF_8))) {
             String linha;
             while ((linha = br.readLine()) != null) {
                 String[] dados = linha.split(";");
                 if (dados.length >= 4) {
-                    Cliente c = new Cliente(dados[0], dados[1], dados[2], dados[3]);
-                    clientes.add(c);
+                    clientes.add(new Cliente(dados[0], dados[1], dados[2], dados[3]));
                 }
             }
-            System.out.println(">>> " + clientes.size() + " clientes carregados");
-        } catch (FileNotFoundException e) {
-            System.out.println(">>> Arquivo de clientes não encontrado. Será criado ao salvar.");
-        } catch (IOException e) {
-            System.err.println("Erro ao carregar clientes: " + e.getMessage());
-        }
+        } catch (IOException e) { System.out.println("Clientes: arquivo novo ou erro."); }
     }
-
+    
     private void carregarCardapios() {
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(new FileInputStream(ARQUIVO_CARDAPIOS), StandardCharsets.UTF_8))) {
@@ -472,7 +467,7 @@ public class RepositorioRestaurantes {
 
     // ================ SALVAR DADOS ================
 
-     public void salvarDados() {
+    public void salvarDados() {
         System.out.println(">>> Salvando dados do sistema...");
         salvarRestaurantes();
         salvarClientes();
@@ -484,6 +479,7 @@ public class RepositorioRestaurantes {
         salvarCartoes();
         salvarAvaliacoes();
         salvarAvaliacoesPedidos();
+        salvarCuponsUsados(); // ✅ NOVO
         System.out.println(">>> Dados salvos com sucesso!");
     }
 
@@ -501,15 +497,13 @@ public class RepositorioRestaurantes {
     }
 
     private void salvarClientes() {
-        try (BufferedWriter bw = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(ARQUIVO_CLIENTES), StandardCharsets.UTF_8))) {
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(ARQUIVO_CLIENTES), StandardCharsets.UTF_8))) {
             for (Cliente c : clientes) {
-                bw.write(c.getEmail() + ";" + c.getSenha() + ";" + 
-                        c.getNome() + ";" + c.getTelefone());
+                bw.write(c.getEmail() + ";" + c.getSenha() + ";" + c.getNome() + ";" + c.getTelefone());
                 bw.newLine();
             }
         } catch (IOException e) {
-            System.err.println("Erro ao salvar clientes: " + e.getMessage());
+            System.err.println("Erro ao salvar restaurantes: " + e.getMessage());
         }
     }
 
@@ -609,6 +603,46 @@ public class RepositorioRestaurantes {
         }
     }
 
+    private void carregarCuponsUsados() {
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(new FileInputStream(ARQUIVO_CUPONS_USADOS), StandardCharsets.UTF_8))) {
+            String linha;
+            while ((linha = br.readLine()) != null) {
+                String[] dados = linha.split(";");
+                if (dados.length >= 2) {
+                    String emailCliente = dados[0];
+                    String codigoCupom = dados[1];
+                    
+                    Cliente cliente = buscarClientePorEmail(emailCliente);
+                    if (cliente != null) {
+                        cliente.registrarUsoCupom(codigoCupom);
+                    }
+                }
+            }
+            System.out.println(">>> Histórico de uso de cupons carregado.");
+        } catch (FileNotFoundException e) {
+            System.out.println(">>> Arquivo de cupons usados não encontrado. Será criado ao salvar.");
+        } catch (IOException e) {
+            System.err.println("Erro ao carregar cupons usados: " + e.getMessage());
+        }
+    }
+
+    private void salvarCuponsUsados() {
+        try (BufferedWriter bw = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(ARQUIVO_CUPONS_USADOS), StandardCharsets.UTF_8))) {
+            for (Cliente c : clientes) {
+                for (String codigo : c.getCuponsUsados()) {
+                    bw.write(c.getEmail() + ";" + codigo);
+                    bw.newLine();
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Erro ao salvar cupons usados: " + e.getMessage());
+        }
+    }
+    
+
+    
     // ================ MÉTODOS DE AVALIAÇÕES (RESTAURANTE) ================
     
     /**
