@@ -24,7 +24,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 /**
- * ✅ ATUALIZADO: Agora redireciona para TelaEscolherTipoProduto ao invés de abrir dialog
+ * ✅ CORRIGIDO: Exibe informações completas dos produtos com ícones corretos
  */
 public class TelaGerenciarCardapioController {
 
@@ -73,17 +73,32 @@ public class TelaGerenciarCardapioController {
         }
     }
 
+    /**
+     * ✅ CORRIGIDO: Exibe informações específicas completas
+     */
     private VBox criarCardProduto(Produto p) {
-        VBox card = new VBox(8);
+        VBox card = new VBox(10);
         String opacidade = p.isDisponivel() ? "1.0" : "0.6";
-        card.setStyle("-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 12; -fx-padding: 15; -fx-opacity: " + opacidade + ";");
+        card.setStyle(
+            "-fx-background-color: white; " +
+            "-fx-border-color: #e0e0e0; " +
+            "-fx-border-radius: 12; " +
+            "-fx-padding: 15; " +
+            "-fx-opacity: " + opacidade + ";"
+        );
 
-        // Linha 1: Nome e Preço
-        HBox header = new HBox();
+        // Linha 1: Ícone, Nome e Preço
+        HBox header = new HBox(10);
         header.setAlignment(Pos.CENTER_LEFT);
+        
+        // ✅ Ícone correto baseado no tipo
+        String icone = getIconeProduto(p);
+        Label lblIcone = new Label(icone);
+        lblIcone.setStyle("-fx-font-size: 28px;");
         
         Label lblNome = new Label(p.getNome());
         lblNome.setFont(Font.font("System", FontWeight.BOLD, 16));
+        lblNome.setStyle("-fx-text-fill: #333;");
         
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
@@ -92,27 +107,36 @@ public class TelaGerenciarCardapioController {
         lblPreco.setFont(Font.font("System", FontWeight.BOLD, 16));
         lblPreco.setStyle("-fx-text-fill: #ea1d2c;");
 
-        header.getChildren().addAll(lblNome, spacer, lblPreco);
+        header.getChildren().addAll(lblIcone, lblNome, spacer, lblPreco);
 
-        // Linha 2: Descrição + Categoria + Detalhes específicos
+        // Linha 2: Descrição + Categoria + Informações específicas
         StringBuilder detalhes = new StringBuilder();
-        detalhes.append(p.getDescricao());
         
+        // Descrição
         if (!p.getDescricao().isEmpty()) {
+            detalhes.append(p.getDescricao());
             detalhes.append(" • ");
         }
         
+        // Categoria
         detalhes.append(p.getCategoria());
         
-        // Adiciona informações específicas de cada tipo
+        // ✅ CRÍTICO: Informações específicas de cada tipo
         if (p instanceof Sobremesa) {
             Sobremesa sobremesa = (Sobremesa) p;
-            detalhes.append(" • ").append(sobremesa.getIconeTemperatura()).append(" ").append(sobremesa.getTemperatura());
+            detalhes.append(" • ")
+                   .append(sobremesa.getIconeTemperatura())
+                   .append(" ")
+                   .append(sobremesa.getTemperatura());
+                   
         } else if (p instanceof Bebida) {
-            // Se adicionar volumeML público na classe Bebida, pode exibir aqui
-            detalhes.append(" • Bebida");
+            Bebida bebida = (Bebida) p;
+            detalhes.append(" • ")
+                   .append(bebida.getVolumeML())
+                   .append("ml");
+                   
         } else if (p instanceof Comida) {
-            detalhes.append(" • Comida");
+            detalhes.append(" • 🍽️");
         }
         
         Label lblDesc = new Label(detalhes.toString());
@@ -125,9 +149,15 @@ public class TelaGerenciarCardapioController {
         boxBotoes.setPadding(new Insets(10, 0, 0, 0));
 
         // Botão Disponibilidade
-        Button btnStatus = new Button(p.isDisponivel() ? "Pausar Venda" : "Ativar Venda");
-        btnStatus.setStyle("-fx-background-color: " + (p.isDisponivel() ? "#f39c12" : "#27ae60") + 
-                          "; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 5;");
+        Button btnStatus = new Button(p.isDisponivel() ? "⏸️ Pausar Venda" : "▶️ Ativar Venda");
+        btnStatus.setStyle(
+            "-fx-background-color: " + (p.isDisponivel() ? "#f39c12" : "#27ae60") + 
+            "; -fx-text-fill: white; " +
+            "-fx-font-weight: bold; " +
+            "-fx-cursor: hand; " +
+            "-fx-background-radius: 5; " +
+            "-fx-padding: 8 15;"
+        );
         btnStatus.setOnAction(e -> {
             try {
                 p.setDisponibilidade(!p.isDisponivel());
@@ -141,9 +171,16 @@ public class TelaGerenciarCardapioController {
         });
 
         // Botão Remover
-        Button btnRemover = new Button("Remover");
-        btnRemover.setStyle("-fx-background-color: transparent; -fx-text-fill: #c0392b; " +
-                           "-fx-border-color: #c0392b; -fx-border-radius: 5; -fx-cursor: hand;");
+        Button btnRemover = new Button("🗑️ Remover");
+        btnRemover.setStyle(
+            "-fx-background-color: transparent; " +
+            "-fx-text-fill: #c0392b; " +
+            "-fx-border-color: #c0392b; " +
+            "-fx-border-radius: 5; " +
+            "-fx-cursor: hand; " +
+            "-fx-padding: 8 15; " +
+            "-fx-font-weight: bold;"
+        );
         btnRemover.setOnAction(e -> {
             try {
                 Alert confirmacao = new Alert(Alert.AlertType.CONFIRMATION);
@@ -171,8 +208,29 @@ public class TelaGerenciarCardapioController {
     }
 
     /**
-     * ✅ ATUALIZADO: Agora vai para TelaEscolherTipoProduto ao invés de abrir dialog
+     * ✅ Retorna ícone correto para cada tipo de produto
      */
+    private String getIconeProduto(Produto p) {
+        String categoria = p.getCategoria();
+        
+        if (categoria == null || categoria.isEmpty()) {
+            return "🍽️";
+        }
+        
+        switch (categoria) {
+            case "Comida":
+                return "🍔";
+            case "Bebida":
+                return "🥤";
+            case "Sobremesa":
+                return "🍰";
+            case "Adicional":
+                return "➕";
+            default:
+                return "🍽️";
+        }
+    }
+
     @FXML
     private void adicionarProduto() {
         try {

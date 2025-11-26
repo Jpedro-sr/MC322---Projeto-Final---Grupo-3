@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import ifome.model.Avaliacao;
 import ifome.model.Cliente;
+import ifome.model.ItemPedido;
 import ifome.model.Pedido;
 import ifome.util.RepositorioRestaurantes;
 import ifome.util.SessaoUsuario;
@@ -28,13 +29,11 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 /**
- * ✅ CORRIGIDO: Exibe avaliações com comentários
+ * ✅ CORRIGIDO: Exibe avaliações com comentários e informações completas dos produtos
  */
 public class MeusPedidosController {
 
-    @FXML
-    private VBox containerPedidos;
-
+    @FXML private VBox containerPedidos;
     private Cliente cliente;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
@@ -73,7 +72,7 @@ public class MeusPedidosController {
     }
 
     /**
-     * ✅ CORRIGIDO: Exibe avaliação com comentário quando já foi avaliado
+     * ✅ CORRIGIDO: Exibe informações completas incluindo características específicas dos produtos
      */
     private VBox criarCardPedido(Pedido pedido) {
         VBox card = new VBox(12);
@@ -110,12 +109,73 @@ public class MeusPedidosController {
         Label lblStatus = new Label("● " + pedido.getStatus());
         lblStatus.setStyle("-fx-text-fill: " + corStatus + "; -fx-font-size: 14px; -fx-font-weight: bold;");
 
+        // ✅ NOVO: Itens do pedido com informações específicas
+        VBox boxItens = new VBox(5);
+        boxItens.setPadding(new Insets(10, 0, 10, 0));
+        boxItens.setStyle("-fx-border-width: 1 0 1 0; -fx-border-color: #f0f0f0;");
+        
+        Label lblItensHeader = new Label("📋 Itens do Pedido:");
+        lblItensHeader.setStyle("-fx-text-fill: #666; -fx-font-size: 13px; -fx-font-weight: bold;");
+        boxItens.getChildren().add(lblItensHeader);
+
+        for (ItemPedido item : pedido.getItens()) {
+            VBox itemBox = new VBox(3);
+            itemBox.setPadding(new Insets(5, 0, 5, 10));
+            
+            // Nome e quantidade
+            Label lblItem = new Label(String.format("%dx %s", 
+                item.getQuantidade(), 
+                item.getProduto().getNome()
+            ));
+            lblItem.setStyle("-fx-text-fill: #333; -fx-font-size: 13px; -fx-font-weight: bold;");
+            
+            // ✅ Informações específicas do produto
+            StringBuilder detalhes = new StringBuilder();
+            
+            if (item.getProduto() instanceof ifome.model.Bebida) {
+                ifome.model.Bebida bebida = (ifome.model.Bebida) item.getProduto();
+                detalhes.append("   🥤 ").append(bebida.getVolumeML()).append("ml");
+            } else if (item.getProduto() instanceof ifome.model.Sobremesa) {
+                ifome.model.Sobremesa sobremesa = (ifome.model.Sobremesa) item.getProduto();
+                detalhes.append("   ").append(sobremesa.getIconeTemperatura())
+                       .append(" ").append(sobremesa.getTemperatura());
+            } else if (item.getProduto() instanceof ifome.model.Comida) {
+                detalhes.append("   🍽️ Comida");
+            }
+            
+            if (detalhes.length() > 0) {
+                Label lblDetalhes = new Label(detalhes.toString());
+                lblDetalhes.setStyle("-fx-text-fill: #666; -fx-font-size: 12px;");
+                itemBox.getChildren().add(lblDetalhes);
+            }
+            
+            // Observações
+            if (!item.getObservacoes().isEmpty()) {
+                Label lblObs = new Label("   💬 " + item.getObservacoes());
+                lblObs.setStyle("-fx-text-fill: #999; -fx-font-size: 11px; -fx-font-style: italic;");
+                lblObs.setWrapText(true);
+                itemBox.getChildren().add(lblObs);
+            }
+            
+            // Preço
+            Label lblPreco = new Label(String.format("   R$ %.2f", item.calcularPrecoTotal()));
+            lblPreco.setStyle("-fx-text-fill: #ea1d2c; -fx-font-size: 12px; -fx-font-weight: bold;");
+            
+            itemBox.getChildren().addAll(lblItem, lblPreco);
+            boxItens.getChildren().add(itemBox);
+        }
+
         // Valor Total
         HBox footerBox = new HBox();
         footerBox.setAlignment(Pos.CENTER_LEFT);
         footerBox.setStyle("-fx-padding: 10 0 0 0; -fx-border-width: 1 0 0 0; -fx-border-color: #e0e0e0;");
 
-        Label lblTotal = new Label("Total: R$ " + String.format("%.2f", pedido.getValorTotal()));
+        double valorExibir = pedido.getValorTotal();
+        if (valorExibir == 0.0 && !pedido.getItens().isEmpty()) {
+            valorExibir = pedido.calcularPrecoTotal();
+        }
+
+        Label lblTotal = new Label("Total: R$ " + String.format("%.2f", valorExibir));
         lblTotal.setFont(Font.font("System", FontWeight.BOLD, 15));
         lblTotal.setStyle("-fx-text-fill: #ea1d2c;");
 
@@ -124,7 +184,7 @@ public class MeusPedidosController {
 
         footerBox.getChildren().add(lblTotal);
 
-        // ✅ CORRIGIDO: Exibe avaliação se já foi avaliado
+        // ✅ CORRIGIDO: Avaliação com comentário completo
         if (!pedido.getAvaliacoes().isEmpty()) {
             Avaliacao avaliacao = pedido.getAvaliacoes().get(0);
             
@@ -135,7 +195,8 @@ public class MeusPedidosController {
             Label lblAvaliacaoTitulo = new Label("✅ Sua Avaliação");
             lblAvaliacaoTitulo.setStyle("-fx-text-fill: #4cd137; -fx-font-size: 13px; -fx-font-weight: bold;");
             
-            Label lblNota = new Label("⭐".repeat(avaliacao.getNota()) + " " + avaliacao.getNota() + "/5");
+            String estrelas = "⭐".repeat(avaliacao.getNota());
+            Label lblNota = new Label(estrelas + " " + avaliacao.getNota() + "/5");
             lblNota.setStyle("-fx-text-fill: #333; -fx-font-size: 14px;");
             
             boxAvaliacao.getChildren().addAll(lblAvaliacaoTitulo, lblNota);
@@ -144,13 +205,14 @@ public class MeusPedidosController {
                 Label lblComentario = new Label("💬 \"" + avaliacao.getComentario() + "\"");
                 lblComentario.setStyle("-fx-text-fill: #666; -fx-font-size: 13px; -fx-font-style: italic;");
                 lblComentario.setWrapText(true);
+                lblComentario.setMaxWidth(300);
                 boxAvaliacao.getChildren().add(lblComentario);
             }
             
-            card.getChildren().addAll(header, lblData, lblStatus, footerBox, boxAvaliacao);
+            card.getChildren().addAll(header, lblData, lblStatus, boxItens, footerBox, boxAvaliacao);
             
         } else if (pedido.getStatus().equals("Entregue")) {
-            // Botão Avaliar (apenas para pedidos entregues não avaliados)
+            // Botão Avaliar
             Button btnAvaliar = new Button("⭐ Avaliar");
             btnAvaliar.setStyle(
                 "-fx-background-color: #ea1d2c; " +
@@ -161,37 +223,13 @@ public class MeusPedidosController {
                 "-fx-padding: 8 15;"
             );
 
-            btnAvaliar.setOnMouseEntered(e -> {
-                btnAvaliar.setStyle(
-                    "-fx-background-color: #d11a26; " +
-                    "-fx-text-fill: white; " +
-                    "-fx-font-weight: bold; " +
-                    "-fx-background-radius: 8; " +
-                    "-fx-cursor: hand; " +
-                    "-fx-padding: 8 15; " +
-                    "-fx-scale-x: 1.05; " +
-                    "-fx-scale-y: 1.05;"
-                );
-            });
-
-            btnAvaliar.setOnMouseExited(e -> {
-                btnAvaliar.setStyle(
-                    "-fx-background-color: #ea1d2c; " +
-                    "-fx-text-fill: white; " +
-                    "-fx-font-weight: bold; " +
-                    "-fx-background-radius: 8; " +
-                    "-fx-cursor: hand; " +
-                    "-fx-padding: 8 15;"
-                );
-            });
-
             btnAvaliar.setOnAction(e -> abrirDialogAvaliacao(pedido));
 
             footerBox.getChildren().addAll(spacer2, btnAvaliar);
-            card.getChildren().addAll(header, lblData, lblStatus, footerBox);
+            card.getChildren().addAll(header, lblData, lblStatus, boxItens, footerBox);
             
         } else {
-            card.getChildren().addAll(header, lblData, lblStatus, footerBox);
+            card.getChildren().addAll(header, lblData, lblStatus, boxItens, footerBox);
         }
 
         return card;
@@ -207,7 +245,6 @@ public class MeusPedidosController {
         vbox.setAlignment(Pos.CENTER_LEFT);
         vbox.setStyle("-fx-background-color: white;");
 
-        // Estrelas (RadioButtons)
         Label lblNota = new Label("Nota (1-5 estrelas):");
         lblNota.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
 
@@ -231,7 +268,6 @@ public class MeusPedidosController {
             boxEstrelas.getChildren().add(estrelaBox);
         }
 
-        // Comentário
         Label lblComentario = new Label("Comentário (opcional):");
         lblComentario.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
 

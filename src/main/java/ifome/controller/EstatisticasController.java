@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import ifome.model.ItemPedido;
 import ifome.model.Pedido;
 import ifome.model.Restaurante;
+import ifome.util.RepositorioRestaurantes;
 import ifome.util.SessaoUsuario;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,6 +24,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+/**
+ * ✅ CORRIGIDO: Agora busca pedidos do repositório global
+ */
 public class EstatisticasController {
 
     @FXML private Label lblTotalPedidos;
@@ -40,13 +44,26 @@ public class EstatisticasController {
     }
 
     private void carregarEstatisticas() {
-        List<Pedido> pedidos = restaurante.getFilaPedidos();
+        // ✅ CRÍTICO: Busca TODOS os pedidos do repositório global
+        List<Pedido> todosPedidos = RepositorioRestaurantes.getInstance().getTodosPedidos();
         
-        // Filtra apenas pedidos entregues ou confirmados (que geraram receita)
-        List<Pedido> pedidosFinalizados = pedidos.stream()
-            .filter(p -> p.getStatus().equals("Entregue") || 
-                        !p.getStatus().equals("Cancelado"))
+        // Filtra apenas pedidos DESTE restaurante
+        List<Pedido> pedidosDoRestaurante = todosPedidos.stream()
+            .filter(p -> p.getRestaurante() != null && 
+                        p.getRestaurante().getEmail().equals(restaurante.getEmail()))
             .collect(Collectors.toList());
+        
+        // Filtra apenas pedidos finalizados (que geraram receita)
+        List<Pedido> pedidosFinalizados = pedidosDoRestaurante.stream()
+            .filter(p -> p.getStatus().equals("Entregue") || 
+                        p.getStatus().equals("Confirmado") ||
+                        p.getStatus().equals("Preparando") ||
+                        p.getStatus().equals("Pronto") ||
+                        p.getStatus().equals("Em Entrega"))
+            .collect(Collectors.toList());
+
+        System.out.println(">>> Estatísticas - Total de pedidos do restaurante: " + pedidosDoRestaurante.size());
+        System.out.println(">>> Estatísticas - Pedidos finalizados: " + pedidosFinalizados.size());
 
         // Total de Pedidos
         int totalPedidos = pedidosFinalizados.size();
@@ -54,8 +71,16 @@ public class EstatisticasController {
 
         // Faturamento Total
         double faturamentoTotal = pedidosFinalizados.stream()
-            .mapToDouble(Pedido::getValorTotal)
+            .mapToDouble(p -> {
+                double valor = p.getValorTotal();
+                if (valor == 0.0 && !p.getItens().isEmpty()) {
+                    valor = p.calcularPrecoTotal();
+                }
+                return valor;
+            })
             .sum();
+        
+        System.out.println(">>> Faturamento total calculado: R$" + String.format("%.2f", faturamentoTotal));
         lblFaturamentoTotal.setText(String.format("R$ %.2f", faturamentoTotal));
 
         // Ticket Médio
