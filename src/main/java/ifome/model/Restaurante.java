@@ -73,16 +73,11 @@ public class Restaurante extends Usuario implements Avaliavel {
         // Remove todos os caracteres não numéricos
         String apenasDigitos = cnpj.replaceAll("[^0-9]", "");
         
-        // Valida quantidade de dígitos
+        // Valida apenas a quantidade de dígitos (sem matemática)
         if (apenasDigitos.length() != CNPJ_LENGTH) {
             throw new IllegalArgumentException(
                 "CNPJ inválido. Deve conter exatamente " + CNPJ_LENGTH + " dígitos"
             );
-        }
-        
-        // Rejeita CNPJs conhecidos como inválidos (todos os dígitos iguais)
-        if (apenasDigitos.matches("(\\d)\\1+")) {
-            throw new IllegalArgumentException("CNPJ inválido. Dígitos repetitivos");
         }
         
         // ✅ VALIDAÇÃO DOS DÍGITOS VERIFICADORES

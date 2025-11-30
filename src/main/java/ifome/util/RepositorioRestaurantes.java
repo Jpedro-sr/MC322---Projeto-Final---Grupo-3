@@ -65,7 +65,7 @@ public class RepositorioRestaurantes {
         System.out.println(">>> Populando restaurantes iniciais...");
 
         Restaurante pizzaria = new Restaurante(
-            "pizzaria@ifome.com", "123", "Pizzaria Italiana", "12345678000199"
+            "pizzaria@ifome.com", "123", "Pizzaria Italiana", "30648775000163" // CNPJ Válido
         );
         pizzaria.abrirRestaurante();
         pizzaria.adicionarProdutoCardapio(new Comida("Pizza Margherita", 
@@ -79,7 +79,7 @@ public class RepositorioRestaurantes {
         adicionarRestaurante(pizzaria);
 
         Restaurante burger = new Restaurante(
-            "burger@ifome.com", "123", "Burger House", "98765432000188"
+            "burger@ifome.com", "123", "Burger House", "80932127000176" // CNPJ Válido
         );
         burger.abrirRestaurante();
         burger.adicionarProdutoCardapio(new Comida("X-Burger", 
@@ -91,7 +91,7 @@ public class RepositorioRestaurantes {
         adicionarRestaurante(burger);
 
         Restaurante sushi = new Restaurante(
-            "sushi@ifome.com", "123", "Sushi Master", "11122233000144"
+            "sushi@ifome.com", "123", "Sushi Master", "91688421000166" // CNPJ Válido
         );
         sushi.abrirRestaurante();
         sushi.adicionarProdutoCardapio(new Comida("Combo Sashimi", 
