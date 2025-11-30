@@ -8,6 +8,15 @@ Um sistema completo de entrega de comida desenvolvido em Java com arquitetura or
 
 ---
 
+## Autores
+
+- **João Pedro dos Santos Rodrigues**     RA: 251492
+- **Pedro Romasanta Rosa**                RA:
+- **Matheus Boazão Silveira**             RA:
+- **Rafael Rodrigues Pimentel de Melo**   RA:
+
+---
+
 ## Índice
 
 - [Características](#características)
@@ -89,7 +98,7 @@ Um sistema completo de entrega de comida desenvolvido em Java com arquitetura or
 
 ---
 
-## 📦 Pré-requisitos
+## Pré-requisitos
 
 - **Java 11+** (recomendado Java 17+)
 - **JavaFX 19+** (incluído nas dependências)
@@ -190,9 +199,9 @@ String cnpj = "12345678000100";      // REJEITADO: Dígito verificador inválido
 
 #### **2. Telefone (Cliente)**
 ```java
-// ✅ Remove caracteres não numéricos
-// ✅ Valida mínimo 10 e máximo 15 dígitos
-// ✅ Limite de 20 caracteres no formato original
+// Remove caracteres não numéricos
+// Valida mínimo 10 e máximo 15 dígitos
+// Limite de 20 caracteres no formato original
 String tel = "(11) 99999-9999";  // Válido (11 dígitos)
 String tel = "11999999999";      // Válido
 String tel = "+55 11 99999-9999"; // Válido (13 dígitos)
@@ -242,7 +251,7 @@ cliente.jaUsouCupom("DESC10"); // Verifica se já foi usado
 cliente.registrarUsoCupom("DESC10"); // Registra uso
 ```
 
-### 🛡️ **Proteções Contra Ataques**
+### **Proteções Contra Ataques**
 
 | Tipo de Ataque | Proteção Implementada |
 |----------------|----------------------|
@@ -256,7 +265,7 @@ cliente.registrarUsoCupom("DESC10"); // Registra uso
 
 ---
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 MC322-Projeto-Final-Grupo-3/
@@ -433,15 +442,6 @@ Desenvolver interface gráfica moderna (JavaFX)
 Implementar validações robustas e segurança  
 Trabalhar em equipe com controle de versão (Git)  
 Documentar código e funcionalidades  
-
----
-
-## 👥 Autores
-
-- **Rafael Rodrigues Pimentel de Melo**
-- **Matheus Boazão Silveira**
-- **João Pedro dos Santos Rodrigues**
-- **Pedro Romasanta Rosa**
 
 ---
 
