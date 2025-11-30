@@ -13,7 +13,7 @@
       xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" 
       fx:controller="ifome.controller.MeusPedidosController">
 
-    <!-- CABEÇALHO FIXO -->
+    <!-- cabecalho -->
     <VBox alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);">
         <padding>
             <Insets bottom="15" left="15" right="15" top="15"/>
@@ -29,7 +29,7 @@
         </HBox>
     </VBox>
 
-    <!-- LISTA DE PEDIDOS (ScrollPane) -->
+    <!--lista de pedifos em scroll -->
     <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: #f4f4f4;" VBox.vgrow="ALWAYS">
         <content>
             <VBox fx:id="containerPedidos" alignment="TOP_CENTER" spacing="10.0">

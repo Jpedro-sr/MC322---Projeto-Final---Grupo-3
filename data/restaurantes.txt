@@ -4,3 +4,4 @@ sushi@ifome.com;123;Sushi Master;91688421000166
 arabe@ifome.com;123;Delicias Arabes;45311238000152
 acai@ifome.com;123456;Açaiteria da Maria;62435039000164
 mexico@gmail.com;123456;Restaurante Mexicano;17652798000181
+azul@gmail.com;123456;pizzaria azul;12345678901235

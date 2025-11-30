@@ -4,10 +4,8 @@ import ifome.model.*;
 import ifome.util.*;
 import ifome.exceptions.*;
 
-/**
- * Aplicação principal do iFome
- * VERSÃO COMPLETA - Persistência, exceções específicas e funcionalidades implementadas
- */
+// versão obsoleta (em terminal), 
+// não mexer
 public class AplicacaoConsole {
 
     private static SessaoUsuario sessao;
@@ -454,7 +452,6 @@ public class AplicacaoConsole {
                 throw new ValorMinimoException("Carrinho vazio!");
             }
 
-            // Verifica endereços
             if (cliente.getEnderecos().isEmpty()) {
                 System.out.println("\nCadastre um endereço!");
                 adicionarEndereco(cliente);
@@ -463,7 +460,6 @@ public class AplicacaoConsole {
                 }
             }
 
-            // Seleciona endereço
             System.out.println("\n--- Endereço de entrega ---");
             for (int i = 0; i < cliente.getEnderecos().size(); i++) {
                 System.out.println((i + 1) + ". " + cliente.getEnderecos().get(i).getEnderecoCompleto());
@@ -474,8 +470,6 @@ public class AplicacaoConsole {
                 InputManager.pausar("");
                 return;
             }
-
-            // Forma de pagamento com input dinâmico
             System.out.println("\n--- Forma de Pagamento ---");
             System.out.println("1. PIX");
             System.out.println("2. Cartão de Crédito");
@@ -489,7 +483,7 @@ public class AplicacaoConsole {
                     pag = new PIX();
                     break;
                 case 2:
-                    // SOLICITA DADOS DO CARTÃO DINAMICAMENTE
+    
                     System.out.println("\n--- Dados do Cartão ---");
                     String numeroCartao = InputManager.lerTexto("Número (16 dígitos)");
                     if (numeroCartao == null || numeroCartao.isEmpty()) return;
@@ -516,7 +510,7 @@ public class AplicacaoConsole {
                     return;
             }
 
-            // Cupom de desconto
+    
             System.out.println("\n--- Cupom de Desconto ---");
             if (InputManager.lerConfirmacao("Possui cupom de desconto?")) {
                 String codigoCupom = InputManager.lerTexto("Digite o código do cupom");
@@ -532,7 +526,6 @@ public class AplicacaoConsole {
                 }
             }
 
-            // Mostra resumo
             System.out.println("\n--- Resumo do Pedido ---");
             System.out.printf("Subtotal: R$%.2f\n", carrinho.calcularPrecoTotal());
             if (carrinho.getCupomAplicado() != null) {
@@ -547,19 +540,15 @@ public class AplicacaoConsole {
                 return;
             }
 
-            // Gera pedido (pode lançar exceções)
             Pedido pedido = carrinho.gerarPedido();
             pedido.setFormaPagamento(pag);
             pedido.atualizarStatus("Pendente");
             
-            // Processa pagamento (pode lançar PagamentoRecusadoException)
             pedido.processarPagamento();
 
-            // Aceita pedido no restaurante
             Restaurante rest = carrinho.getRestaurante();
             rest.aceitarPedido(pedido);
             
-            // Adiciona ao histórico e repositório
             cliente.adicionarPedido(pedido);
             repositorio.adicionarPedido(pedido);
 
@@ -613,9 +602,6 @@ public class AplicacaoConsole {
         InputManager.pausar("");
     }
 
-    /**
-     * IMPLEMENTAÇÃO COMPLETA: Avaliar pedidos entregues
-     */
     private static void avaliarPedido() {
         InputManager.limparTela();
         System.out.println("==================================================");
@@ -631,7 +617,6 @@ public class AplicacaoConsole {
             return;
         }
 
-        // Filtra apenas pedidos entregues
         java.util.List<Pedido> pedidosEntregues = new java.util.ArrayList<>();
         for (Pedido p : pedidos) {
             if (p.getStatus().equals("Entregue")) {
@@ -675,10 +660,8 @@ public class AplicacaoConsole {
 
         String coment = InputManager.lerTexto("Comentário (opcional)");
         
-        // Avalia o pedido
         cliente.avaliarPedido(ped, nota, coment != null ? coment : "");
         
-        // Também avalia o restaurante
         Restaurante rest = ped.getRestaurante();
         rest.avaliar(nota, coment != null ? coment : "");
 
@@ -690,7 +673,7 @@ public class AplicacaoConsole {
             System.out.println("Comentário: " + coment);
         }
         
-        repositorio.salvarDados(); // Salva a avaliação
+        repositorio.salvarDados();
         InputManager.pausar("");
     }
     
@@ -705,9 +688,6 @@ public class AplicacaoConsole {
         }
     }
 
-    /**
-     * IMPLEMENTAÇÃO COMPLETA: Restaurante aceita ou recusa pedidos pendentes
-     */
     private static void gerenciarPedidos(Restaurante restaurante) {
         InputManager.limparTela();
         System.out.println("==================================================");
@@ -758,7 +738,7 @@ public class AplicacaoConsole {
 
         try {
             if (acao == 1) {
-                // Aceitar pedido
+                
                 pedidoSelecionado.atualizarStatus("Confirmado");
                 repositorio.salvarDados();
                 
@@ -766,7 +746,7 @@ public class AplicacaoConsole {
                 System.out.println("O cliente foi notificado.");
                 
             } else if (acao == 2) {
-                // Recusar pedido
+               
                 String motivo = InputManager.lerTexto("Motivo da recusa (opcional)");
                 restaurante.recusarPedido(pedidoSelecionado);
                 repositorio.salvarDados();

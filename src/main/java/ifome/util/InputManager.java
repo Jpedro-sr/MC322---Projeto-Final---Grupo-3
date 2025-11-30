@@ -4,10 +4,7 @@ import java.util.Scanner;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-/**
- * Centraliza todas as entradas do usuário com validações.
- * VERSÃO DEFINITIVA - Remove completamente problemas de buffer
- */
+//inputs e entradas sem defeito
 public class InputManager {
 
     private static BufferedReader reader;
@@ -15,13 +12,13 @@ public class InputManager {
 
     static {
         isWindows = System.getProperty("os.name").toLowerCase().contains("windows");
-        // Usa BufferedReader para evitar problemas com o Scanner e Gradle
+   // buffer e lowercase
         reader = new BufferedReader(new InputStreamReader(System.in));
     }
 
     private static String lerLinha() {
         try {
-            System.out.flush(); // Força o flush antes de ler
+            System.out.flush(); 
             String linha = reader.readLine();
             return linha != null ? linha.trim() : "";
         } catch (Exception e) {
@@ -189,7 +186,7 @@ public class InputManager {
                 reader.close();
             }
         } catch (Exception e) {
-            // Ignora
+            // ignora
         }
     }
 }

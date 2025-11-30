@@ -33,7 +33,7 @@ public class CupomTest {
         double valorOriginal = 30.0;
         double valorComDesconto = cupom.aplicarDesconto(valorOriginal);
         
-        // Desconto não pode ser maior que o total
+       //limite de desconto
         assertEquals(0.0, valorComDesconto, 0.01);
     }
 

@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<!--tela principal -->
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" 
       prefHeight="640.0" prefWidth="360.0" spacing="20.0" 
       style="-fx-background-color: #f4f4f4;" 

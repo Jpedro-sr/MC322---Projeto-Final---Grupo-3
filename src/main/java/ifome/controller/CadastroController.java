@@ -47,20 +47,20 @@ public class CadastroController {
         String senha = campoSenha.getText();
         String confirmarSenha = campoConfirmarSenha.getText();
 
-        // Validações básicas
+        // basico
         if (nome.isEmpty() || email.isEmpty() || telefone.isEmpty() || senha.isEmpty()) {
             mostrarAlerta("Campos Obrigatórios", "Por favor, preencha todos os campos.");
             return;
         }
 
-        // Validar formato de email
+        // email
         if (!email.contains("@") || !email.contains(".")) {
             mostrarAlerta("Email Inválido", "Por favor, digite um email válido.");
             campoEmail.requestFocus();
             return;
         }
 
-        // Validar telefone (mínimo 10 dígitos)
+        // stelefone
         String telefoneDigitos = telefone.replaceAll("[^0-9]", "");
         if (telefoneDigitos.length() < 10) {
             mostrarAlerta("Telefone Inválido", "O telefone deve ter pelo menos 10 dígitos.");
@@ -68,14 +68,14 @@ public class CadastroController {
             return;
         }
 
-        // Validar senha (removido limite mínimo)
+        // senha (sem limite para fqacilitar os testes)
         if (senha.isEmpty()) {
             mostrarAlerta("Senha Obrigatória", "Por favor, digite uma senha.");
             campoSenha.requestFocus();
             return;
         }
 
-        // Confirmar senha
+        // confirma
         if (!senha.equals(confirmarSenha)) {
             mostrarAlerta("Senhas Diferentes", "As senhas não coincidem. Por favor, tente novamente.");
             campoConfirmarSenha.clear();
@@ -85,30 +85,29 @@ public class CadastroController {
 
         RepositorioRestaurantes repo = RepositorioRestaurantes.getInstance();
 
-        // Verificar se email já existe
+        // verifica se existe
         if (repo.emailJaExiste(email)) {
             mostrarAlerta("Email já Cadastrado", "Este email já está em uso. Por favor, faça login ou use outro email.");
             campoEmail.requestFocus();
             return;
         }
 
-        // Criar novo cliente
+        // novo clinete
         try {
             Cliente novoCliente = new Cliente(email, senha, nome, telefone);
             repo.adicionarCliente(novoCliente);
             repo.salvarDados();
 
-            // Fazer login automaticamente
             SessaoUsuario.getInstance().setClienteLogado(novoCliente);
 
-            // Mostrar mensagem de sucesso
+    
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Cadastro Realizado");
             alert.setHeaderText("Bem-vindo ao iFome!");
             alert.setContentText("Sua conta foi criada com sucesso, " + nome + "!");
             alert.showAndWait();
 
-            // Redirecionar para o menu do cliente
+            // redirect pro menu
             mudarTela(event, "/ifome/MenuCliente.fxml");
 
         } catch (Exception e) {

@@ -3,8 +3,7 @@ package ifome.model;
 import java.util.Date;
 
 /**
- * Representa uma avaliação de um pedido ou restaurante.
- * Armazena nota (1-5), comentário e data.
+ * avaliacao de 1-5 com comentario
  */
 public class Avaliacao {
     
@@ -12,19 +11,19 @@ public class Avaliacao {
     private String comentario;
     private Date data;
 
-    // Construtor completo
+
     public Avaliacao(int nota, String comentario) {
         this.nota = validarNota(nota);
         this.comentario = comentario != null ? comentario.trim() : "";
         this.data = new Date();
     }
 
-    // Construtor com apenas nota
+    // 
     public Avaliacao(int nota) {
         this(nota, "");
     }
 
-    // Validar se nota está entre 1 e 5
+    // valida se esta correto
     private int validarNota(int nota) {
         if (nota < 1 || nota > 5) {
             System.out.println("⚠️ Nota inválida. Usando nota 3 como padrão.");
@@ -33,7 +32,7 @@ public class Avaliacao {
         return nota;
     }
 
-    // Getters
+    // getters
     public int getNota() {
         return nota;
     }
@@ -46,7 +45,7 @@ public class Avaliacao {
         return data;
     }
 
-    // Setters com validação
+    // setters com validação
     public void setNota(int nota) {
         this.nota = validarNota(nota);
     }

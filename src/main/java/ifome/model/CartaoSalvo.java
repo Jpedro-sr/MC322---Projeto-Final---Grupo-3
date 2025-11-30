@@ -2,18 +2,15 @@ package ifome.model;
 
 import java.util.Objects;
 
-/**
- * Representa um cartão de crédito salvo pelo cliente.
- * Armazena informações de forma segura (número mascarado).
- */
+//cartao salvo
 public class CartaoSalvo {
     
-    private String numeroMascarado; // Ex: "**** **** **** 1234"
-    private String numeroCompleto; // Armazenado de forma simplificada (em produção, usar criptografia)
+    private String numeroMascarado; 
+    private String numeroCompleto; 
     private String nomeTitular;
     private String cvv;
     private String validade;
-    private String apelido; // Ex: "Cartão Principal", "Nubank", etc.
+    private String apelido; 
     
     public CartaoSalvo(String numeroCompleto, String nomeTitular, String cvv, String validade, String apelido) {
         this.numeroCompleto = numeroCompleto;
@@ -53,7 +50,7 @@ public class CartaoSalvo {
         return new CartaoCredito(numeroCompleto, nomeTitular, cvv, validade);
     }
     
-    // Getters
+    // getters
     public String getNumeroMascarado() {
         if (numeroCompleto != null && numeroCompleto.length() > 4) {
             return "**** " + numeroCompleto.substring(numeroCompleto.length() - 4);

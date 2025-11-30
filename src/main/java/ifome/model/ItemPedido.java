@@ -1,9 +1,6 @@
 package ifome.model;
 
-/**
- * Representa um item dentro de um Pedido ou Carrinho.
- * Implementa Calculavel para calcular o subtotal.
- */
+// idem do pedido ou do carrinho
 public class ItemPedido implements Calculavel {
 
     private int quantidade;
@@ -11,7 +8,6 @@ public class ItemPedido implements Calculavel {
     private double precoUnitario;
     private Produto produto;
 
-    // Construtor
     public ItemPedido(Produto produto, int quantidade, String observacoes) {
         this.produto = produto;
         this.quantidade = quantidade > 0 ? quantidade : 1;
@@ -19,21 +15,18 @@ public class ItemPedido implements Calculavel {
         this.precoUnitario = produto.getPreco();
     }
 
-    // Construtor sem observações
+   
     public ItemPedido(Produto produto, int quantidade) {
         this(produto, quantidade, "");
     }
 
-    /**
-     * Calcula o subtotal: preço unitário × quantidade.
-     * Implementa Calculavel.
-     */
+    //calculo do subtotal
     @Override
     public double calcularPrecoTotal() {
         return this.precoUnitario * this.quantidade;
     }
 
-    // Getters
+
     public Produto getProduto() {
         return produto;
     }
@@ -50,7 +43,6 @@ public class ItemPedido implements Calculavel {
         return precoUnitario;
     }
 
-    // Setters
     public void setQuantidade(int quantidade) {
         if (quantidade > 0) {
             this.quantidade = quantidade;
@@ -63,9 +55,7 @@ public class ItemPedido implements Calculavel {
         this.observacoes = observacoes != null ? observacoes : "";
     }
 
-    /**
-     * Retorna o item formatado para exibição.
-     */
+ //retorna o fromato
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

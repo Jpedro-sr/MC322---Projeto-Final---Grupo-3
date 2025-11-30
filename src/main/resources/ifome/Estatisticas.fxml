@@ -15,7 +15,7 @@
       xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" 
       fx:controller="ifome.controller.EstatisticasController">
 
-    <!-- CABEÇALHO FIXO -->
+    <!-- cabeçalho -->
     <VBox alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);">
         <padding>
             <Insets bottom="15" left="15" right="15" top="15"/>
@@ -31,7 +31,7 @@
         </HBox>
     </VBox>
 
-    <!-- CONTEÚDO SCROLLÁVEL -->
+    <!-- scroll -->
     <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: #f4f4f4;" VBox.vgrow="ALWAYS">
         <content>
             <VBox spacing="15.0">
@@ -39,14 +39,14 @@
                     <Insets bottom="20" left="15" right="15" top="15"/>
                 </padding>
 
-                <!-- CARDS DE MÉTRICAS PRINCIPAIS -->
+                <!-- cards -->
                 <GridPane hgap="10" vgap="10">
                     <columnConstraints>
                         <ColumnConstraints percentWidth="50"/>
                         <ColumnConstraints percentWidth="50"/>
                     </columnConstraints>
 
-                    <!-- Total de Pedidos -->
+                    <!-- total -->
                     <VBox alignment="CENTER" style="-fx-background-color: white; -fx-padding: 15; -fx-border-radius: 12; -fx-background-radius: 12;" GridPane.columnIndex="0" GridPane.rowIndex="0">
                         <Label text="📦" style="-fx-font-size: 24px;">
                             <VBox.margin>
@@ -65,7 +65,7 @@
                         </Label>
                     </VBox>
 
-                    <!-- Faturamento Total -->
+                    <!-- faturamento -->
                     <VBox alignment="CENTER" style="-fx-background-color: white; -fx-padding: 15; -fx-border-radius: 12; -fx-background-radius: 12;" GridPane.columnIndex="1" GridPane.rowIndex="0">
                         <Label text="💰" style="-fx-font-size: 24px;">
                             <VBox.margin>
@@ -84,7 +84,7 @@
                         </Label>
                     </VBox>
 
-                    <!-- Ticket Médio -->
+                    <!--ticket -->
                     <VBox alignment="CENTER" style="-fx-background-color: white; -fx-padding: 15; -fx-border-radius: 12; -fx-background-radius: 12;" GridPane.columnIndex="0" GridPane.rowIndex="1">
                         <Label text="🎯" style="-fx-font-size: 24px;">
                             <VBox.margin>
@@ -103,7 +103,7 @@
                         </Label>
                     </VBox>
 
-                    <!-- Avaliação Média -->
+                    <!-- avaliacao -->
                     <VBox alignment="CENTER" style="-fx-background-color: white; -fx-padding: 15; -fx-border-radius: 12; -fx-background-radius: 12;" GridPane.columnIndex="1" GridPane.rowIndex="1">
                         <Label text="⭐" style="-fx-font-size: 24px;">
                             <VBox.margin>
@@ -123,7 +123,7 @@
                     </VBox>
                 </GridPane>
 
-                <!-- PRODUTOS MAIS VENDIDOS -->
+                <!-- mais vendidos-->
                 <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-border-radius: 12; -fx-background-radius: 12;">
                     <Label text="🏆 Produtos Mais Vendidos" textFill="#333">
                         <font>

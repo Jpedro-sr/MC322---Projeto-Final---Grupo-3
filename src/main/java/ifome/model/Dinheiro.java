@@ -1,22 +1,18 @@
 package ifome.model; 
 
-/**
- * Implementação de pagamento em dinheiro.
- * Calcula troco automaticamente.
- */
+//pagamento em dinero
 public class Dinheiro extends FormaPagamento {
 
     private double valorRecebido;
     private double troco;
 
-    // Construtor
+
     public Dinheiro(double valorRecebido) {
         super();
         this.valorRecebido = valorRecebido > 0 ? valorRecebido : 0;
         this.troco = 0;
     }
 
-    // Construtor padrão (sem valor)
     public Dinheiro() {
         this(0);
     }

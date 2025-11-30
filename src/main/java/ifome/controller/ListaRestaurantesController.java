@@ -26,7 +26,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 /**
- * ✅ CORRIGIDO: Exibe avaliações corretamente
+ * controller da lista de restaurante
  */
 public class ListaRestaurantesController {
 
@@ -56,14 +56,14 @@ public class ListaRestaurantesController {
     }
 
     /**
-     * ✅ CORRIGIDO: Mostra avaliação média corretamente
+     * corrige a avaliação
      */
     private VBox criarCardRestaurante(Restaurante r) {
         VBox card = new VBox(8);
         card.setPadding(new Insets(15));
         card.setStyle("-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand;");
 
-        // Header: Nome e Status
+        // nome e status
         HBox header = new HBox();
         header.setAlignment(Pos.CENTER_LEFT);
 
@@ -81,7 +81,7 @@ public class ListaRestaurantesController {
 
         header.getChildren().addAll(lblNome, spacer, lblStatus);
 
-        // ✅ CORRIGIDO: Calcula e exibe avaliação média
+        // calc e avalia a media
         double mediaAvaliacoes = r.calcularMediaAvaliacoes();
         int totalAvaliacoes = r.getQuantidadeAvaliacoes();
         
@@ -92,16 +92,16 @@ public class ListaRestaurantesController {
         Label lblAvaliacao = new Label(avaliacaoTexto);
         lblAvaliacao.setStyle("-fx-text-fill: #666; -fx-font-size: 13px;");
 
-        // Descrição (quantidade de produtos)
+        // (quantidade de produtos)
         Label lblProdutos = new Label(r.getQuantidadeProdutos() + " produtos no cardápio");
         lblProdutos.setStyle("-fx-text-fill: #999; -fx-font-size: 12px;");
 
         card.getChildren().addAll(header, lblAvaliacao, lblProdutos);
 
-        // Evento de clique
+    
         card.setOnMouseClicked(e -> abrirRestaurante(r));
 
-        // Efeito hover
+    
         card.setOnMouseEntered(e -> {
             if (r.estaAberto()) {
                 card.setStyle("-fx-background-color: #f8f8f8; -fx-border-color: #ea1d2c; -fx-border-width: 2; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand;");

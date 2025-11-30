@@ -1,9 +1,6 @@
 package ifome.model;
 
-/**
- * Representa um endereço com validação de CEP brasileiro.
- * Implementa toString() para facilitar debug e exibição.
- */
+//endereco br
 public class Endereco {
     
     private String cep;
@@ -14,7 +11,7 @@ public class Endereco {
     private String cidade;
     private String estado;
 
-    // Construtor completo
+    
     public Endereco(String cep, String rua, String numero, String bairro, 
                     String complemento, String cidade, String estado) {
         this.cep = validarCEP(cep) ? cep : "00000-000";
@@ -26,24 +23,20 @@ public class Endereco {
         this.estado = estado != null ? estado : "";
     }
 
-    // Construtor alternativo sem complemento
     public Endereco(String cep, String rua, String numero, String bairro, String cidade, String estado) {
         this(cep, rua, numero, bairro, "", cidade, estado);
     }
 
-    // Construtor mínimo
     public Endereco(String cep, String rua, String numero) {
         this(cep, rua, numero, "", "", "", "");
     }
 
-    // Validação de CEP com regex (formato: 12345-678 ou 12345678)
     private boolean validarCEP(String cep) {
         if (cep == null || cep.isEmpty()) return false;
         String cepLimpo = cep.replaceAll("[^0-9]", "");
         return cepLimpo.length() == 8 && cepLimpo.matches("\\d{5}\\d{3}");
     }
 
-    // Formata CEP para exibição (12345-678)
     private String formatarCEP(String cep) {
         String cepLimpo = cep.replaceAll("[^0-9]", "");
         if (cepLimpo.length() == 8) {
@@ -52,7 +45,7 @@ public class Endereco {
         return cep;
     }
 
-    // Retorna o endereço formatado completo
+
     public String getEnderecoCompleto() {
         StringBuilder sb = new StringBuilder();
         sb.append(rua);
@@ -73,7 +66,6 @@ public class Endereco {
         return sb.toString();
     }
 
-    // Getters
     public String getCep() {
         return cep;
     }
@@ -102,7 +94,6 @@ public class Endereco {
         return estado;
     }
 
-    // Setters com validação
     public void setCep(String cep) {
         this.cep = validarCEP(cep) ? cep : this.cep;
     }

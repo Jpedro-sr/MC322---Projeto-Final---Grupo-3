@@ -1,13 +1,12 @@
 package ifome.model;
-
-/**
- * ✅ CORRIGIDO: Adicionado getter para volumeML
- */
+// essa versao 
+//add getter do volume
+//parece correto, precisa de testes
 public class Bebida extends Produto {
 
     private int volumeML;
 
-    // Construtor
+
     public Bebida(String nome, String desc, double preco, int ml) {
         this.nome = nome;
         this.descricao = desc;
@@ -16,16 +15,12 @@ public class Bebida extends Produto {
         this.volumeML = ml;
     }
 
-    /**
-     * ✅ NOVO: Getter para volume em mililitros
-     */
+    
     public int getVolumeML() {
         return volumeML;
     }
 
-    /**
-     * ✅ NOVO: Setter para volume em mililitros
-     */
+   // setter ml
     public void setVolumeML(int volumeML) {
         this.volumeML = volumeML > 0 ? volumeML : this.volumeML;
     }

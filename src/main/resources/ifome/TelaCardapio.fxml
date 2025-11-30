@@ -14,13 +14,13 @@
       xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" 
       fx:controller="ifome.controller.TelaCardapioController">
 
-    <!-- CABEÇALHO FIXO -->
+    <!--cabecalho fixo-->
     <VBox alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);">
         <padding>
             <Insets bottom="15" top="15" left="15" right="15" />
         </padding>
         
-        <!-- Botão Voltar -->
+        <!-- botao voltar-->
         <HBox alignment="CENTER_LEFT">
             <Button text="← Voltar" onAction="#voltar" 
                     style="-fx-background-color: transparent; -fx-text-fill: #666; -fx-cursor: hand; -fx-font-size: 14px;">
@@ -30,7 +30,7 @@
             </Button>
         </HBox>
         
-        <!-- Nome e Avaliação do Restaurante -->
+        <!--nome e avaliacao -->
         <Label fx:id="lblNomeRestaurante" text="Nome do Restaurante" textFill="#333">
             <font>
                 <Font name="System Bold" size="20.0" />
@@ -54,7 +54,7 @@
         </HBox>
     </VBox>
 
-    <!-- LISTA DE PRODUTOS (ScrollPane) -->
+    <!-- lista produtos -->
     <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: #f4f4f4;" VBox.vgrow="ALWAYS">
         <content>
             <VBox fx:id="containerProdutos" spacing="10.0" alignment="TOP_CENTER">
@@ -65,7 +65,7 @@
         </content>
     </ScrollPane>
 
-    <!-- RODAPÉ FIXO - Botão Ver Carrinho -->
+    <!-- rodape-->
     <HBox alignment="CENTER" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 8, 0, 0, -2);">
         <padding>
             <Insets bottom="15" top="15" left="15" right="15" />

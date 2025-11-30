@@ -28,7 +28,7 @@ public class LoginController {
         
         RepositorioRestaurantes repo = RepositorioRestaurantes.getInstance();
         
-        // 1. Tenta logar como Cliente
+        // tenta logar como Cliente
         Cliente cliente = repo.buscarClientePorLogin(email, senha);
         if (cliente != null) {
             SessaoUsuario.getInstance().setClienteLogado(cliente);
@@ -41,7 +41,7 @@ public class LoginController {
             return;
         }
 
-        // 2. Tenta logar como Restaurante
+        // tenta logar como restaurante
         Restaurante restaurante = repo.buscarRestaurantePorLogin(email, senha);
         if (restaurante != null) {
             SessaoUsuario.getInstance().setRestauranteLogado(restaurante);
@@ -58,7 +58,7 @@ public class LoginController {
     }
 
     /**
-     * ✅ ATUALIZADO: Redireciona para tela de escolha de tipo de conta
+     * redireciona para tela de escolha de tipo de conta
      */
     @FXML
     private void irParaCadastro(ActionEvent event) {

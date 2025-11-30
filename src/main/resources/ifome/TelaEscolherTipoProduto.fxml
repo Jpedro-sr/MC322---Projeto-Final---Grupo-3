@@ -12,7 +12,7 @@
       xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" 
       fx:controller="ifome.controller.EscolherTipoProdutoController">
 
-    <!-- CABEÇALHO FIXO -->
+    <!-- cabecalho -->
     <VBox alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);">
         <padding>
             <Insets bottom="15" left="15" right="15" top="15"/>
@@ -37,13 +37,13 @@
         </Label>
     </VBox>
 
-    <!-- CARDS DE TIPO -->
+    <!-- tipos -->
     <VBox alignment="TOP_CENTER" spacing="15.0">
         <padding>
             <Insets left="20" right="20" top="10"/>
         </padding>
 
-        <!-- Card: Comida -->
+        <!-- comida -->
         <Button maxWidth="Infinity" prefHeight="100.0" onAction="#irParaFormComida"
                 style="-fx-background-color: #fff5f0; -fx-border-color: #fed7aa; -fx-border-width: 2; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 20;">
             <graphic>
@@ -68,7 +68,7 @@
             </graphic>
         </Button>
 
-        <!-- Card: Bebida -->
+        <!-- bebida -->
         <Button maxWidth="Infinity" prefHeight="100.0" onAction="#irParaFormBebida"
                 style="-fx-background-color: #eff6ff; -fx-border-color: #bfdbfe; -fx-border-width: 2; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 20;">
             <graphic>
@@ -92,7 +92,7 @@
             </graphic>
         </Button>
 
-        <!-- Card: Sobremesa -->
+        <!-- sobremesa-->
         <Button maxWidth="Infinity" prefHeight="100.0" onAction="#irParaFormSobremesa"
                 style="-fx-background-color: #fdf2f8; -fx-border-color: #fbcfe8; -fx-border-width: 2; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 20;">
             <graphic>
@@ -116,7 +116,7 @@
             </graphic>
         </Button>
 
-        <!-- Card: Adicional -->
+        <!-- adicional -->
         <Button maxWidth="Infinity" prefHeight="100.0" onAction="#irParaFormAdicional"
                 style="-fx-background-color: #f0fdf4; -fx-border-color: #bbf7d0; -fx-border-width: 2; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-padding: 20;">
             <graphic>

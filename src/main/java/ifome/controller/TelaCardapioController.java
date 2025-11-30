@@ -38,7 +38,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 /**
- * ✅ CORRIGIDO: Exibe informações específicas dos produtos (volume, etc.)
+ * controller da tela do cardapio
  */
 public class TelaCardapioController {
 
@@ -97,9 +97,7 @@ public class TelaCardapioController {
         }
     }
 
-    /**
-     * ✅ CORRIGIDO: Exibe informações específicas (volume para bebidas, etc.)
-     */
+    
     private Button criarCardProduto(Produto produto) {
         Button card = new Button();
         card.setMaxWidth(Double.MAX_VALUE);
@@ -185,7 +183,7 @@ public class TelaCardapioController {
         HBox headerBox = new HBox(10);
         headerBox.setAlignment(Pos.CENTER_LEFT);
 
-        // ✅ Símbolo baseado no tipo
+        // simbolo
         String simbolo = getSimbolo(produto);
         Label lblSimbolo = new Label(simbolo);
         lblSimbolo.setStyle("-fx-font-size: 20px;");
@@ -203,14 +201,14 @@ public class TelaCardapioController {
 
         headerBox.getChildren().addAll(lblSimbolo, lblNome, spacer, lblPreco);
 
-        // ✅ CORRIGIDO: Exibe descrição + informações específicas
+      
         StringBuilder descricaoCompleta = new StringBuilder();
 
         if (!produto.getDescricao().isEmpty()) {
             descricaoCompleta.append(produto.getDescricao());
         }
 
-        // Adiciona volume para bebidas
+        //add volume
         if (produto instanceof Bebida) {
             Bebida bebida = (Bebida) produto;
             if (descricaoCompleta.length() > 0) {
@@ -219,7 +217,7 @@ public class TelaCardapioController {
             descricaoCompleta.append(bebida.getVolumeML()).append("ml");
         }
 
-        // Adiciona tags de vegetariano/vegano para comidas
+        // adiciona tags de vegetariano/vegano para comidas
         if (produto instanceof Comida) {
             Comida comida = (Comida) produto;
             if (comida.ehVegano()) {
@@ -257,7 +255,7 @@ public class TelaCardapioController {
     }
 
     /**
-     * ✅ Retorna símbolo correto para cada tipo
+     * retorna símbolo correto para cada tipo
      */
     private String getSimbolo(Produto p) {
         String categoria = p.getCategoria();

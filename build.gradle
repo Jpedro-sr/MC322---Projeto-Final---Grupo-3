@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.1.0' // Plugin do JavaFX
+    id 'org.openjfx.javafxplugin' version '0.1.0' // plugin do JavaFX
 }
 
 javafx {
@@ -29,15 +29,15 @@ application {
     mainClass = 'ifome.Aplicacao'
 }
 
-// CONFIGURAÇÃO CRÍTICA: Remove o timer do Gradle
+
 tasks.named('run') {
     standardInput = System.in
-    // Desabilita o rich console que causa o timer
+   
     logging.captureStandardOutput LogLevel.INFO
     logging.captureStandardError LogLevel.ERROR
 }
 
-// Tarefa personalizada para executar sem timer
+
 task runApp(type: JavaExec) {
     group = 'application'
     description = 'Executa a aplicacao sem timer do Gradle'
@@ -45,16 +45,15 @@ task runApp(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'ifome.Aplicacao'
     
-    // Conecta diretamente stdin/stdout para evitar buffer do Gradle
+ 
     standardInput = System.in
     standardOutput = System.out
     errorOutput = System.err
     
-    // Desabilita logging do Gradle completamente
+
     logging.captureStandardOutput LogLevel.QUIET
     logging.captureStandardError LogLevel.QUIET
-    
-    // JVM args para melhor performance de I/O
+
     jvmArgs = [
         '-Dfile.encoding=UTF-8',
         '-Djava.io.Console=true'
@@ -65,12 +64,11 @@ test {
     useJUnitPlatform()
 }
 
-// Compilação com encoding UTF-8
+
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-// Configurações adicionais para evitar problemas de encoding
 compileJava {
     options.encoding = 'UTF-8'
 }

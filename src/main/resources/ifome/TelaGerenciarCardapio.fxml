@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-
+<!-- tela cardapio -->
 <VBox alignment="TOP_CENTER" prefHeight="640.0" prefWidth="360.0" 
       style="-fx-background-color: #f4f4f4;"
       xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 

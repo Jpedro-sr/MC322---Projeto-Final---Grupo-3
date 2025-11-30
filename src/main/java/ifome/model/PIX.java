@@ -1,22 +1,19 @@
 package ifome.model;
 
-/**
- * Implementação de pagamento por PIX.
- * Simula a integração com sistema PIX.
- */
+//pix
 public class PIX extends FormaPagamento {
 
     private String chavePIX;
-    private String tipoClave; // CPF, EMAIL, TELEFONE, ALEATORIA
+    private String tipoClave; 
 
-    // Construtor com chave PIX
+    // chave pix
     public PIX(String chavePIX, String tipoClave) {
         super();
         this.chavePIX = chavePIX != null ? chavePIX : "chave.aleatoria";
         this.tipoClave = tipoClave != null ? tipoClave : "ALEATORIA";
     }
 
-    // Construtor padrão (PIX aleatório)
+
     public PIX() {
         this("chave-" + System.currentTimeMillis(), "ALEATORIA");
     }
@@ -29,7 +26,7 @@ public class PIX extends FormaPagamento {
         System.out.println("   Tipo: " + tipoClave);
 
         try {
-            // Simular processamento
+            // simular processamento
             Thread.sleep(1000);
             System.out.println("✅ Pagamento PIX CONFIRMADO!");
             this.pagamentoProcessado = true;
@@ -40,7 +37,7 @@ public class PIX extends FormaPagamento {
         }
     }
 
-    // Mascarar chave PIX para exibição
+    
     private String maskChavePIX() {
         if (chavePIX.length() > 10) {
             return chavePIX.substring(0, 5) + "****" + chavePIX.substring(chavePIX.length() - 5);

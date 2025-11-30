@@ -7,11 +7,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+// versao nova da aplicação. O outro arquivo ficou obsoleto e fragmentado nos controllers e tudo mais
+//
+
 public class Aplicacao extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        // inicializa persistência
+        // inicializa persistencia
         RepositorioRestaurantes.getInstance().inicializarRestaurantes();
 
         // carrega o FXML de login
@@ -27,12 +30,10 @@ public class Aplicacao extends Application {
         stage.show();
     }
 
+    //metodo antigo pode funcionar mas é bom remover
     public static void main(String[] args) {
-        // Dica: Se quiser rodar o modo console antigo, descomente a linha abaixo
-        // e comente o launch(args):
+   
         
-        // AplicacaoConsole.main(args); 
-        
-        launch(args); // Inicia o modo Gráfico
+        launch(args); 
     }
 }

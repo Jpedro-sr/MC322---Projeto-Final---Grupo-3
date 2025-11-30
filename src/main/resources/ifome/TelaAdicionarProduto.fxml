@@ -18,7 +18,7 @@
       xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" 
       fx:controller="ifome.controller.AdicionarProdutoController">
 
-    <!-- CABEÇALHO FIXO -->
+    <!--cabecalho -->
     <VBox alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);">
         <padding>
             <Insets bottom="15" left="15" right="15" top="15"/>
@@ -34,7 +34,7 @@
         </HBox>
     </VBox>
 
-    <!-- FORMULÁRIO SCROLLÁVEL -->
+    <!--scroll -->
     <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: #f4f4f4;" VBox.vgrow="ALWAYS">
         <content>
             <VBox spacing="15.0">
@@ -42,7 +42,7 @@
                     <Insets bottom="100" left="15" right="15" top="15"/>
                 </padding>
 
-                <!-- CAMPOS BÁSICOS -->
+                <!-- basico-->
                 <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 15; -fx-border-radius: 8; -fx-background-radius: 8;">
                     <Label text="Informações Básicas" textFill="#333" style="-fx-border-width: 0 0 1 0; -fx-border-color: #e0e0e0; -fx-padding: 0 0 10 0;">
                         <font>
@@ -82,7 +82,7 @@
                     </VBox>
                 </VBox>
 
-                <!-- CAMPOS ESPECÍFICOS - COMIDA -->
+                <!-- comida -->
                 <VBox fx:id="boxComida" spacing="10" visible="false" managed="false"
                       style="-fx-background-color: #fff5f0; -fx-border-color: #fed7aa; -fx-border-width: 2; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 15;">
                     <HBox alignment="CENTER_LEFT" spacing="8">
@@ -100,7 +100,7 @@
                     </VBox>
                 </VBox>
 
-                <!-- CAMPOS ESPECÍFICOS - BEBIDA -->
+                <!-- bebida-->
                 <VBox fx:id="boxBebida" spacing="10" visible="false" managed="false"
                       style="-fx-background-color: #eff6ff; -fx-border-color: #bfdbfe; -fx-border-width: 2; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 15;">
                     <HBox alignment="CENTER_LEFT" spacing="8">
@@ -128,7 +128,7 @@
                     </VBox>
                 </VBox>
 
-                <!-- CAMPOS ESPECÍFICOS - SOBREMESA -->
+                <!--sobremesa -->
                 <VBox fx:id="boxSobremesa" spacing="10" visible="false" managed="false"
                       style="-fx-background-color: #fdf2f8; -fx-border-color: #fbcfe8; -fx-border-width: 2; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 15;">
                     <HBox alignment="CENTER_LEFT" spacing="8">
@@ -160,7 +160,7 @@
                     </VBox>
                 </VBox>
 
-                <!-- CAMPOS ESPECÍFICOS - ADICIONAL -->
+                <!-- adicional -->
                 <VBox fx:id="boxAdicional" spacing="10" visible="false" managed="false"
                       style="-fx-background-color: #f0fdf4; -fx-border-color: #bbf7d0; -fx-border-width: 2; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 15;">
                     <HBox alignment="CENTER_LEFT" spacing="8">
@@ -183,7 +183,7 @@
         </content>
     </ScrollPane>
 
-     <!-- RODAPÉ FIXO -->
+     <!-- rodape-->
     <VBox spacing="8" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 8, 0, 0, -2);">
         <padding>
             <Insets bottom="15" left="15" right="15" top="15"/>

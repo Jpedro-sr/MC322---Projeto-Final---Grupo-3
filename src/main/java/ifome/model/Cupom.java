@@ -2,19 +2,15 @@ package ifome.model;
 
 import java.util.Date;
 
-/**
- * Representa um cupom de desconto que pode ser aplicado a um pedido.
- * Suporta desconto percentual ou valor fixo.
- */
+//cupom
 public class Cupom {
 
     private String codigo;
     private double valorDesconto;
-    private boolean ehPercentual; // true = %, false = valor fixo
+    private boolean ehPercentual; 
     private Date dataValidade;
     private boolean ativo;
 
-    // Construtor completo
     public Cupom(String codigo, double valorDesconto, boolean ehPercentual, Date dataValidade) {
         this.codigo = codigo != null && !codigo.isEmpty() ? codigo.toUpperCase() : "INVALIDO";
         this.valorDesconto = validarDesconto(valorDesconto, ehPercentual);
@@ -23,22 +19,22 @@ public class Cupom {
         this.ativo = true;
     }
 
-    // Construtor sem data de validade (sem expiração)
+    
     public Cupom(String codigo, double valorDesconto, boolean ehPercentual) {
         this(codigo, valorDesconto, ehPercentual, null);
     }
 
-    // Construtor percentual simplificado
+    
     public static Cupom criarCupomPercentual(String codigo, double percentual) {
         return new Cupom(codigo, percentual, true);
     }
 
-    // Construtor valor fixo simplificado
+
     public static Cupom criarCupomFixo(String codigo, double valorFixo) {
         return new Cupom(codigo, valorFixo, false);
     }
 
-    // Validar desconto (percentual entre 0-100, valor fixo > 0)
+
     private double validarDesconto(double valor, boolean ehPercentual) {
         if (valor < 0) {
             System.out.println("⚠️ Desconto não pode ser negativo.");
@@ -51,7 +47,7 @@ public class Cupom {
         return valor;
     }
 
-    // Verificar se cupom está válido (não expirado e ativo)
+    // verifica validade
     public boolean estaValido() {
         if (!ativo) return false;
         if (dataValidade != null && new Date().after(dataValidade)) {
@@ -61,7 +57,7 @@ public class Cupom {
         return true;
     }
 
-    // Aplicar desconto sobre um valor total
+    // desconto
     public double aplicarDesconto(double valorTotal) {
         if (!estaValido()) {
             System.out.println("⚠️ Cupom " + codigo + " não pode ser aplicado.");
@@ -72,7 +68,7 @@ public class Cupom {
         if (ehPercentual) {
             desconto = valorTotal * (valorDesconto / 100.0);
         } else {
-            desconto = Math.min(valorDesconto, valorTotal); // Não deixar desconto maior que o total
+            desconto = Math.min(valorDesconto, valorTotal); 
         }
 
         double valorFinal = valorTotal - desconto;
@@ -82,7 +78,7 @@ public class Cupom {
         return valorFinal;
     }
 
-    // Getters
+    // getters e setter
     public String getCodigo() {
         return codigo;
     }
@@ -103,7 +99,6 @@ public class Cupom {
         return ativo;
     }
 
-    // Setters
     public void setCodigo(String codigo) {
         this.codigo = codigo != null && !codigo.isEmpty() ? codigo.toUpperCase() : this.codigo;
     }
@@ -120,7 +115,6 @@ public class Cupom {
         this.ativo = ativo;
     }
 
-    // Retorna descrição do desconto
     public String getDescricaoDesconto() {
         if (ehPercentual) {
             return valorDesconto + "% de desconto";

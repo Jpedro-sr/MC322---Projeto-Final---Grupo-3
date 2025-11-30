@@ -6,10 +6,7 @@ import ifome.exceptions.RestauranteFechadoException;
 import ifome.exceptions.ValorMinimoException;
 import ifome.exceptions.ProdutoIndisponivelException;
 
-/**
- * Representa o carrinho de compras do cliente.
- * CORRIGIDO: Calcula valor total corretamente ao gerar pedido
- */
+//carrinho de compras
 public class Carrinho implements Calculavel {
 
     private List<ItemPedido> itens;
@@ -50,7 +47,7 @@ public class Carrinho implements Calculavel {
 
     public void removerItem(ItemPedido item) {
         if (itens.remove(item)) {
-            // Item removido
+            // item removido
         }
     }
 
@@ -85,9 +82,7 @@ public class Carrinho implements Calculavel {
         return subtotal;
     }
 
-    /**
-     * ✅ CORRIGIDO: Gera pedido com valor total calculado corretamente
-     */
+    //calcula certo agr
     public Pedido gerarPedido() throws RestauranteFechadoException, ValorMinimoException, ProdutoIndisponivelException {
         
         if (itens.isEmpty()) {
@@ -104,7 +99,7 @@ public class Carrinho implements Calculavel {
             );
         }
 
-        // Validação de valor mínimo
+        //valor minimo da "suposta" venda casada do ifood
         double subtotal = calcularPrecoTotal();
         double valorMinimo = 15.0;
 
@@ -114,7 +109,7 @@ public class Carrinho implements Calculavel {
             );
         }
 
-        // Validação de disponibilidade dos produtos
+        // disponibilidade
         for (ItemPedido item : itens) {
             if (!item.getProduto().isDisponivel()) {
                 throw new ProdutoIndisponivelException(
@@ -123,26 +118,24 @@ public class Carrinho implements Calculavel {
             }
         }
 
-        // ✅ CORRIGIDO: Cria pedido e configura valor ANTES de adicionar itens
+     // mais configuracoes
         Pedido pedido = new Pedido();
         pedido.setCliente(cliente);
         pedido.setRestaurante(restaurante);
         
-        // Adiciona todos os itens
+        //add todos os itens
         for (ItemPedido item : itens) {
             pedido.adicionarItem(item);
         }
         
-        // Aplica cupom se existir
+        // aplica cupom se existir
         if (cupomAplicado != null) {
             pedido.setCupomAplicado(cupomAplicado);
         }
 
-        // ✅ CRÍTICO: Calcula o valor total DEPOIS de adicionar os itens
         double valorFinal = pedido.calcularPrecoTotal();
         pedido.setValorTotal(valorFinal);
-        
-        // Define status inicial como Pendente (aguardando confirmação do restaurante)
+       
         pedido.atualizarStatus("Pendente");
 
         System.out.println(">>> Pedido gerado: #" + pedido.getNumeroPedido() + 

@@ -1,6 +1,6 @@
-# 🍕 iFome - Sistema de Delivery
+# iFome - Sistema de Delivery
 
-Um sistema completo de entrega de comida desenvolvido em Java com arquitetura orientada a objetos, persistência de dados e interface gráfica JavaFX.
+Um sistema completo de entrega de comida desenvolvido em Java com arquitetura orientada a objetos, persistência de dados e interface gráfica JavaFX. Qualquer semalhança com outro aplicativo é mera coincidência.
 
 **Disciplina:** MC322 - Programação Orientada a Objetos  
 **Instituição:** Universidade Estadual de Campinas (Unicamp)  
@@ -8,7 +8,7 @@ Um sistema completo de entrega de comida desenvolvido em Java com arquitetura or
 
 ---
 
-## 📋 Índice
+## Índice
 
 - [Características](#características)
 - [Arquitetura](#arquitetura)
@@ -24,47 +24,47 @@ Um sistema completo de entrega de comida desenvolvido em Java com arquitetura or
 
 ---
 
-## ✨ Características
+## Características
 
-### 🛍️ Para Clientes
-- ✅ Cadastro e login de conta com validações robustas
-- ✅ Buscar restaurantes abertos
-- ✅ Visualizar cardápios completos com informações detalhadas
-- ✅ Adicionar produtos ao carrinho com observações
-- ✅ Aplicar cupons de desconto (verificação de uso único)
-- ✅ Gerenciar múltiplos endereços
-- ✅ Finalizar pedidos com validação de valor mínimo
-- ✅ Múltiplas formas de pagamento (PIX, Cartão, Dinheiro)
-- ✅ Acompanhar histórico de pedidos
-- ✅ Avaliar pedidos entregues (notas 1-5 com comentários)
+### Para Clientes
+- Cadastro e login de conta com validações robustas
+- Buscar restaurantes abertos
+- Visualizar cardápios completos com informações detalhadas
+- Adicionar produtos ao carrinho com observações
+- Aplicar cupons de desconto (verificação de uso único)
+- Gerenciar múltiplos endereços
+- Finalizar pedidos com validação de valor mínimo
+- Múltiplas formas de pagamento (PIX, Cartão, Dinheiro)
+- Acompanhar histórico de pedidos
+- Avaliar pedidos entregues (notas 1-5 com comentários)
 
-### 🏪 Para Restaurantes
-- ✅ Cadastro e login de conta com validação de CNPJ
-- ✅ Gerenciar cardápio (adicionar/remover/atualizar produtos)
-- ✅ Abrir e fechar restaurante
-- ✅ Visualizar fila de pedidos
-- ✅ Aceitar/Recusar pedidos pendentes
-- ✅ Atualizar status dos pedidos (Pendente → Confirmado → Preparando → Pronto → Em Entrega → Entregue)
-- ✅ Cancelar pedidos em qualquer etapa
-- ✅ Ver estatísticas e produtos mais vendidos
-- ✅ Receber avaliações dos clientes
-- ✅ Calcular média de avaliações
+### Para Restaurantes
+- Cadastro e login de conta com validação de CNPJ
+- Gerenciar cardápio (adicionar/remover/atualizar produtos)
+- Abrir e fechar restaurante
+- Visualizar fila de pedidos
+- Aceitar/Recusar pedidos pendentes
+- Atualizar status dos pedidos (Pendente → Confirmado → Preparando → Pronto → Em Entrega → Entregue)
+- Cancelar pedidos em qualquer etapa
+- Ver estatísticas e produtos mais vendidos
+- Receber avaliações dos clientes
+- Calcular média de avaliações
 
-### 🔧 Funcionalidades Técnicas
-- ✅ Interface gráfica moderna com JavaFX
-- ✅ Persistência de dados em arquivos `.txt`
-- ✅ Padrão Singleton para gerenciamento de sessão
-- ✅ Validação robusta de CPF, CNPJ, telefone, email
-- ✅ Proteção contra SQL injection e caracteres especiais
-- ✅ Limites de tamanho para todos os campos de texto
-- ✅ Validação de dígitos verificadores de CNPJ
-- ✅ Suporte UTF-8 completo
-- ✅ Sistema de cupons com verificação de uso único
-- ✅ Interfaces bem definidas (Calculavel, Rastreavel, Avaliavel, etc.)
+### Funcionalidades Técnicas
+- Interface gráfica moderna com JavaFX
+- Persistência de dados em arquivos `.txt`
+- Padrão Singleton para gerenciamento de sessão
+- Validação robusta de CPF, CNPJ, telefone, email
+- Proteção contra SQL injection e caracteres especiais
+- Limites de tamanho para todos os campos de texto
+- Validação de dígitos verificadores de CNPJ
+- Suporte UTF-8 completo
+- Sistema de cupons com verificação de uso único
+- Interfaces bem definidas (Calculavel, Rastreavel, Avaliavel, etc.)
 
 ---
 
-## 🏗️ Arquitetura
+## Arquitetura
 
 ### Padrões de Design Utilizados
 
@@ -108,7 +108,7 @@ gradle --version
 
 ---
 
-## 🚀 Instalação
+## Instalação
 
 ### 1. Clonar o Repositório
 
@@ -143,7 +143,7 @@ gradlew.bat runApp
 
 ---
 
-## 💻 Como Usar
+## Como Usar
 
 ### Interface Gráfica (Padrão)
 
@@ -175,74 +175,68 @@ AplicacaoConsole.main(args);
 
 ---
 
-## 🔒 Validações e Segurança
+## Validações e Segurança
 
-### ✅ **Validações Implementadas**
+### **Validações Implementadas**
 
 #### **1. CNPJ (Restaurante)**
 ```java
-// ✅ Remove caracteres não numéricos
-// ✅ Valida 14 dígitos exatos
-// ✅ Rejeita sequências repetitivas (11111111111111)
-// ✅ Valida dígitos verificadores com algoritmo oficial
+// Remove caracteres não numéricos
+// Valida 14 dígitos exatos
 String cnpj = "12.345.678/0001-99"; // Formato aceito
 String cnpj = "12345678000199";     // Formato aceito
-String cnpj = "123";                 // ❌ REJEITADO: Muito curto
-String cnpj = "11111111111111";      // ❌ REJEITADO: Repetitivo
-String cnpj = "12345678000100";      // ❌ REJEITADO: Dígito verificador inválido
+String cnpj = "12345678000100";      // REJEITADO: Dígito verificador inválido
 ```
 
 #### **2. Telefone (Cliente)**
 ```java
 // ✅ Remove caracteres não numéricos
 // ✅ Valida mínimo 10 e máximo 15 dígitos
-// ✅ Rejeita sequências repetitivas
 // ✅ Limite de 20 caracteres no formato original
-String tel = "(11) 99999-9999";  // ✓ Válido (11 dígitos)
-String tel = "11999999999";      // ✓ Válido
-String tel = "+55 11 99999-9999"; // ✓ Válido (13 dígitos)
-String tel = "999";               // ❌ REJEITADO: Muito curto
-String tel = "11111111111";       // ❌ REJEITADO: Repetitivo
-String tel = "-123456789";        // ❌ REJEITADO: Negativo (removido por regex)
+String tel = "(11) 99999-9999";  // Válido (11 dígitos)
+String tel = "11999999999";      // Válido
+String tel = "+55 11 99999-9999"; // Válido (13 dígitos)
+String tel = "999";               // REJEITADO: Muito curto
+String tel = "-123456789";        // REJEITADO: Negativo (removido por regex)
 ```
 
 #### **3. Nome (Cliente/Restaurante)**
 ```java
-// ✅ Remove caracteres perigosos: < > " ' & ;
-// ✅ Limite máximo de 100 caracteres
-// ✅ Mínimo de 2 caracteres (Cliente) / 3 caracteres (Restaurante)
-String nome = "João da Silva";           // ✓ Válido
-String nome = "Restaurante & Cia";       // ✓ Válido (& removido → "Restaurante  Cia")
-String nome = "<script>alert(1)</script>"; // ✓ Protegido (caracteres removidos)
-String nome = "A".repeat(150);           // ❌ REJEITADO: Muito longo
-String nome = "J";                       // ❌ REJEITADO: Muito curto
+// Remove caracteres perigosos: < > " ' & ;
+// Limite máximo de 100 caracteres
+// Mínimo de 2 caracteres (Cliente) / 3 caracteres (Restaurante)
+String nome = "João da Silva";           // Válido
+String nome = "Restaurante & Cia";       // Válido (& removido → "Restaurante  Cia")
+String nome = "<script>alert(1)</script>"; // Protegido (caracteres removidos)
+String nome = "A".repeat(150);           // REJEITADO: Muito longo
+String nome = "J";                       // REJEITADO: Muito curto
 ```
 
 #### **4. Email**
 ```java
-// ✅ Deve conter "@" e "."
-// ✅ Limite de tamanho implícito (banco de dados)
-String email = "usuario@email.com";  // ✓ Válido
-String email = "teste@";             // ❌ REJEITADO: Sem domínio
-String email = "teste.com";          // ❌ REJEITADO: Sem @
+// Deve conter "@" e "."
+// Limite de tamanho implícito (banco de dados)
+String email = "usuario@email.com";  // Válido
+String email = "teste@";             // REJEITADO: Sem domínio
+String email = "teste.com";          // REJEITADO: Sem @
 ```
 
 #### **5. Preço de Produtos**
 ```java
-// ✅ Deve ser maior que zero
-// ✅ Conversão automática de vírgula para ponto
-// ✅ Máximo de 2 casas decimais
-double preco = 45.90;   // ✓ Válido
-double preco = 0.01;    // ✓ Válido
-double preco = -10.00;  // ❌ REJEITADO: Negativo
-double preco = 0;       // ❌ REJEITADO: Zero
+// Deve ser maior que zero
+// Conversão automática de vírgula para ponto
+// Máximo de 2 casas decimais
+double preco = 45.90;   // Válido
+double preco = 0.01;    // Válido
+double preco = -10.00;  // REJEITADO: Negativo
+double preco = 0;       // REJEITADO: Zero
 ```
 
 #### **6. Cupons de Desconto**
 ```java
-// ✅ Verificação de uso único por cliente
-// ✅ Validação de validade e status ativo
-// ✅ Código em UPPERCASE automático
+// Verificação de uso único por cliente
+// Validação de validade e status ativo
+// Código em UPPERCASE automático
 Cupom cupom = Cupom.criarCupomPercentual("DESC10", 10);
 cliente.jaUsouCupom("DESC10"); // Verifica se já foi usado
 cliente.registrarUsoCupom("DESC10"); // Registra uso
@@ -269,18 +263,18 @@ MC322-Projeto-Final-Grupo-3/
 ├── src/
 │   ├── main/
 │   │   ├── java/ifome/
-│   │   │   ├── Aplicacao.java              # ✅ Ponto de entrada (JavaFX)
+│   │   │   ├── Aplicacao.java              # Ponto de entrada (JavaFX)
 │   │   │   ├── AplicacaoConsole.java       # Versão console (opcional)
 │   │   │   ├── controller/                 # Controladores JavaFX
 │   │   │   │   ├── LoginController.java
 │   │   │   │   ├── CadastroController.java
 │   │   │   │   ├── MenuClienteController.java
 │   │   │   │   ├── MenuRestauranteController.java
-│   │   │   │   ├── GerenciarPedidosController.java  # ✅ Cancelamento corrigido
+│   │   │   │   ├── GerenciarPedidosController.java  # Cancelamento corrigido
 │   │   │   │   └── ...
 │   │   │   ├── model/                      # Modelos de dados
-│   │   │   │   ├── Cliente.java            # ✅ Validações robustas
-│   │   │   │   ├── Restaurante.java        # ✅ Validação CNPJ
+│   │   │   │   ├── Cliente.java            # Validações robustas
+│   │   │   │   ├── Restaurante.java        # Validação CNPJ
 │   │   │   │   ├── Pedido.java
 │   │   │   │   ├── Produto.java
 │   │   │   │   ├── Carrinho.java
@@ -295,20 +289,20 @@ MC322-Projeto-Final-Grupo-3/
 │   │   └── resources/ifome/                # Arquivos FXML (interfaces)
 │   │       ├── TelaLogin.fxml
 │   │       ├── MenuCliente.fxml
-│   │       ├── GerenciarPedidos.fxml       # ✅ Interface de pedidos
+│   │       ├── GerenciarPedidos.fxml       # Interface de pedidos
 │   │       └── ...
 │   └── test/java/ifome/                    # Testes unitários
 │       ├── ClienteTest.java
 │       ├── RestauranteTest.java
 │       ├── CarrinhoTest.java
 │       └── ...
-├── data/                                   # ✅ Persistência de dados
+├── data/                                   # Persistência de dados
 │   ├── clientes.txt
 │   ├── restaurantes.txt
 │   ├── pedidos.txt
 │   ├── cardapios.txt
 │   ├── cupons.txt
-│   ├── cupons_usados.txt                  # ✅ Rastreamento de cupons
+│   ├── cupons_usados.txt                  # Rastreamento de cupons
 │   ├── avaliacoes.txt
 │   └── ...
 ├── build.gradle                           # Configuração do Gradle
@@ -319,13 +313,9 @@ MC322-Projeto-Final-Grupo-3/
 
 ---
 
-## ⚠️ Limitações Conhecidas
+## Limitações Conhecidas
 
-### 🔄 **Sincronização Entre Instâncias**
-
-**Pergunta:** É possível rodar duas instâncias do sistema ao mesmo tempo e comunicá-las através da persistência?
-
-**Resposta:** **NÃO**, com a arquitetura atual.
+**Notas sobre as limitações:** Em virtude dos apontamentos feitos pelo professor e PEDs/PADs na apresentação, corrigimos as limitações de entradas para os campos numéricos e outros "inputáveis". Porém ainda é impossível realizar uma sincronia entre duas instâncias do app rodando ao mesmo tempo com a arquitetura atual.
 
 **Por quê?**
 - A persistência em arquivos `.txt` só sincroniza quando você **salva** (`salvarDados()`) ou **carrega** (`carregarDados()`)
@@ -348,7 +338,7 @@ Para implementar sincronização em tempo real, seria necessário:
 
 ---
 
-## 🧪 Testes
+## Testes
 
 ### Executar Testes Unitários
 
@@ -371,7 +361,7 @@ gradlew.bat test
 | **FormaPagamentoTest** | PIX, Cartão, Dinheiro |
 | **CupomTest** | Desconto percentual, desconto fixo |
 
-### ✅ **Novos Testes Recomendados**
+### **Novos Testes Recomendados**
 
 1. **Validação de CNPJ**
    ```java
@@ -403,7 +393,7 @@ gradlew.bat test
 
 ---
 
-## 📈 Melhorias Futuras
+## Melhorias Futuras
 
 ### Versão 2.0 (Próximas Iterações)
 - [ ] Banco de dados (PostgreSQL/MySQL) para sincronização em tempo real
@@ -428,21 +418,21 @@ gradlew.bat test
 
 ---
 
-## 📝 Sobre o Projeto
+## Sobre o Projeto
 
 Este projeto foi desenvolvido como trabalho final da disciplina **MC322 - Programação Orientada a Objetos** da Universidade Estadual de Campinas (Unicamp).
 
 ### Objetivos Alcançados
 
-✅ Aplicar conceitos de POO (herança, polimorfismo, encapsulamento, abstração)  
-✅ Utilizar padrões de design (Singleton, Factory Method)  
-✅ Implementar persistência de dados  
-✅ Criar interfaces bem definidas  
-✅ Tratar exceções apropriadamente  
-✅ Desenvolver interface gráfica moderna (JavaFX)  
-✅ Implementar validações robustas e segurança  
-✅ Trabalhar em equipe com controle de versão (Git)  
-✅ Documentar código e funcionalidades  
+Aplicar conceitos de POO (herança, polimorfismo, encapsulamento, abstração)  
+Utilizar padrões de design (Singleton, Factory Method)  
+Implementar persistência de dados  
+Criar interfaces bem definidas  
+Tratar exceções apropriadamente  
+Desenvolver interface gráfica moderna (JavaFX)  
+Implementar validações robustas e segurança  
+Trabalhar em equipe com controle de versão (Git)  
+Documentar código e funcionalidades  
 
 ---
 
@@ -455,36 +445,36 @@ Este projeto foi desenvolvido como trabalho final da disciplina **MC322 - Progra
 
 ---
 
-## 📄 Licença
+## Licença
 
 Este projeto é fornecido como trabalho acadêmico e pode ser usado livremente para fins educacionais.
 
 ---
 
-## 📞 Suporte
+## Suporte
 
 ### Problemas Comuns
 
 **P: Erro de validação ao cadastrar CNPJ**  
-R: ✅ Agora validamos dígitos verificadores. Use um CNPJ válido ou desabilite a validação para testes
+R: Agora validamos dígitos verificadores. Use um CNPJ válido ou desabilite a validação para testes
 
 **P: Não consigo aplicar o mesmo cupom duas vezes**  
-R: ✅ Isso é intencional! Cada cupom pode ser usado apenas uma vez por cliente
+R: Isso é intencional. Cada cupom pode ser usado apenas uma vez por cliente. Confira o cupons_usados.txt e os trechos do código referentes aos cupons.
 
 **P: Cancelamento de pedido não funciona**  
-R: ✅ CORRIGIDO! Agora há dois tipos de cancelamento:
+R: CORRIGIDO! Agora há dois tipos de cancelamento:
 - **RECUSAR** (Pendente): Recusa antes de aceitar
 - **CANCELAR** (Após aceito): Cancela em qualquer etapa
 
 **P: Mudanças em uma instância não aparecem em outra**  
-R: ✅ Isso é uma limitação técnica. Use apenas UMA instância ou implemente banco de dados
+R: Isso é uma limitação técnica que exigiria uma correção por banco de dados
 
 **P: Caracteres especiais no nome causam problemas**  
-R: ✅ CORRIGIDO! Removemos automaticamente caracteres perigosos
+R: CORRIGIDO! Removemos automaticamente caracteres perigosos
 
 ---
 
-## 🔗 Links Úteis
+## Links Úteis
 
 - [Java Documentation](https://docs.oracle.com/en/java/)
 - [JavaFX Documentation](https://openjfx.io/)
@@ -494,6 +484,6 @@ R: ✅ CORRIGIDO! Removemos automaticamente caracteres perigosos
 
 ---
 
-**Última atualização:** Janeiro de 2025  
-**Status:** ✅ Completo, testado e validado  
+**Última atualização:** 30 de Novembro de 2025  
+**Status:**  Completo, testado e validado  
 **Versão:** 2.0 - Release Final

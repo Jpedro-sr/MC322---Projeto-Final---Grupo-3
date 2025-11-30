@@ -13,10 +13,9 @@ public class PedidoTest {
 
     @BeforeEach
     public void setUp() {
-        // ✅ CORRIGIDO: Telefone válido
+       
         cliente = new Cliente("cliente@email.com", "123", "Cliente Teste", "11999999999");
         
-        // ✅ CORRIGIDO: CNPJ válido
         restaurante = new Restaurante("rest@email.com", "123", "Restaurante Teste", "11222333000181");
         
         pedido = new Pedido();
@@ -52,9 +51,9 @@ public class PedidoTest {
         pedido.atualizarStatus("Confirmado");
         pedido.atualizarStatus("Preparando");
         
-        // Não pode voltar para "Confirmado"
+   
         pedido.atualizarStatus("Confirmado");
-        assertEquals("Preparando", pedido.getStatus()); // Status não muda
+        assertEquals("Preparando", pedido.getStatus()); 
     }
 
     @Test
@@ -62,8 +61,8 @@ public class PedidoTest {
         Produto pizza = new Comida("Pizza", "Pizza grande", 45.0, false);
         Produto bebida = new Bebida("Coca-Cola", "Refrigerante", 6.0, 350);
         
-        pedido.adicionarItem(new ItemPedido(pizza, 2, ""));  // 90
-        pedido.adicionarItem(new ItemPedido(bebida, 1, "")); // 6
+        pedido.adicionarItem(new ItemPedido(pizza, 2, ""));  
+        pedido.adicionarItem(new ItemPedido(bebida, 1, "")); 
         
         double total = pedido.calcularPrecoTotal();
         assertEquals(96.0, total, 0.01);

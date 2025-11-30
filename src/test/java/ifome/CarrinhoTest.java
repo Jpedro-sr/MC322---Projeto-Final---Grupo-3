@@ -16,10 +16,10 @@ public class CarrinhoTest {
 
     @BeforeEach
     public void setUp() {
-        // ✅ CORRIGIDO: Telefone válido (11 dígitos)
+       //telefone valido
         cliente = new Cliente("teste@email.com", "123", "Teste Cliente", "11999999999");
         
-        // ✅ CORRIGIDO: CNPJ válido com dígitos verificadores corretos
+        // verificadores
         restaurante = new Restaurante("rest@email.com", "123", "Restaurante Teste", "11222333000181");
         restaurante.abrirRestaurante();
         
@@ -39,20 +39,20 @@ public class CarrinhoTest {
 
     @Test
     public void testCalcularPrecoTotal() {
-        carrinho.adicionarItem(produto1, 2, ""); // 2 x 45 = 90
-        carrinho.adicionarItem(produto2, 1, ""); // 1 x 6 = 6
+        carrinho.adicionarItem(produto1, 2, ""); 
+        carrinho.adicionarItem(produto2, 1, ""); 
         
         assertEquals(96.0, carrinho.calcularPrecoTotal(), 0.01);
     }
 
     @Test
     public void testAplicarCupom() {
-        carrinho.adicionarItem(produto1, 2, ""); // Total: 90
+        carrinho.adicionarItem(produto1, 2, ""); 
         
         Cupom cupom = Cupom.criarCupomPercentual("DESC10", 10);
         carrinho.aplicarCupom(cupom);
         
-        assertEquals(81.0, carrinho.calcularTotalComDesconto(), 0.01); // 90 - 10% = 81
+        assertEquals(81.0, carrinho.calcularTotalComDesconto(), 0.01); 
     }
 
     @Test
@@ -67,7 +67,7 @@ public class CarrinhoTest {
 
     @Test
     public void testGerarPedidoComValorMinimo() {
-        // Adiciona produto com valor muito baixo (abaixo de R$ 15)
+        
         Produto produtoBarato = new Adicional("Guardanapo", 1.0);
         carrinho.adicionarItem(produtoBarato, 1, "");
         

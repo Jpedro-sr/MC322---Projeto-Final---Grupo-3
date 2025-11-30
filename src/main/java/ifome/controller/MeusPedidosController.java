@@ -29,7 +29,10 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 /**
- * ✅ CORRIGIDO: Exibe avaliações com comentários e informações completas dos produtos
+ * controller de pedidos
+ * atualizacao:
+ * exibe avaliações com comentários e informações completas dos produtos 
+ * que tava errado antes
  */
 public class MeusPedidosController {
 
@@ -71,9 +74,7 @@ public class MeusPedidosController {
         }
     }
 
-    /**
-     * ✅ CORRIGIDO: Exibe informações completas incluindo características específicas dos produtos
-     */
+    
     private VBox criarCardPedido(Pedido pedido) {
         VBox card = new VBox(12);
         card.setPadding(new Insets(15));
@@ -84,7 +85,7 @@ public class MeusPedidosController {
             "-fx-background-radius: 12;"
         );
 
-        // Header: Restaurante e Número do Pedido
+    
         HBox header = new HBox();
         header.setAlignment(Pos.CENTER_LEFT);
 
@@ -100,16 +101,16 @@ public class MeusPedidosController {
 
         header.getChildren().addAll(lblRestaurante, spacer, lblNumero);
 
-        // Data e Hora
+        // data e Hora
         Label lblData = new Label("📅 " + dateFormat.format(pedido.getDataHora()));
         lblData.setStyle("-fx-text-fill: #666; -fx-font-size: 13px;");
 
-        // Status com cor
+        // status com cor
         String corStatus = getCorStatus(pedido.getStatus());
         Label lblStatus = new Label("● " + pedido.getStatus());
         lblStatus.setStyle("-fx-text-fill: " + corStatus + "; -fx-font-size: 14px; -fx-font-weight: bold;");
 
-        // ✅ NOVO: Itens do pedido com informações específicas
+        // itens do pedido com info especifica
         VBox boxItens = new VBox(5);
         boxItens.setPadding(new Insets(10, 0, 10, 0));
         boxItens.setStyle("-fx-border-width: 1 0 1 0; -fx-border-color: #f0f0f0;");
@@ -122,14 +123,14 @@ public class MeusPedidosController {
             VBox itemBox = new VBox(3);
             itemBox.setPadding(new Insets(5, 0, 5, 10));
             
-            // Nome e quantidade
+            // nome e quantidade
             Label lblItem = new Label(String.format("%dx %s", 
                 item.getQuantidade(), 
                 item.getProduto().getNome()
             ));
             lblItem.setStyle("-fx-text-fill: #333; -fx-font-size: 13px; -fx-font-weight: bold;");
             
-            // ✅ Informações específicas do produto
+         // mais info
             StringBuilder detalhes = new StringBuilder();
             
             if (item.getProduto() instanceof ifome.model.Bebida) {
@@ -149,7 +150,7 @@ public class MeusPedidosController {
                 itemBox.getChildren().add(lblDetalhes);
             }
             
-            // Observações
+            // observações
             if (!item.getObservacoes().isEmpty()) {
                 Label lblObs = new Label("   💬 " + item.getObservacoes());
                 lblObs.setStyle("-fx-text-fill: #999; -fx-font-size: 11px; -fx-font-style: italic;");
@@ -157,7 +158,7 @@ public class MeusPedidosController {
                 itemBox.getChildren().add(lblObs);
             }
             
-            // Preço
+            // preço
             Label lblPreco = new Label(String.format("   R$ %.2f", item.calcularPrecoTotal()));
             lblPreco.setStyle("-fx-text-fill: #ea1d2c; -fx-font-size: 12px; -fx-font-weight: bold;");
             
@@ -165,7 +166,7 @@ public class MeusPedidosController {
             boxItens.getChildren().add(itemBox);
         }
 
-        // Valor Total
+        // valor total
         HBox footerBox = new HBox();
         footerBox.setAlignment(Pos.CENTER_LEFT);
         footerBox.setStyle("-fx-padding: 10 0 0 0; -fx-border-width: 1 0 0 0; -fx-border-color: #e0e0e0;");
@@ -184,7 +185,9 @@ public class MeusPedidosController {
 
         footerBox.getChildren().add(lblTotal);
 
-        // ✅ CORRIGIDO: Avaliação com comentário completo
+        // avaliacao com comentario
+        // eu e o chico
+        // corrigimos isso, tava bugado
         if (!pedido.getAvaliacoes().isEmpty()) {
             Avaliacao avaliacao = pedido.getAvaliacoes().get(0);
             
@@ -212,7 +215,7 @@ public class MeusPedidosController {
             card.getChildren().addAll(header, lblData, lblStatus, boxItens, footerBox, boxAvaliacao);
             
         } else if (pedido.getStatus().equals("Entregue")) {
-            // Botão Avaliar
+            
             Button btnAvaliar = new Button("⭐ Avaliar");
             btnAvaliar.setStyle(
                 "-fx-background-color: #ea1d2c; " +
@@ -298,13 +301,13 @@ public class MeusPedidosController {
             int nota = (int) grupoNotas.getSelectedToggle().getUserData();
             String comentario = txtComentario.getText().trim();
 
-            // Avaliar pedido
+            // avaliar pedido
             cliente.avaliarPedido(pedido, nota, comentario);
 
-            // Avaliar restaurante
+            // avaliar restaurante
             pedido.getRestaurante().avaliar(nota, comentario);
 
-            // Salvar
+            // salvar
             RepositorioRestaurantes.getInstance().salvarDados();
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);

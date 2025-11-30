@@ -1,14 +1,11 @@
-cliente@email.com;123;Jo o Silva;19999999999
-jp@gmail.com;jp123;jp;Não informado
-rafaelrpm10@gmail.com;batata;Rafael;11945579979
-Rafa@gmail.com;Rafa;Rafa;1234567899
-j@gmail.com;j123;joao;12345678910
-p@gmail.com;123;pe;148393489813498134
-a@gmail.com;123;a;987666622332332
-vetor@gmail.com;123123;asddas;123223322131321
-aloalomarciano123@gmail.com;Varrevassourinha;Juscelino Kubitscheck;11919191919
-ww@gmail.com;12345;Wolverine;12123456789
-chico@gmail.com;123456;Francisco;1598111111
-matheus@gmail.com;123456;matheus Cardoso;15989898981200
-carlos@gmai.com;123456;Carlos Antonio;123456789012
-marcelo@gmail.com;123456;Marcelo Paiva;12345678901
+rogerio@gmail.com;123456;Rogerio Santos;12673213455
+cliente@email.com;123456;Joao Silva;11988776655
+rafaelrpm10@gmail.com;123456;Rafael;11945579979
+Rafa@gmail.com;Rafa;Rafa;11912345678
+j@gmail.com;123456;joao;11998765432
+a@gmail.com;123456;Ana;15872682300
+ww@gmail.com;123456;Wolverine;11977778888
+chico@gmail.com;123456;Francisco;15981112233
+matheus@gmail.com;123456;matheus Cardoso;15989891200
+carlos@gmai.com;123456;Carlos Antonio;11912341234
+marcelo@gmail.com;123456;Marcelo Paiva;11955556666

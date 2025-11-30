@@ -15,7 +15,7 @@
       <Insets bottom="40.0" left="30.0" right="30.0" top="40.0" />
    </padding>
 
-   <!-- Cabeçalho -->
+   <!-- cabecalho -->
    <VBox alignment="CENTER" spacing="10">
       <Button text="← Voltar" onAction="#voltar" 
               style="-fx-background-color: transparent; -fx-text-fill: #666; -fx-cursor: hand; -fx-font-size: 14px;">
@@ -37,13 +37,13 @@
       </Label>
    </VBox>
 
-   <!-- Cards de Opção -->
+   <!--opcao -->
    <VBox spacing="20.0">
       <VBox.margin>
          <Insets top="40.0" />
       </VBox.margin>
       
-      <!-- Opção Cliente -->
+      <!-- cliente -->
       <Button onAction="#irParaCadastroCliente" maxWidth="Infinity" prefHeight="120.0"
               style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-width: 2; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand; -fx-alignment: CENTER;">
          <graphic>
@@ -63,7 +63,7 @@
          </graphic>
       </Button>
 
-      <!-- Opção Restaurante -->
+      <!-- restaurante -->
       <Button onAction="#irParaCadastroRestaurante" maxWidth="Infinity" prefHeight="120.0"
               style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-width: 2; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand; -fx-alignment: CENTER;">
          <graphic>
@@ -84,7 +84,7 @@
       </Button>
    </VBox>
 
-   <!-- Link para Login -->
+   <!--link para login -->
    <Label text="Já tem conta? Faça login" textFill="#ea1d2c" underline="true" onMouseClicked="#irParaLogin" 
           style="-fx-cursor: hand;">
       <font>

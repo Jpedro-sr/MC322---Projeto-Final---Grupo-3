@@ -34,7 +34,7 @@ public class FormaPagamentoTest {
         CartaoCredito cartao = new CartaoCredito(
             "1234567890123456", 
             "João Silva", 
-            "000",  // CVV inválido (simulação)
+            "000", 
             "12/25"
         );
         

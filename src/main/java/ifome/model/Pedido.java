@@ -6,13 +6,11 @@ import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 
 /**
- * Representa um pedido finalizado.
- * Implementa Rastreavel (status), Calculavel (preço), Avaliavel (notas).
- * VERSÃO ATUALIZADA - Suporte completo à persistência
+ pedido finalizado
  */
 public class Pedido implements Rastreavel, Calculavel, Avaliavel {
 
-    private static int contador = 1000; // Para gerar IDs únicos
+    private static int contador = 1000;
     private int numeroPedido;
     private Date dataHora;
     private String status;
@@ -26,7 +24,6 @@ public class Pedido implements Rastreavel, Calculavel, Avaliavel {
     private Cliente cliente;
     private Restaurante restaurante;
 
-    // Construtor
     public Pedido() {
         this.numeroPedido = contador++;
         this.itens = new ArrayList<>();
@@ -42,8 +39,7 @@ public class Pedido implements Rastreavel, Calculavel, Avaliavel {
     }
 
     /**
-     * NOVO: Método para inicializar o contador com base no maior ID existente.
-     * Deve ser chamado ao carregar pedidos do arquivo.
+    p dido
      */
     public static void inicializarContador(int maiorIdExistente) {
         if (maiorIdExistente >= contador) {
@@ -52,9 +48,7 @@ public class Pedido implements Rastreavel, Calculavel, Avaliavel {
         }
     }
 
-    /**
-     * NOVO: Construtor para restaurar pedido do arquivo
-     */
+  
     public Pedido(int numeroPedido, Date dataHora, String status, double valorTotal) {
         this.numeroPedido = numeroPedido;
         this.dataHora = dataHora;
@@ -65,14 +59,12 @@ public class Pedido implements Rastreavel, Calculavel, Avaliavel {
         this.desconto = 0;
         this.formaPagamento = null;
         this.cupomAplicado = null;
-        
-        // Atualizar contador se necessário
+       
         if (numeroPedido >= contador) {
             contador = numeroPedido + 1;
         }
     }
 
-    // ============ MÉTODOS DA INTERFACE RASTREAVEL ============
 
     @Override
     public String getStatus() {
@@ -124,7 +116,7 @@ public class Pedido implements Rastreavel, Calculavel, Avaliavel {
         return false;
     }
 
-    // ============ MÉTODOS DA INTERFACE CALCULAVEL ============
+ 
 
     @Override
     public double calcularPrecoTotal() {
@@ -143,7 +135,6 @@ public class Pedido implements Rastreavel, Calculavel, Avaliavel {
         return this.valorTotal;
     }
 
-    // ============ MÉTODOS DA INTERFACE AVALIAVEL ============
 
     @Override
     public boolean avaliar(int nota) {
@@ -160,7 +151,7 @@ public class Pedido implements Rastreavel, Calculavel, Avaliavel {
         return adicionado;
     }
 
-    // ============ MÉTODOS DE GERENCIAMENTO DE ITENS ============
+  
 
     public void adicionarItem(ItemPedido item) {
         if (item == null) {
@@ -178,7 +169,6 @@ public class Pedido implements Rastreavel, Calculavel, Avaliavel {
         }
     }
 
-    // ============ MÉTODOS DE GERAÇÃO DE RESUMO ============
 
     public String gerarResumo() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -253,7 +243,7 @@ public class Pedido implements Rastreavel, Calculavel, Avaliavel {
         return sb.toString();
     }
 
-    // ============ MÉTODOS DE PAGAMENTO ============
+    
 
     public void setFormaPagamento(FormaPagamento formaPagamento) {
         this.formaPagamento = formaPagamento;
@@ -289,7 +279,6 @@ public class Pedido implements Rastreavel, Calculavel, Avaliavel {
         return true;
     }
 
-    // ============ MÉTODOS DE CUPOM ============
 
     public void setCupomAplicado(Cupom cupom) {
         this.cupomAplicado = cupom;
@@ -299,7 +288,6 @@ public class Pedido implements Rastreavel, Calculavel, Avaliavel {
         return cupomAplicado;
     }
 
-    // ============ GETTERS E SETTERS ============
 
     public int getNumeroPedido() {
         return numeroPedido;

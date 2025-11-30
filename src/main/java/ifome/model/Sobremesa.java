@@ -1,13 +1,11 @@
 package ifome.model;
 
-/**
- * ✅ ATUALIZADO: Agora inclui o campo temperatura (Gelada, Quente, Ambiente)
- */
+//sobremesa
 public class Sobremesa extends Produto {
     
-    private String temperatura; // "Gelada", "Quente", "Ambiente"
+    private String temperatura; 
+    // o metodo parece correto agora
     
-    // Construtor completo (novo)
     public Sobremesa(String nome, String desc, double preco, String temperatura) {
         this.nome = nome;
         this.descricao = desc;
@@ -16,14 +14,11 @@ public class Sobremesa extends Produto {
         this.temperatura = validarTemperatura(temperatura);
     }
     
-    // Construtor original (mantido para compatibilidade)
     public Sobremesa(String nome, String desc, double preco) {
-        this(nome, desc, preco, "Ambiente"); // Default: Ambiente
+        this(nome, desc, preco, "Ambiente"); 
     }
     
-    /**
-     * Valida se a temperatura é válida
-     */
+    
     private String validarTemperatura(String temp) {
         if (temp == null || temp.isEmpty()) {
             return "Ambiente";
@@ -38,7 +33,7 @@ public class Sobremesa extends Produto {
         return "Ambiente";
     }
     
-    // Getters e Setters
+
     public String getTemperatura() {
         return temperatura;
     }
@@ -47,9 +42,7 @@ public class Sobremesa extends Produto {
         this.temperatura = validarTemperatura(temperatura);
     }
     
-    /**
-     * Retorna o ícone/emoji da temperatura
-     */
+    // vei, tem que ver se o emoji não vai quebrar o display. Vamos manter por enquanto.
     public String getIconeTemperatura() {
         switch (temperatura) {
             case "Gelada":

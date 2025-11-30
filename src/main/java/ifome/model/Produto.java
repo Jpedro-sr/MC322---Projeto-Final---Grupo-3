@@ -1,9 +1,6 @@
 package ifome.model;
 
-/**
- * Classe abstrata para um produto do cardápio.
- * Implementa Promocional para aplicar descontos.
- */
+//produto integrado ao cardapio
 public abstract class Produto implements Promocional {
 
     protected String nome;
@@ -12,12 +9,10 @@ public abstract class Produto implements Promocional {
     protected String categoria;
     protected boolean disponivel;
 
-    // Construtor padrão
+
     public Produto() {
         this.disponivel = true;
     }
-
-    // Getters
     public double getPreco() {
         return this.preco;
     }
@@ -57,10 +52,7 @@ public abstract class Produto implements Promocional {
                          (disponivel ? "DISPONÍVEL" : "INDISPONÍVEL"));
     }
 
-    /**
-     * Método da interface Promocional.
-     * Aplica desconto percentual ao produto.
-     */
+    // implementa a interface promocional
     @Override
     public double aplicarDesconto(double percentual) {
         if (percentual < 0 || percentual > 100) {
@@ -75,7 +67,7 @@ public abstract class Produto implements Promocional {
     }
 
     /**
-     * Retorna o produto formatado para exibição.
+     * retorna o produto formatado para exibir
      */
     @Override
     public String toString() {

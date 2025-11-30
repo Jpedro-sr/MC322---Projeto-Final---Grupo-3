@@ -45,6 +45,7 @@ public class TelaCarrinhoController {
     private Cliente cliente;
     private Carrinho carrinho;
 
+    // controller tela carrinho
     @FXML
     public void initialize() {
         cliente = SessaoUsuario.getInstance().getClienteLogado();
@@ -191,7 +192,7 @@ public class TelaCarrinhoController {
             return;
         }
         
-        // ✅ VERIFICAÇÃO DE USO ANTERIOR
+        // verifica o uso
         if (cliente.jaUsouCupom(codigoCupom)) {
             mostrarAlerta("Cupom já utilizado", "Você já usou este cupom anteriormente.");
             lblCupomStatus.setText("❌ Cupom já utilizado");
@@ -242,7 +243,7 @@ public class TelaCarrinhoController {
             return;
         }
 
-        // Ir para tela de pagamento
+        // ir para tela de pagamento
         try {
             mudarTela(event, "/ifome/TelaPagamento.fxml");
         } catch (IOException e) {

@@ -15,33 +15,33 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
- * Controlador para a tela de adicionar produto.
- * Formulário dinâmico que se adapta ao tipo de produto escolhido.
+ * controller da tela de add produtos
+ * o formulário se adapta
  */
 public class AdicionarProdutoController {
 
     @FXML private Label lblTitulo;
     
-    // Campos básicos
+    // padrao
     @FXML private TextField txtNome;
     @FXML private TextArea txtDescricao;
     @FXML private TextField txtPreco;
     @FXML private Button btnAdicionar;
 
-    // Containers específicos
+    // especifico das classes concretas
     @FXML private VBox boxComida;
     @FXML private VBox boxBebida;
     @FXML private VBox boxSobremesa;
     @FXML private VBox boxAdicional;
 
-    // Campos específicos - Comida
+    // comida
     @FXML private CheckBox chkVegetariano;
     @FXML private CheckBox chkVegano;
 
-    // Campos específicos - Bebida
+    // bebida
     @FXML private TextField txtVolumeML;
 
-    // Campos específicos - Sobremesa
+    // sobremesa
     @FXML private RadioButton rbGelada;
     @FXML private RadioButton rbQuente;
     @FXML private RadioButton rbAmbiente;
@@ -66,10 +66,9 @@ public class AdicionarProdutoController {
                 return;
             }
 
-            // Atualiza o título
             lblTitulo.setText("Nova " + tipoProduto);
 
-            // Exibe apenas os campos específicos do tipo selecionado
+            // exibe oas campos específicos do tipo selecionado
             configurarCamposEspecificos();
 
         } catch (Exception e) {
@@ -80,10 +79,10 @@ public class AdicionarProdutoController {
     }
 
     /**
-     * Configura quais campos específicos devem ser exibidos
+     * configura os campos
      */
     private void configurarCamposEspecificos() {
-        // Esconde todos primeiro
+        // esconde todos primeiro
         boxComida.setVisible(false);
         boxComida.setManaged(false);
         boxBebida.setVisible(false);
@@ -93,7 +92,7 @@ public class AdicionarProdutoController {
         boxAdicional.setVisible(false);
         boxAdicional.setManaged(false);
 
-        // Exibe apenas o container do tipo selecionado
+        // e exibe os selecionados
         switch (tipoProduto) {
             case "Comida":
                 boxComida.setVisible(true);
@@ -114,10 +113,10 @@ public class AdicionarProdutoController {
         }
     }
 
+    // efetiva a validacao
     @FXML
     private void adicionarProduto(ActionEvent event) {
         try {
-            // Validação dos campos básicos
             String nome = txtNome.getText().trim();
             String descricao = txtDescricao.getText().trim();
             String precoStr = txtPreco.getText().trim().replace(",", ".");
@@ -148,7 +147,7 @@ public class AdicionarProdutoController {
                 return;
             }
 
-            // Cria o produto de acordo com o tipo
+            // cria o produto de acordo com o tipo
             Produto novoProduto = criarProduto(nome, descricao, preco);
 
             if (novoProduto == null) {
@@ -156,18 +155,16 @@ public class AdicionarProdutoController {
                 return;
             }
 
-            // Adiciona ao cardápio do restaurante
+            // add no cardapio
             restaurante.adicionarProdutoCardapio(novoProduto);
             RepositorioRestaurantes.getInstance().salvarDados();
 
-            // Mostra mensagem de sucesso
+            // mostra a mensagem
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Sucesso");
             alert.setHeaderText("✅ Produto adicionado!");
             alert.setContentText(nome + " foi adicionado ao cardápio com sucesso.");
             alert.showAndWait();
-
-            // Volta para a tela de gerenciar cardápio
             mudarTela(event, "/ifome/TelaGerenciarCardapio.fxml");
 
         } catch (Exception e) {
@@ -178,7 +175,7 @@ public class AdicionarProdutoController {
     }
 
     /**
-     * Cria o produto específico de acordo com o tipo selecionado
+     * cria o produto específico de acordo com o tipo selecionado
      */
     private Produto criarProduto(String nome, String descricao, double preco) {
         switch (tipoProduto) {
@@ -196,22 +193,23 @@ public class AdicionarProdutoController {
     }
 
     /**
-     * Cria uma Comida com suas características específicas
+     * cria uma Comida com suas características específicas
      */
     private Comida criarComida(String nome, String descricao, double preco) {
         boolean vegetariano = chkVegetariano.isSelected();
         boolean vegano = chkVegano.isSelected();
         
-        // Se é vegano, automaticamente é vegetariano
+        // se eh vegan eh veggie
         if (vegano) {
             vegetariano = true;
+            vegano = true;
         }
 
         return new Comida(nome, descricao, preco, vegetariano);
     }
 
     /**
-     * Cria uma Bebida com volume em ML
+     * bebida em ml
      */
     private Bebida criarBebida(String nome, String descricao, double preco) {
         String volumeStr = txtVolumeML.getText().trim();
@@ -240,11 +238,11 @@ public class AdicionarProdutoController {
     }
 
     /**
-     * Cria uma Sobremesa com temperatura
+     * sobemesa
      */
     private Sobremesa criarSobremesa(String nome, String descricao, double preco) {
-        // Determina a temperatura selecionada
-        String temperatura = "Ambiente"; // default
+    
+        String temperatura = "Ambiente"; 
         
         if (rbGelada.isSelected()) {
             temperatura = "Gelada";
@@ -254,12 +252,8 @@ public class AdicionarProdutoController {
             temperatura = "Ambiente";
         }
 
-        // Cria a sobremesa básica
         Sobremesa sobremesa = new Sobremesa(nome, descricao, preco);
-        
-        // Como a classe Sobremesa atual não tem campo temperatura,
-        // você precisará adicionar esse campo na classe Sobremesa.java
-        // Por enquanto, adiciona a temperatura na descrição
+
         if (!descricao.isEmpty()) {
             sobremesa.setDescricao(descricao + " (Servida " + temperatura.toLowerCase() + ")");
         } else {
@@ -269,9 +263,7 @@ public class AdicionarProdutoController {
         return sobremesa;
     }
 
-    /**
-     * Cria um Adicional (usa apenas campos básicos)
-     */
+    // adicinal só com campos basicos
     private Adicional criarAdicional(String nome, double preco) {
         return new Adicional(nome, preco);
     }

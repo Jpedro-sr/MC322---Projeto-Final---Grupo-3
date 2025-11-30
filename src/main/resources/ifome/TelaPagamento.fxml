@@ -16,7 +16,7 @@
       xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="ifome.controller.PagamentoController">
 
-    <!-- CABEÇALHO FIXO -->
+    <!-- cabecalho -->
     <VBox alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);">
         <padding>
             <Insets bottom="15" left="15" right="15" top="15"/>
@@ -32,7 +32,7 @@
         </HBox>
     </VBox>
 
-    <!-- CONTEÚDO SCROLLÁVEL -->
+    <!--scroll-->
     <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: #f4f4f4;" VBox.vgrow="ALWAYS">
         <content>
             <VBox spacing="15.0">
@@ -40,7 +40,7 @@
                     <Insets bottom="100" left="15" right="15" top="15"/>
                 </padding>
 
-                <!-- Resumo do Pedido -->
+                <!-- resumo -->
                 <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-border-radius: 8; -fx-background-radius: 8;">
                     <Label text="📦 Resumo do Pedido" textFill="#333">
                         <font>
@@ -78,7 +78,7 @@
                     </HBox>
                 </VBox>
 
-                <!-- Formas de Pagamento -->
+                <!-- pagamento -->
                 <VBox spacing="10">
                     <Label text="💳 Forma de Pagamento" textFill="#333">
                         <font>
@@ -112,7 +112,7 @@
                         </graphic>
                     </RadioButton>
 
-                    <!-- Cartão -->
+                    <!-- cartao -->
                     <RadioButton fx:id="rbCartao" maxWidth="Infinity" toggleGroup="$grupoPagamento"
                                  style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-width: 2; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 15; -fx-cursor: hand;">
                         <graphic>
@@ -134,7 +134,7 @@
                         </graphic>
                     </RadioButton>
 
-                    <!-- Dinheiro -->
+                    <!-- dinheiro -->
                     <RadioButton fx:id="rbDinheiro" maxWidth="Infinity" toggleGroup="$grupoPagamento"
                                  style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-width: 2; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 15; -fx-cursor: hand;">
                         <graphic>
@@ -160,7 +160,7 @@
         </content>
     </ScrollPane>
 
-    <!-- RODAPÉ FIXO -->
+    <!-- rodape -->
     <HBox alignment="CENTER" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 8, 0, 0, -2);">
         <padding>
             <Insets bottom="15" left="15" right="15" top="15"/>

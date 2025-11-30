@@ -4,31 +4,25 @@ import ifome.model.Cliente;
 import ifome.model.Restaurante;
 import ifome.model.Usuario;
 
-/**
- * Singleton para gerenciar a sessão do usuário logado.
- * ✅ ATUALIZADO: Agora inclui tipoProdutoSelecionado para o fluxo de criação de produtos
- */
+//gerencia a sessao do usuario
 public class SessaoUsuario {
     
     private static SessaoUsuario instancia;
     private Usuario usuarioLogado;
     private Cliente clienteLogado;
     private Restaurante restauranteLogado;
-    private Restaurante restauranteAtual; // Restaurante sendo navegado pelo cliente
-    private String tipoProdutoSelecionado; // ✅ NOVO: Para o fluxo de criação de produtos
-
-    // Construtor privado (Singleton)
+    private Restaurante restauranteAtual; 
+    private String tipoProdutoSelecionado;
+    
     private SessaoUsuario() {
         this.usuarioLogado = null;
         this.clienteLogado = null;
         this.restauranteLogado = null;
         this.restauranteAtual = null;
-        this.tipoProdutoSelecionado = null; // ✅ NOVO
+        this.tipoProdutoSelecionado = null; 
     }
 
-    /**
-     * Retorna a instância única (Singleton).
-     */
+    
     public static SessaoUsuario getInstance() {
         if (instancia == null) {
             instancia = new SessaoUsuario();
@@ -36,9 +30,7 @@ public class SessaoUsuario {
         return instancia;
     }
 
-    /**
-     * Define o cliente logado.
-     */
+    //define o clinete logado
     public void setClienteLogado(Cliente cliente) {
         this.clienteLogado = cliente;
         this.usuarioLogado = cliente;
@@ -46,9 +38,7 @@ public class SessaoUsuario {
         System.out.println(">>> Cliente logado: " + cliente.getNome());
     }
 
-    /**
-     * Define o restaurante logado.
-     */
+    // define o resaturante
     public void setRestauranteLogado(Restaurante restaurante) {
         this.restauranteLogado = restaurante;
         this.usuarioLogado = restaurante;
@@ -56,81 +46,55 @@ public class SessaoUsuario {
         System.out.println(">>> Restaurante logado: " + restaurante.getNomeRestaurante());
     }
 
-    /**
-     * Define o restaurante sendo navegado pelo cliente.
-     */
+   
     public void setRestauranteAtual(Restaurante restaurante) {
         this.restauranteAtual = restaurante;
     }
 
-    // ✅ NOVO: Métodos para o tipo de produto selecionado
-    /**
-     * Define o tipo de produto que será criado (Comida, Bebida, Sobremesa, Adicional)
-     */
+ 
     public void setTipoProdutoSelecionado(String tipo) {
         this.tipoProdutoSelecionado = tipo;
         System.out.println(">>> Tipo de produto selecionado: " + tipo);
     }
 
-    /**
-     * Retorna o tipo de produto selecionado
-     */
+
     public String getTipoProdutoSelecionado() {
         return this.tipoProdutoSelecionado;
     }
 
-    /**
-     * Retorna o cliente logado (ou null).
-     */
+   
     public Cliente getClienteLogado() {
         return this.clienteLogado;
     }
-
-    /**
-     * Retorna o restaurante logado (ou null).
-     */
     public Restaurante getRestauranteLogado() {
         return this.restauranteLogado;
     }
 
-    /**
-     * Retorna o usuário logado genérico.
-     */
     public Usuario getUsuarioLogado() {
         return this.usuarioLogado;
     }
 
-    /**
-     * Retorna o restaurante atual sendo navegado.
-     */
+   
     public Restaurante getRestauranteAtual() {
         return this.restauranteAtual;
     }
 
-    /**
-     * Verifica se há alguém logado.
-     */
+  
     public boolean estaLogado() {
         return this.usuarioLogado != null;
     }
 
-    /**
-     * Verifica se é um cliente logado.
-     */
+   
     public boolean ehCliente() {
         return this.clienteLogado != null;
     }
 
-    /**
-     * Verifica se é um restaurante logado.
-     */
+  
     public boolean ehRestaurante() {
         return this.restauranteLogado != null;
     }
 
-    /**
-     * Faz logout do usuário atual.
-     */
+
     public void logout() {
         if (usuarioLogado != null) {
             System.out.println(">>> Logout de: " + 
@@ -140,12 +104,10 @@ public class SessaoUsuario {
         this.clienteLogado = null;
         this.restauranteLogado = null;
         this.restauranteAtual = null;
-        this.tipoProdutoSelecionado = null; // ✅ NOVO: Limpa também o tipo de produto
+        this.tipoProdutoSelecionado = null;
     }
 
-    /**
-     * Limpa toda a sessão (para testes).
-     */
+ 
     public void limparSessao() {
         logout();
         instancia = null;

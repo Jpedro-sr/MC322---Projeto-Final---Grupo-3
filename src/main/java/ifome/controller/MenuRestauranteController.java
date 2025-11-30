@@ -14,6 +14,7 @@ import javafx.event.ActionEvent;
 
 import java.io.IOException;
 
+//controller do menu do restaurante
 public class MenuRestauranteController {
 
     @FXML
@@ -72,7 +73,7 @@ public class MenuRestauranteController {
             mostrarAlerta("Status Atualizado", "Restaurante ABERTO. Pronto para receber pedidos!");
         }
         
-        // Atualizar label
+    
         initialize();
     }
 

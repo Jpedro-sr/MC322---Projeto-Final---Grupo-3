@@ -21,7 +21,8 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 /**
- * ✅ CORRIGIDO: Fluxo de pagamento com registro correto de pedidos
+ * controller do pagamento
+ * funcionando graças a deus
  */
 public class PagamentoController {
 
@@ -51,7 +52,7 @@ public class PagamentoController {
     }
 
     /**
-     * ✅ CORRIGIDO: Gera pedido e adiciona corretamente à fila do restaurante
+     * gera pedido e adiciona corretamente à fila do restaurante
      */
     @FXML
     private void confirmarPagamento(ActionEvent event) {
@@ -79,41 +80,41 @@ public class PagamentoController {
                 if (pagamento == null) return;
             }
 
-            // ✅ Gera pedido
+            //  gera pedido
             Pedido pedido = carrinho.gerarPedido();
             pedido.setFormaPagamento(pagamento);
             
-            // ✅ CRÍTICO: Define status inicial como "Pendente"
+    
             pedido.atualizarStatus("Pendente");
 
-            // ✅ REGISTRA O USO DO CUPOM (Se houver)
+            // cupom
             if (carrinho.getCupomAplicado() != null) {
                 cliente.registrarUsoCupom(carrinho.getCupomAplicado().getCodigo());
                 System.out.println(">>> Cupom registrado como usado: " + carrinho.getCupomAplicado().getCodigo());
             }
 
-            // ✅ CRÍTICO: Adiciona à fila do RESTAURANTE antes de salvar
+        
             Restaurante restaurante = carrinho.getRestaurante();
             if (!restaurante.getFilaPedidos().contains(pedido)) {
                 restaurante.getFilaPedidos().add(pedido);
             }
 
-            // Adiciona ao histórico do cliente
+            // add ni histórico do cliente
             if (!cliente.getHistoricoPedidos().contains(pedido)) {
                 cliente.adicionarPedido(pedido);
             }
             
-            // ✅ Adiciona ao repositório global
+   
             RepositorioRestaurantes repo = RepositorioRestaurantes.getInstance();
             if (!repo.getTodosPedidos().contains(pedido)) {
                 repo.adicionarPedido(pedido);
             }
            
 
-            // ✅ Salva TUDO
+            // save
             repo.salvarDados();
 
-            // Limpa o carrinho APÓS salvar
+            // limpa o carrinho depois de salvar
             carrinho.limparCarrinho();
 
             System.out.println(">>> Pedido #" + pedido.getNumeroPedido() + " criado com sucesso!");

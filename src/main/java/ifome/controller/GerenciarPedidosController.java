@@ -28,9 +28,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 /**
- * ✅ CORRIGIDO: Cancelamento de pedidos agora funciona corretamente
- * - RECUSAR (Pendente) → muda para "Cancelado" e remove da fila
- * - CANCELAR (após aceito) → muda para "Cancelado" e remove da fila
+ * controller do gerenciador
  */
 public class GerenciarPedidosController {
 
@@ -98,7 +96,7 @@ public class GerenciarPedidosController {
             "-fx-background-radius: 12;"
         );
 
-        // Header: Número do pedido e status
+       
         HBox header = new HBox();
         header.setAlignment(Pos.CENTER_LEFT);
 
@@ -115,14 +113,14 @@ public class GerenciarPedidosController {
 
         header.getChildren().addAll(lblNumero, spacer, lblStatus);
 
-        // Cliente e Data
+        // cliente e data
         Label lblCliente = new Label("👤 " + pedido.getCliente().getNome());
         lblCliente.setStyle("-fx-text-fill: #666; -fx-font-size: 14px;");
 
         Label lblData = new Label("📅 " + dateFormat.format(pedido.getDataHora()));
         lblData.setStyle("-fx-text-fill: #666; -fx-font-size: 13px;");
 
-        // Itens (resumo)
+        // resumo dos itens
         VBox itensBox = new VBox(5);
         itensBox.setStyle("-fx-padding: 10 0 10 0;");
         
@@ -141,7 +139,7 @@ public class GerenciarPedidosController {
             itensBox.getChildren().add(lblItem);
         }
 
-        // Valor Total
+        // valor total
         HBox footerBox = new HBox();
         footerBox.setAlignment(Pos.CENTER_LEFT);
         footerBox.setStyle("-fx-padding: 10 0 0 0; -fx-border-width: 1 0 0 0; -fx-border-color: #e0e0e0;");
@@ -161,14 +159,14 @@ public class GerenciarPedidosController {
 
         footerBox.getChildren().add(lblTotal);
 
-        // Botões de ação
+     
         HBox botoesBox = new HBox(10);
         botoesBox.setAlignment(Pos.CENTER_RIGHT);
         botoesBox.setPadding(new Insets(10, 0, 0, 0));
 
         String status = pedido.getStatus();
 
-        // ✅ CORRIGIDO: Botões para pedidos PENDENTES
+        // botoes
         if (status.equals("Pendente")) {
             Button btnRecusar = new Button("✖ Recusar");
             btnRecusar.setStyle(
@@ -179,7 +177,7 @@ public class GerenciarPedidosController {
                 "-fx-cursor: hand; " +
                 "-fx-padding: 8 15;"
             );
-            // ✅ CORRIGIDO: Agora chama o método correto
+           
             btnRecusar.setOnAction(e -> recusarPedidoPendente(pedido));
 
             Button btnAceitar = new Button("✓ Aceitar");
@@ -195,7 +193,7 @@ public class GerenciarPedidosController {
 
             botoesBox.getChildren().addAll(btnRecusar, btnAceitar);
 
-        // ✅ Botões para pedidos JÁ ACEITOS (mas não finalizados)
+        // botoes
         } else if (!status.equals("Entregue") && !status.equals("Cancelado")) {
             Button btnAtualizar = new Button("⚙ Atualizar Status");
             btnAtualizar.setStyle(
@@ -219,8 +217,7 @@ public class GerenciarPedidosController {
     }
 
     /**
-     * ✅ NOVO MÉTODO: Recusa pedidos PENDENTES (antes de aceitar)
-     * Muda status para "Cancelado" e remove da fila
+   corrige o cancelamento
      */
     private void recusarPedidoPendente(Pedido pedido) {
         Alert confirmacao = new Alert(Alert.AlertType.CONFIRMATION);
@@ -235,13 +232,13 @@ public class GerenciarPedidosController {
         
         if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
             try {
-                // ✅ CRÍTICO: Muda status para "Cancelado"
+                // cancela
                 pedido.atualizarStatus("Cancelado");
                 
-                // ✅ Remove da fila do restaurante
+               
                 restaurante.getFilaPedidos().remove(pedido);
                 
-                // Salva mudanças
+                // salva
                 RepositorioRestaurantes.getInstance().salvarDados();
 
                 System.out.println(">>> Pedido #" + pedido.getNumeroPedido() + " RECUSADO e CANCELADO");
@@ -263,7 +260,7 @@ public class GerenciarPedidosController {
     }
 
     /**
-     * ✅ CORRIGIDO: Aceita pedido e processa pagamento
+     * aceita e processa
      */
     private void aceitarPedido(Pedido pedido) {
         Alert confirmacao = new Alert(Alert.AlertType.CONFIRMATION);
@@ -306,7 +303,7 @@ public class GerenciarPedidosController {
                 erro.setContentText("Motivo: " + e.getMessage());
                 erro.showAndWait();
                 
-                // Cancela o pedido automaticamente
+                // cancela  o pedido
                 try {
                     pedido.atualizarStatus("Cancelado");
                     restaurante.getFilaPedidos().remove(pedido);
@@ -322,9 +319,7 @@ public class GerenciarPedidosController {
         }
     }
 
-    /**
-     * ✅ ATUALIZAÇÃO DE STATUS (para pedidos já aceitos)
-     * Agora inclui opção de "Cancelar" no menu
+    /**atualizacao de status
      */
     private void atualizarStatusPedido(Pedido pedido) {
         Dialog<String> dialog = new Dialog<>();
@@ -345,7 +340,7 @@ public class GerenciarPedidosController {
             Button btnStatus = new Button(novoStatus);
             btnStatus.setMaxWidth(Double.MAX_VALUE);
             
-            // ✅ Destaca o botão "Cancelar" em vermelho
+            
             if (novoStatus.equals("Cancelado")) {
                 btnStatus.setStyle(
                     "-fx-background-color: #e74c3c; " +
@@ -388,7 +383,7 @@ public class GerenciarPedidosController {
         if (resultado.isPresent()) {
             String novoStatus = resultado.get();
             
-            // ✅ CORRIGIDO: Se cancelar, também remove da fila
+            // se cancela, remove da fila
             if (novoStatus.equals("Cancelado")) {
                 pedido.atualizarStatus("Cancelado");
                 restaurante.getFilaPedidos().remove(pedido);
@@ -410,7 +405,7 @@ public class GerenciarPedidosController {
     }
 
     /**
-     * ✅ CORRIGIDO: Agora retorna "Cancelado" como opção em todos os status (exceto já finalizados)
+     * corrige o problema do cancelamento errado
      */
     private String[] getProximosStatus(String statusAtual) {
         switch (statusAtual) {

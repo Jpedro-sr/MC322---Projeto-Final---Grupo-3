@@ -13,7 +13,7 @@ public class RestauranteTest {
 
     @BeforeEach
     public void setUp() {
-        // ✅ CORRIGIDO: CNPJ válido com dígitos verificadores corretos
+    
         restaurante = new Restaurante("rest@email.com", "123", "Restaurante Teste", "11222333000181");
         produto = new Comida("Pizza", "Pizza grande", 45.0, false);
     }

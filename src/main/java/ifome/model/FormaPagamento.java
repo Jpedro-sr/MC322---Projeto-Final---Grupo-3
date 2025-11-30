@@ -1,8 +1,6 @@
 package ifome.model;
 
-/**
- * Classe abstrata que define o contrato para formas de pagamento.
- */
+//formasde pagamento
 public abstract class FormaPagamento {
 
     protected boolean pagamentoProcessado;

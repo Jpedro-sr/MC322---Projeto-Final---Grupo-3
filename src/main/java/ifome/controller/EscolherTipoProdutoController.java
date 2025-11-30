@@ -11,15 +11,14 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- * Controlador para a tela de escolha do tipo de produto.
- * Permite ao restaurante escolher entre Comida, Bebida, Sobremesa ou Adicional.
+ * controller para os produtos
  */
 public class EscolherTipoProdutoController {
 
     @FXML
     private void irParaFormComida(ActionEvent event) {
         try {
-            // Define o tipo de produto na sessão
+            // tipo
             SessaoUsuario.getInstance().setTipoProdutoSelecionado("Comida");
             mudarTela(event, "/ifome/TelaAdicionarProduto.fxml");
         } catch (IOException e) {

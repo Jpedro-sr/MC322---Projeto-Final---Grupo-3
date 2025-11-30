@@ -11,7 +11,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 /**
- * Controlador para a tela de escolha entre Cliente e Restaurante
+ * controller da tela de escolha cliente e restaurante
  */
 public class EscolhaTipoContaController {
 

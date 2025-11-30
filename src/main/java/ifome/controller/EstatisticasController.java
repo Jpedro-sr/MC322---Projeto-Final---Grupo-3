@@ -25,7 +25,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 /**
- * ✅ CORRIGIDO: Agora busca pedidos do repositório global
+ * controler das estatisticas
  */
 public class EstatisticasController {
 
@@ -44,16 +44,14 @@ public class EstatisticasController {
     }
 
     private void carregarEstatisticas() {
-        // ✅ CRÍTICO: Busca TODOS os pedidos do repositório global
+      
         List<Pedido> todosPedidos = RepositorioRestaurantes.getInstance().getTodosPedidos();
         
-        // Filtra apenas pedidos DESTE restaurante
         List<Pedido> pedidosDoRestaurante = todosPedidos.stream()
             .filter(p -> p.getRestaurante() != null && 
                         p.getRestaurante().getEmail().equals(restaurante.getEmail()))
             .collect(Collectors.toList());
-        
-        // Filtra apenas pedidos finalizados (que geraram receita)
+
         List<Pedido> pedidosFinalizados = pedidosDoRestaurante.stream()
             .filter(p -> p.getStatus().equals("Entregue") || 
                         p.getStatus().equals("Confirmado") ||
@@ -65,11 +63,10 @@ public class EstatisticasController {
         System.out.println(">>> Estatísticas - Total de pedidos do restaurante: " + pedidosDoRestaurante.size());
         System.out.println(">>> Estatísticas - Pedidos finalizados: " + pedidosFinalizados.size());
 
-        // Total de Pedidos
         int totalPedidos = pedidosFinalizados.size();
         lblTotalPedidos.setText(String.valueOf(totalPedidos));
 
-        // Faturamento Total
+        // faturamento Total
         double faturamentoTotal = pedidosFinalizados.stream()
             .mapToDouble(p -> {
                 double valor = p.getValorTotal();
@@ -83,22 +80,22 @@ public class EstatisticasController {
         System.out.println(">>> Faturamento total calculado: R$" + String.format("%.2f", faturamentoTotal));
         lblFaturamentoTotal.setText(String.format("R$ %.2f", faturamentoTotal));
 
-        // Ticket Médio
+        // ticket medio
         double ticketMedio = totalPedidos > 0 ? faturamentoTotal / totalPedidos : 0;
         lblTicketMedio.setText(String.format("R$ %.2f", ticketMedio));
 
-        // Avaliação Média
+        // avaliacao média
         double avaliacaoMedia = restaurante.calcularMediaAvaliacoes();
         lblAvaliacaoMedia.setText(String.format("%.1f ⭐", avaliacaoMedia));
 
-        // Produtos Mais Vendidos
+        // mais vendidos
         carregarProdutosMaisVendidos(pedidosFinalizados);
     }
 
     private void carregarProdutosMaisVendidos(List<Pedido> pedidos) {
         containerProdutosMaisVendidos.getChildren().clear();
 
-        // Mapa: Nome do Produto -> Quantidade Total Vendida
+        
         Map<String, Integer> vendasPorProduto = new HashMap<>();
         Map<String, Double> faturamentoPorProduto = new HashMap<>();
 
@@ -123,7 +120,7 @@ public class EstatisticasController {
             return;
         }
 
-        // Ordena por quantidade vendida (decrescente) e pega top 10
+        // ordena por quantidade
         List<Map.Entry<String, Integer>> topProdutos = vendasPorProduto.entrySet().stream()
             .sorted((a, b) -> b.getValue().compareTo(a.getValue()))
             .limit(10)
@@ -153,16 +150,16 @@ public class EstatisticasController {
             "-fx-background-radius: 8;"
         );
 
-        // Posição e Nome
+        // posicao e nome
         Label lblPosicao = new Label("#" + posicao + " · " + nome);
         lblPosicao.setFont(Font.font("System", FontWeight.BOLD, 15));
         lblPosicao.setStyle("-fx-text-fill: #333;");
 
-        // Quantidade vendida
+        // qtd vendida
         Label lblQuantidade = new Label("Vendidos: " + quantidade + " un.");
         lblQuantidade.setStyle("-fx-text-fill: #666; -fx-font-size: 13px;");
 
-        // Faturamento
+        // faturamento
         Label lblFaturamento = new Label("Receita: R$ " + String.format("%.2f", faturamento));
         lblFaturamento.setStyle("-fx-text-fill: #4cd137; -fx-font-size: 13px; -fx-font-weight: bold;");
 

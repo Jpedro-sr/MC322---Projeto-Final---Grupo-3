@@ -24,7 +24,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 /**
- * ✅ CORRIGIDO: Exibe informações completas dos produtos com ícones corretos
+ * controller da tela de gerenciar
  */
 public class TelaGerenciarCardapioController {
 
@@ -73,9 +73,8 @@ public class TelaGerenciarCardapioController {
         }
     }
 
-    /**
-     * ✅ CORRIGIDO: Exibe informações específicas completas
-     */
+   
+    
     private VBox criarCardProduto(Produto p) {
         VBox card = new VBox(10);
         String opacidade = p.isDisponivel() ? "1.0" : "0.6";
@@ -87,11 +86,10 @@ public class TelaGerenciarCardapioController {
             "-fx-opacity: " + opacidade + ";"
         );
 
-        // Linha 1: Ícone, Nome e Preço
+        //icone, nome e preço
         HBox header = new HBox(10);
         header.setAlignment(Pos.CENTER_LEFT);
-        
-        // ✅ Ícone correto baseado no tipo
+  
         String icone = getIconeProduto(p);
         Label lblIcone = new Label(icone);
         lblIcone.setStyle("-fx-font-size: 28px;");
@@ -109,15 +107,15 @@ public class TelaGerenciarCardapioController {
 
         header.getChildren().addAll(lblIcone, lblNome, spacer, lblPreco);
 
-        // Linha 2: Descrição + Categoria + Informações específicas
+  
         StringBuilder detalhes = new StringBuilder();
         
-        // Descrição
+        // descrição
         if (!p.getDescricao().isEmpty()) {
             detalhes.append(p.getDescricao());
         }
         
-        // ✅ CRÍTICO: Informações específicas de cada tipo
+        
         if (p instanceof Sobremesa) {
             Sobremesa sobremesa = (Sobremesa) p;
             if (detalhes.length() > 0) {
@@ -187,7 +185,7 @@ public class TelaGerenciarCardapioController {
             }
         });
 
-        // Botão Remover - ✅ TROCADO EMOJI POR ✕
+    // novo botao
         Button btnRemover = new Button("✕ Remover");
         btnRemover.setStyle(
             "-fx-background-color: transparent; " +
@@ -224,9 +222,7 @@ public class TelaGerenciarCardapioController {
         return card;
     }
 
-    /**
-     * ✅ Retorna ícone correto para cada tipo de produto
-     */
+    /// icones corretos, aparentemente sem bug
     private String getIconeProduto(Produto p) {
         String categoria = p.getCategoria();
         

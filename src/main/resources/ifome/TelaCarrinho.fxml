@@ -15,7 +15,7 @@
       xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" 
       fx:controller="ifome.controller.TelaCarrinhoController">
 
-    <!-- CABEÇALHO FIXO -->
+    <!-- cabecalho -->
     <VBox alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);">
         <padding>
             <Insets bottom="15" top="15" left="15" right="15" />
@@ -42,7 +42,7 @@
         </Label>
     </VBox>
 
-    <!-- LISTA DE ITENS (ScrollPane) -->
+    <!-- lista de itens -->
     <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: #f4f4f4;" VBox.vgrow="ALWAYS">
         <content>
             <VBox spacing="15.0">
@@ -50,11 +50,11 @@
                     <Insets bottom="20" left="15" right="15" top="15" />
                 </padding>
                 
-                <!-- Container de Itens -->
+                <!--itens-->
                 <VBox fx:id="containerItens" spacing="10.0">
                 </VBox>
                 
-                <!-- Seção de Cupom -->
+                <!-- cupom -->
                 <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-border-radius: 8; -fx-background-radius: 8;">
                     <Label text="🎫 Cupom de Desconto" textFill="#333">
                         <font>
@@ -78,7 +78,7 @@
                     </Label>
                 </VBox>
                 
-                <!-- Resumo de Valores -->
+                <!--resumo -->
                 <VBox spacing="8" style="-fx-background-color: white; -fx-padding: 15; -fx-border-radius: 8; -fx-background-radius: 8;">
                     <Label text="💰 Resumo" textFill="#333">
                         <font>
@@ -132,13 +132,13 @@
                     </HBox>
                 </VBox>
                 
-                <!-- Espaço para o rodapé -->
+    
                 <Region prefHeight="80" />
             </VBox>
         </content>
     </ScrollPane>
 
-    <!-- RODAPÉ FIXO - Botão Finalizar -->
+    <!--rodape-->
     <HBox alignment="CENTER" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 8, 0, 0, -2);">
         <padding>
             <Insets bottom="15" top="15" left="15" right="15" />
