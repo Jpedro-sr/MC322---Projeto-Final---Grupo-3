@@ -1,7 +1,3 @@
-// =====================================================
-// ARQUIVO: src/test/java/ifome/PedidoTest.java
-// =====================================================
-
 package ifome;
 
 import ifome.model.*;
@@ -17,8 +13,11 @@ public class PedidoTest {
 
     @BeforeEach
     public void setUp() {
+        // ✅ CORRIGIDO: Telefone válido
         cliente = new Cliente("cliente@email.com", "123", "Cliente Teste", "11999999999");
-        restaurante = new Restaurante("rest@email.com", "123", "Restaurante Teste", "12345678000199");
+        
+        // ✅ CORRIGIDO: CNPJ válido
+        restaurante = new Restaurante("rest@email.com", "123", "Restaurante Teste", "11222333000181");
         
         pedido = new Pedido();
         pedido.setCliente(cliente);
@@ -91,4 +90,3 @@ public class PedidoTest {
         assertEquals(4.0, media, 0.1);
     }
 }
-

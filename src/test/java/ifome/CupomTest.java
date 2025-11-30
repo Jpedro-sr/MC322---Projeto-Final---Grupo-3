@@ -1,7 +1,3 @@
-// =====================================================
-// ARQUIVO: src/test/java/ifome/CupomTest.java
-// =====================================================
-
 package ifome;
 
 import ifome.model.Cupom;
@@ -49,4 +45,3 @@ public class CupomTest {
         assertFalse(cupom.estaValido());
     }
 }
-

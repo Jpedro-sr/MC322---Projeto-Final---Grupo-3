@@ -10,3 +10,5 @@ aloalomarciano123@gmail.com;Varrevassourinha;Juscelino Kubitscheck;11919191919
 ww@gmail.com;12345;Wolverine;12123456789
 chico@gmail.com;123456;Francisco;1598111111
 matheus@gmail.com;123456;matheus Cardoso;15989898981200
+carlos@gmai.com;123456;Carlos Antonio;123456789012
+marcelo@gmail.com;123456;Marcelo Paiva;12345678901

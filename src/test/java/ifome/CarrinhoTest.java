@@ -1,7 +1,3 @@
-// =====================================================
-// ARQUIVO: src/test/java/ifome/CarrinhoTest.java
-// =====================================================
-
 package ifome;
 
 import ifome.model.*;
@@ -20,8 +16,11 @@ public class CarrinhoTest {
 
     @BeforeEach
     public void setUp() {
+        // ✅ CORRIGIDO: Telefone válido (11 dígitos)
         cliente = new Cliente("teste@email.com", "123", "Teste Cliente", "11999999999");
-        restaurante = new Restaurante("rest@email.com", "123", "Restaurante Teste", "12345678000199");
+        
+        // ✅ CORRIGIDO: CNPJ válido com dígitos verificadores corretos
+        restaurante = new Restaurante("rest@email.com", "123", "Restaurante Teste", "11222333000181");
         restaurante.abrirRestaurante();
         
         carrinho = new Carrinho(cliente, restaurante);
@@ -88,4 +87,3 @@ public class CarrinhoTest {
         assertEquals(0.0, carrinho.calcularPrecoTotal(), 0.01);
     }
 }
-

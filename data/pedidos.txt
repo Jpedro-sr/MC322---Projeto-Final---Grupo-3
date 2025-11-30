@@ -26,4 +26,12 @@
 1025;2025-11-25 21:09:09;a@gmail.com;acai@ifome.com;Entregue;15.0
 1026;2025-11-25 22:40:57;a@gmail.com;pizzaria@ifome.com;Confirmado;18.9
 1027;2025-11-26 00:20:16;a@gmail.com;pizzaria@ifome.com;Confirmado;44.01
-1028;2025-11-26 00:37:55;a@gmail.com;pizzaria@ifome.com;Pendente;44.01
+1028;2025-11-26 00:37:55;a@gmail.com;pizzaria@ifome.com;Confirmado;44.01
+1029;2025-11-26 18:16:29;a@gmail.com;pizzaria@ifome.com;Entregue;48.9
+1030;2025-11-26 18:40:17;a@gmail.com;burger@ifome.com;Entregue;30.9
+1031;2025-11-26 18:43:22;cliente@email.com;sushi@ifome.com;Confirmado;77.8
+1032;2025-11-26 18:50:14;a@gmail.com;arabe@ifome.com;Preparando;32.0
+1033;2025-11-26 18:54:58;carlos@gmai.com;burger@ifome.com;Entregue;27.81
+1034;2025-11-26 18:56:00;carlos@gmai.com;burger@ifome.com;Confirmado;26.9
+1035;2025-11-26 19:32:04;marcelo@gmail.com;burger@ifome.com;Entregue;31.409999999999997
+1036;2025-11-26 19:32:45;marcelo@gmail.com;burger@ifome.com;Cancelado;22.9

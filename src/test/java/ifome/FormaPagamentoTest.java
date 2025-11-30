@@ -1,7 +1,3 @@
-// =====================================================
-// ARQUIVO: src/test/java/ifome/FormaPagamentoTest.java
-// =====================================================
-
 package ifome;
 
 import ifome.model.*;
@@ -63,4 +59,3 @@ public class FormaPagamentoTest {
         assertFalse(resultado);
     }
 }
-

@@ -1,4 +1,8 @@
 pizzaria@ifome.com;4;
+pizzaria@ifome.com;5;
 burger@ifome.com;3;
+burger@ifome.com;5;delicioso
+burger@ifome.com;5;
+burger@ifome.com;1;terrivel
 sushi@ifome.com;5;
 acai@ifome.com;5;

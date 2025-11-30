@@ -5,26 +5,29 @@ import java.util.List;
 
 /**
  * Representa um Restaurante no sistema iFome.
- * Herda de Usuario e gerencia cardápio, pedidos e avaliações.
+ * ✅ CORRIGIDO: Validação robusta de CNPJ
  */
 public class Restaurante extends Usuario implements Avaliavel {
 
     private String nomeRestaurante;
     private String cnpj;
     private Endereco endereco;
-    private String horarioFuncionamento; // Ex: "11:00 - 23:00"
+    private String horarioFuncionamento;
     private List<Produto> cardapio;
     private List<Pedido> filaPedidos;
     private List<Avaliacao> avaliacoes;
     private boolean aberto;
+    
+    // ✅ LIMITES DE SEGURANÇA
+    private static final int MAX_NOME_RESTAURANTE = 100;
+    private static final int CNPJ_LENGTH = 14;
 
-    // Construtor completo
     public Restaurante(String email, String senha, String nomeRestaurante, String cnpj) {
         super();
         this.email = email;
         this.senha = senha;
-        this.nomeRestaurante = nomeRestaurante;
-        this.cnpj = validarCNPJ(cnpj) ? cnpj : "00.000.000/0000-00";
+        this.nomeRestaurante = validarNomeRestaurante(nomeRestaurante);
+        this.cnpj = validarCNPJ(cnpj);
         this.cardapio = new ArrayList<>();
         this.filaPedidos = new ArrayList<>();
         this.avaliacoes = new ArrayList<>();
@@ -32,40 +35,118 @@ public class Restaurante extends Usuario implements Avaliavel {
         this.horarioFuncionamento = "Não informado";
     }
 
-    // Validar CNPJ (formato simplificado)
-    private boolean validarCNPJ(String cnpj) {
-        if (cnpj == null || cnpj.isEmpty()) return false;
-        String limpo = cnpj.replaceAll("[^0-9]", "");
-        return limpo.length() == 14;
+    /**
+     * ✅ VALIDAÇÃO ROBUSTA DE NOME DO RESTAURANTE
+     */
+    private String validarNomeRestaurante(String nome) {
+        if (nome == null || nome.trim().isEmpty()) {
+            throw new IllegalArgumentException("Nome do restaurante não pode ser vazio");
+        }
+        
+        String nomeLimpo = nome.trim().replaceAll("[<>\"'&;]", "");
+        
+        if (nomeLimpo.length() > MAX_NOME_RESTAURANTE) {
+            throw new IllegalArgumentException(
+                "Nome muito longo. Máximo de " + MAX_NOME_RESTAURANTE + " caracteres"
+            );
+        }
+        
+        if (nomeLimpo.length() < 3) {
+            throw new IllegalArgumentException("Nome muito curto. Mínimo de 3 caracteres");
+        }
+        
+        return nomeLimpo;
     }
 
     /**
-     * Abre o restaurante (começa a aceitar pedidos).
+     * ✅ VALIDAÇÃO ROBUSTA DE CNPJ
+     * - Remove todos os caracteres não numéricos
+     * - Valida se tem exatamente 14 dígitos
+     * - Rejeita CNPJs com todos os dígitos iguais
+     * - Valida dígitos verificadores
      */
+    private String validarCNPJ(String cnpj) {
+        if (cnpj == null || cnpj.trim().isEmpty()) {
+            throw new IllegalArgumentException("CNPJ não pode ser vazio");
+        }
+        
+        // Remove todos os caracteres não numéricos
+        String apenasDigitos = cnpj.replaceAll("[^0-9]", "");
+        
+        // Valida quantidade de dígitos
+        if (apenasDigitos.length() != CNPJ_LENGTH) {
+            throw new IllegalArgumentException(
+                "CNPJ inválido. Deve conter exatamente " + CNPJ_LENGTH + " dígitos"
+            );
+        }
+        
+        // Rejeita CNPJs conhecidos como inválidos (todos os dígitos iguais)
+        if (apenasDigitos.matches("(\\d)\\1+")) {
+            throw new IllegalArgumentException("CNPJ inválido. Dígitos repetitivos");
+        }
+        
+        // ✅ VALIDAÇÃO DOS DÍGITOS VERIFICADORES
+        if (!validarDigitosVerificadoresCNPJ(apenasDigitos)) {
+            throw new IllegalArgumentException("CNPJ inválido. Dígitos verificadores incorretos");
+        }
+        
+        return apenasDigitos;
+    }
+
+    /**
+     * ✅ ALGORITMO DE VALIDAÇÃO DE DÍGITOS VERIFICADORES DO CNPJ
+     */
+    private boolean validarDigitosVerificadoresCNPJ(String cnpj) {
+        try {
+            // Primeiro dígito verificador
+            int soma = 0;
+            int peso = 5;
+            
+            for (int i = 0; i < 12; i++) {
+                soma += Character.getNumericValue(cnpj.charAt(i)) * peso;
+                peso = (peso == 2) ? 9 : peso - 1;
+            }
+            
+            int digito1 = (soma % 11 < 2) ? 0 : 11 - (soma % 11);
+            
+            if (Character.getNumericValue(cnpj.charAt(12)) != digito1) {
+                return false;
+            }
+            
+            // Segundo dígito verificador
+            soma = 0;
+            peso = 6;
+            
+            for (int i = 0; i < 13; i++) {
+                soma += Character.getNumericValue(cnpj.charAt(i)) * peso;
+                peso = (peso == 2) ? 9 : peso - 1;
+            }
+            
+            int digito2 = (soma % 11 < 2) ? 0 : 11 - (soma % 11);
+            
+            return Character.getNumericValue(cnpj.charAt(13)) == digito2;
+            
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    // ============ MÉTODOS EXISTENTES (sem alteração funcional) ============
+
     public void abrirRestaurante() {
         this.aberto = true;
         System.out.println("🟢 " + nomeRestaurante + " ABERTO!");
     }
 
-    /**
-     * Fecha o restaurante (para de aceitar pedidos).
-     */
     public void fecharRestaurante() {
         this.aberto = false;
         System.out.println("🔴 " + nomeRestaurante + " FECHADO!");
     }
 
-    /**
-     * Verifica se o restaurante está aberto.
-     * IMPORTANTE: Este método é OBRIGATÓRIO pelo UML original.
-     */
     public boolean estaAberto() {
         return this.aberto;
     }
 
-    /**
-     * Adiciona um novo produto ao cardápio.
-     */
     public void adicionarProdutoCardapio(Produto produto) {
         if (produto == null) {
             System.out.println("❌ Produto inválido.");
@@ -80,9 +161,6 @@ public class Restaurante extends Usuario implements Avaliavel {
                          " - R$" + String.format("%.2f", produto.getPreco()));
     }
 
-    /**
-     * Remove um produto do cardápio.
-     */
     public void removerProdutoCardapio(Produto produto) {
         if (cardapio.remove(produto)) {
             System.out.println("✅ Produto removido: " + produto.getNome());
@@ -91,9 +169,6 @@ public class Restaurante extends Usuario implements Avaliavel {
         }
     }
 
-    /**
-     * Atualiza informações de um produto (preço, descrição, disponibilidade).
-     */
     public void atualizarProdutoCardapio(Produto produto) {
         if (produto == null) {
             System.out.println("❌ Produto inválido.");
@@ -112,9 +187,6 @@ public class Restaurante extends Usuario implements Avaliavel {
         System.out.println("❌ Produto não encontrado no cardápio.");
     }
 
-    /**
-     * Busca um produto no cardápio pelo nome.
-     */
     public Produto buscarProduto(String nome) {
         for (Produto p : cardapio) {
             if (p.getNome().equalsIgnoreCase(nome)) {
@@ -124,9 +196,6 @@ public class Restaurante extends Usuario implements Avaliavel {
         return null;
     }
 
-    /**
-     * Aceita um pedido (adiciona à fila de preparação).
-     */
     public void aceitarPedido(Pedido pedido) 
             throws ifome.exceptions.RestauranteFechadoException {
         if (pedido == null) {
@@ -150,9 +219,6 @@ public class Restaurante extends Usuario implements Avaliavel {
         System.out.println("✅ Pedido #" + pedido.getNumeroPedido() + " aceito e adicionado à fila!");
     }
 
-    /**
-     * Recusa um pedido (remove da fila).
-     */
     public void recusarPedido(Pedido pedido) 
             throws ifome.exceptions.RestauranteFechadoException {
         if (pedido == null) {
@@ -168,9 +234,6 @@ public class Restaurante extends Usuario implements Avaliavel {
         }
     }
 
-    /**
-     * Atualiza o status de um pedido (ex: Preparando → Pronto).
-     */
     public void atualizarStatusPedido(Pedido pedido, String novoStatus) {
         if (pedido == null) {
             System.out.println("❌ Pedido inválido.");
@@ -185,23 +248,14 @@ public class Restaurante extends Usuario implements Avaliavel {
         pedido.atualizarStatus(novoStatus);
     }
 
-    /**
-     * Retorna a fila de pedidos do restaurante.
-     */
     public List<Pedido> getFilaPedidos() {
         return new ArrayList<>(filaPedidos);
     }
 
-    /**
-     * Conta quantos pedidos estão na fila.
-     */
     public int getTamanhofila() {
         return filaPedidos.size();
     }
 
-    /**
-     * Retorna o próximo pedido da fila (sem remover).
-     */
     public Pedido getPrimeirosPedido() {
         if (filaPedidos.isEmpty()) {
             System.out.println("ℹ️  Nenhum pedido na fila.");
@@ -210,29 +264,17 @@ public class Restaurante extends Usuario implements Avaliavel {
         return filaPedidos.get(0);
     }
 
-    // ============ MÉTODOS DA INTERFACE AVALIAVEL ============
-
-    /**
-     * Avalia o restaurante (nota de 1-5).
-     * Implementação obrigatória da interface Avaliavel.
-     */
     @Override
     public boolean avaliar(int nota) {
         Avaliacao avaliacao = new Avaliacao(nota);
         return avaliacoes.add(avaliacao);
     }
 
-    /**
-     * Avalia o restaurante com nota e comentário.
-     */
     public boolean avaliar(int nota, String comentario) {
         Avaliacao avaliacao = new Avaliacao(nota, comentario);
         return avaliacoes.add(avaliacao);
     }
 
-    /**
-     * Calcula a média de avaliações do restaurante.
-     */
     public double calcularMediaAvaliacoes() {
         if (avaliacoes.isEmpty()) return 0;
         int soma = 0;
@@ -242,14 +284,10 @@ public class Restaurante extends Usuario implements Avaliavel {
         return (double) soma / avaliacoes.size();
     }
 
-    /**
-     * Retorna lista de avaliações.
-     */
     public List<Avaliacao> getAvaliacoes() {
         return new ArrayList<>(avaliacoes);
     }
 
-    // Getters
     public String getNomeRestaurante() {
         return nomeRestaurante;
     }
@@ -278,9 +316,8 @@ public class Restaurante extends Usuario implements Avaliavel {
         return avaliacoes.size();
     }
 
-    // Setters
     public void setNomeRestaurante(String nome) {
-        this.nomeRestaurante = nome != null ? nome : this.nomeRestaurante;
+        this.nomeRestaurante = validarNomeRestaurante(nome);
     }
 
     public void setEndereco(Endereco endereco) {
@@ -293,9 +330,6 @@ public class Restaurante extends Usuario implements Avaliavel {
         System.out.println("✅ Horário de funcionamento atualizado para: " + horario);
     }
 
-    /**
-     * Retorna informações formatadas do restaurante.
-     */
     public String getInfoRestaurante() {
         StringBuilder sb = new StringBuilder();
         sb.append("\n╔════════════════════════════════════════╗\n");
@@ -312,9 +346,6 @@ public class Restaurante extends Usuario implements Avaliavel {
         return sb.toString();
     }
 
-    /**
-     * Exibe o cardápio formatado.
-     */
     public void exibirCardapio() {
         System.out.println("\n╔════════════════════════════════════════╗");
         System.out.println("║  CARDÁPIO - " + nomeRestaurante);

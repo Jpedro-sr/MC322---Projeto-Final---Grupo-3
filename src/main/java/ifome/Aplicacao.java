@@ -11,16 +11,16 @@ public class Aplicacao extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        // 1. Inicializa dados (Persistência)
+        // inicializa persistência
         RepositorioRestaurantes.getInstance().inicializarRestaurantes();
 
-        // 2. Carrega o FXML de Login
+        // carrega o FXML de login
         Parent root = FXMLLoader.load(getClass().getResource("/ifome/TelaLogin.fxml"));
         
-        // 3. Configura a cena com tamanho de celular
+        // configura a cena com tamanho de celular
         Scene scene = new Scene(root, 360, 640);
         
-        // 4. Configura a Janela
+        // configura a janela
         stage.setTitle("iFome App");
         stage.setScene(scene);
         stage.setResizable(false); 

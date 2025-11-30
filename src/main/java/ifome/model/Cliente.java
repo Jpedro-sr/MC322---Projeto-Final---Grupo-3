@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * Representa um Cliente do sistema iFome.
- * ATUALIZADO: Suporte a cartões de crédito salvos e cupons usados.
+ * ✅ CORRIGIDO: Validações robustas contra números negativos, textos longos e caracteres especiais
  */
 public class Cliente extends Usuario {
 
@@ -14,47 +14,109 @@ public class Cliente extends Usuario {
     private List<Endereco> enderecos;
     private List<Pedido> historicoPedidos;
     private List<CartaoSalvo> cartoesSalvos;
-    private List<String> cuponsUsados; // ✅ NOVO: Lista de códigos de cupons já usados
+    private List<String> cuponsUsados;
     private Carrinho carrinho;
+    
+    // ✅ LIMITES DE SEGURANÇA
+    private static final int MAX_NOME_LENGTH = 100;
+    private static final int MAX_TELEFONE_LENGTH = 20;
+    private static final int MIN_TELEFONE_DIGITOS = 10;
+    private static final int MAX_TELEFONE_DIGITOS = 15;
 
     public Cliente(String email, String senha, String nome, String telefone) {
         super();
         this.email = email;
         this.senha = senha;
-        this.nome = nome;
+        this.nome = validarNome(nome);
         this.telefone = validarTelefone(telefone);
         this.enderecos = new ArrayList<>();
         this.historicoPedidos = new ArrayList<>();
         this.cartoesSalvos = new ArrayList<>();
-        this.cuponsUsados = new ArrayList<>(); // ✅ Inicializa lista
+        this.cuponsUsados = new ArrayList<>();
         this.carrinho = new Carrinho();
     }
 
-    // ... (Mantenha os métodos existentes de validação e cadastro) ...
+    /**
+     * ✅ VALIDAÇÃO ROBUSTA DE NOME
+     * - Rejeita textos muito longos
+     * - Remove caracteres perigosos
+     * - Não permite nomes vazios
+     */
+    private String validarNome(String nome) {
+        if (nome == null || nome.trim().isEmpty()) {
+            throw new IllegalArgumentException("Nome não pode ser vazio");
+        }
+        
+        // Remove caracteres perigosos
+        String nomeLimpo = nome.trim().replaceAll("[<>\"'&;]", "");
+        
+        // Limita tamanho
+        if (nomeLimpo.length() > MAX_NOME_LENGTH) {
+            throw new IllegalArgumentException(
+                "Nome muito longo. Máximo de " + MAX_NOME_LENGTH + " caracteres"
+            );
+        }
+        
+        if (nomeLimpo.length() < 2) {
+            throw new IllegalArgumentException("Nome muito curto. Mínimo de 2 caracteres");
+        }
+        
+        return nomeLimpo;
+    }
 
+    /**
+     * ✅ VALIDAÇÃO ROBUSTA DE TELEFONE
+     * - Remove caracteres não numéricos
+     * - Valida quantidade de dígitos
+     * - Rejeita números negativos (já removidos por regex)
+     * - Limita tamanho máximo
+     */
     private String validarTelefone(String telefone) {
-        if (telefone == null || telefone.isEmpty()) {
+        if (telefone == null || telefone.trim().isEmpty()) {
             return "Não informado";
         }
-        String limpo = telefone.replaceAll("[^0-9]", "");
-        if (limpo.length() >= 10) {
-            return telefone;
+        
+        // Remove todos os caracteres não numéricos
+        String apenasDigitos = telefone.replaceAll("[^0-9]", "");
+        
+        // Verifica se não está vazio após limpeza
+        if (apenasDigitos.isEmpty()) {
+            return "Não informado";
         }
-        return "Não informado";
+        
+        // Valida quantidade de dígitos
+        if (apenasDigitos.length() < MIN_TELEFONE_DIGITOS) {
+            throw new IllegalArgumentException(
+                "Telefone inválido. Mínimo de " + MIN_TELEFONE_DIGITOS + " dígitos"
+            );
+        }
+        
+        if (apenasDigitos.length() > MAX_TELEFONE_DIGITOS) {
+            throw new IllegalArgumentException(
+                "Telefone inválido. Máximo de " + MAX_TELEFONE_DIGITOS + " dígitos"
+            );
+        }
+        
+        // Rejeita números com todos os dígitos iguais (ex: 11111111111)
+        if (apenasDigitos.matches("(\\d)\\1+")) {
+            throw new IllegalArgumentException("Telefone inválido. Número repetitivo");
+        }
+        
+        return telefone; // Retorna original formatado
     }
+
+    // ============ MÉTODOS EXISTENTES (sem alteração) ============
 
     public void cadastrar(String nome, String email, String senha, String telefone) {
         if (nome == null || nome.isEmpty() || email == null || email.isEmpty() || 
             senha == null || senha.isEmpty()) {
             return;
         }
-        this.nome = nome;
+        this.nome = validarNome(nome);
         this.email = email;
         this.senha = senha;
         this.telefone = validarTelefone(telefone);
     }
-    
-    // ... (Métodos de Endereço e Cartão mantidos iguais) ...
 
     public void adicionarEndereco(Endereco endereco) {
         if (endereco == null) return;
@@ -91,33 +153,20 @@ public class Cliente extends Usuario {
         return !cartoesSalvos.isEmpty();
     }
 
-    // ============ ✅ NOVOS MÉTODOS DE CUPONS USADOS ============
-
-    /**
-     * Verifica se o cliente já usou um cupom específico.
-     */
     public boolean jaUsouCupom(String codigoCupom) {
         if (codigoCupom == null) return false;
         return cuponsUsados.contains(codigoCupom.toUpperCase());
     }
 
-    /**
-     * Registra que o cliente usou um cupom.
-     */
     public void registrarUsoCupom(String codigoCupom) {
         if (codigoCupom != null && !jaUsouCupom(codigoCupom)) {
             cuponsUsados.add(codigoCupom.toUpperCase());
         }
     }
     
-    /**
-     * Retorna a lista de cupons usados (para persistência).
-     */
     public List<String> getCuponsUsados() {
         return new ArrayList<>(cuponsUsados);
     }
-
-    // ============ MÉTODOS EXISTENTES (Pedido, Avaliação, etc) ============
 
     public void adicionarPedido(Pedido pedido) {
         if (pedido != null) {
@@ -174,7 +223,7 @@ public class Cliente extends Usuario {
         }
     }
 
-    // Getters e Setters básicos
+    // Getters e Setters
     public String getNome() { return nome; }
     public String getTelefone() { return telefone; }
     public List<Endereco> getEnderecos() { return new ArrayList<>(enderecos); }
@@ -190,8 +239,13 @@ public class Cliente extends Usuario {
         return historicoPedidos.isEmpty() ? null : historicoPedidos.get(historicoPedidos.size() - 1);
     }
 
-    public void setNome(String nome) { this.nome = nome != null ? nome : this.nome; }
-    public void setTelefone(String telefone) { this.telefone = validarTelefone(telefone); }
+    public void setNome(String nome) { 
+        this.nome = validarNome(nome);
+    }
+    
+    public void setTelefone(String telefone) { 
+        this.telefone = validarTelefone(telefone);
+    }
 
     @Override
     public String toString() {
