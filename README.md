@@ -11,9 +11,9 @@ Um sistema completo de entrega de comida desenvolvido em Java com arquitetura or
 ## Autores
 
 - **João Pedro dos Santos Rodrigues**     RA: 251492
-- **Pedro Romasanta Rosa**                RA:
-- **Matheus Boazão Silveira**             RA:
-- **Rafael Rodrigues Pimentel de Melo**   RA:
+- **Pedro Romasanta Rosa**                RA: 206599
+- **Matheus Boazão Silveira**             RA: 220080
+- **Rafael Rodrigues Pimentel de Melo**   RA: 239356
 
 ---
 
